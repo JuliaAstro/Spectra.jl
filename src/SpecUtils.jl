@@ -1,5 +1,5 @@
 module SpecUtils
 
-greet() = print("Hello World!")
+include("spectrum.jl")
 
 end # module

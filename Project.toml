@@ -1,4 +1,4 @@
-name = "SpecUtils.jl"
+name = "SpecUtils"
 uuid = "9d2b7cbc-81e1-11e9-3b92-73cfcff3e3dc"
 authors = ["Miles Lucas <mdlucas@iastate.edu>"]
 version = "0.1.0"
@@ -7,3 +7,13 @@ version = "0.1.0"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
+
+[compat]
+FITSIO = "≥ 0.13.0"
+julia = "≥ 1.0.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
