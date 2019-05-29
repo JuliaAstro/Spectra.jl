@@ -3,6 +3,9 @@ language: julia
 julia:
   - nightly
   - 1.1
-  - 1.0
+
+matrix:
+  allow_failures:
+  - julia: nightly
 
 codecov: true
