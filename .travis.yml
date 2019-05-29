@@ -4,8 +4,21 @@ julia:
   - nightly
   - 1.1
 
+os:
+  - linux
+  - osx
+
 matrix:
   allow_failures:
   - julia: nightly
 
 codecov: true
+
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.1
+      script:
+        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
