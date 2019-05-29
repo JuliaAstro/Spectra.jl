@@ -8,6 +8,4 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 
 | Branch | Status | Documentation |
 |---|---|---|
-| master | ![Travis (.com) branch](https://img.shields.io/travis/com/mileslucas/SpecUtils.jl/master.svg?label=) | [![](https://img.shields.io/badge/docs-stable-blue.svg?label=)](https://mileslucas.github.io/SpecUtils.jl/stable)  |
-
-[//]: # "| develop | ![Travis (.com) branch](https://img.shields.io/travis/com/mileslucas/SpecUtils.jl/develop.svg?label=) | [![](https://img.shields.io/badge/docs-dev-blue.svg?label=)](https://mileslucas.github.io/SpecUtils.jl/dev)"
+| master | ![Travis (.com) branch](https://img.shields.io/travis/com/mileslucas/SpecUtils.jl/master.svg?label=) | [![](https://img.shields.io/badge/docs-dev-blue.svg?label=)](https://mileslucas.com/SpecUtils.jl/dev)  |
