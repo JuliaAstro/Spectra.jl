@@ -1,4 +1,4 @@
-module SpecUtils
+module Spectra
 
 include("spectrum.jl")
 

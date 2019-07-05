@@ -1,11 +1,11 @@
 using Documenter
-using SpecUtils
+using Spectra
 
 makedocs(
-    sitename = "SpecUtils.jl",
+    sitename = "Spectra.jl",
     format = Documenter.HTML(
         prettyurls = !("local" in ARGS),
-        canonical = "https://mileslucas.com/SpecUtils.jl/stable/",
+        canonical = "https://mileslucas.com/Spectra.jl/stable/",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
@@ -20,5 +20,5 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/mileslucas/SpecUtils.jl.git",
+    repo = "github.com/mileslucas/Spectra.jl.git",
 )

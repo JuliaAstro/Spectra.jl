@@ -1,4 +1,4 @@
-# SpecUtils.jl
+# Spectra.jl
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
@@ -10,9 +10,9 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 From the REPL, press `]` to enter Pkg mode
 ```
 (v 1.1) pkg> add https://github.com/mileslucas/SpecUtils.jl
-(v 1.1) pkg> test SpecUtils
+(v 1.1) pkg> test Spectra
 [...]
-julia> using SpecUtils
+julia> using Spectra
 ```
 
 ## Citation

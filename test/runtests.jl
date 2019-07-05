@@ -1,4 +1,4 @@
 using Test
-using SpecUtils
+using Spectra
 
 include("spectrum.jl")
