@@ -1,20 +1,18 @@
-export Spectrum, wave, flux, sigma
+export Spectrum
 
-import Base: ndims, size, length, show
+import Base: size, length
 
-mutable struct Spectrum
-    wave::AbstractVector
-    flux::AbstractVector
-    sigma::AbstractVector
-    mask::AbstractVector{Bool}
+mutable struct Spectrum{W <: Number,F <: Number}
+    wave::AbstractVector{W}
+    flux::AbstractVector{F}
+    sigma::AbstractVector{F}
     name::String
-    function Spectrum(wave::AbstractVector,
-            flux::AbstractVector,
-            sigma::AbstractVector,
-            mask::AbstractVector{Bool},
-            name::String)
-        @assert size(wave) == size(flux) == size(sigma) == size(mask) "No ragged orders allowed"
-        new(wave, flux, sigma, mask, name)
+    function Spectrum(wave::AbstractVector{W},
+            flux::AbstractVector{F},
+            sigma::AbstractVector{F},
+            name::String) where {W <: Number,F <: Number}
+        @assert size(wave) == size(flux) == size(sigma) "No ragged orders allowed"
+        new{W, F}(wave, flux, sigma, name)
     end
 end
 
@@ -75,84 +73,26 @@ julia> wave(spec)
 """
 function Spectrum(wave, 
     flux, 
-    sigma, 
-    mask ; 
+    sigma ; 
     name::String = "")
     wave = Vector(wave)
     flux = Vector(flux)
     sigma = Vector(sigma)
-    mask = Vector(mask)
-    Spectrum(wave, flux, sigma, mask, name)
+    Spectrum(wave, flux, sigma, name)
 end
-function Spectrum(wave::AbstractVector, 
-        flux::AbstractVector, 
-        sigma::AbstractVector, 
-        mask::AbstractVector{Bool} ; 
-        name::String = "")
-   Spectrum(wave, flux, sigma, mask, name)
-end
-
 function Spectrum(wave::AbstractVector, 
         flux::AbstractVector, 
         sigma::AbstractVector ; 
         name::String = "")
-    mask = trues(size(wave))
-    return Spectrum(wave, flux, sigma, mask, name = name)
+   Spectrum(wave, flux, sigma, name)
 end
+
 
 function Spectrum(wave::AbstractVector, flux::AbstractVector; name::String = "")
     sigma = fill!(similar(flux), 1)
     return Spectrum(wave, flux, sigma, name = name)
 end
 
-"""
-    wave(::Spectrum)
 
-Returns the masked wavelengths
-"""
-function wave(spec::Spectrum)
-    return spec.wave[spec.mask]
-end
-
-"""
-    flux(::Spectrum)
-
-Returns the masked fluxes
-"""
-function flux(spec::Spectrum)
-    return spec.flux[spec.mask]
-end
-
-"""
-    sigma(::Spectrum)
-
-Returns the masked sigma
-"""
-function sigma(spec::Spectrum)
-    return spec.sigma[spec.mask]
-end
-
-function Base.show(io::IO, spec::Spectrum)
-    println(io, "Spectrum: $(spec.name)")
-end
-
-"""
-    ndims(::Spectrum)
-
-Returns the number of dimensions of the Spectrum
-"""
-Base.ndims(spec::Spectrum) = 1
-
-"""
-    size(::Spectrum)
-
-Returns the size, or dimensions, of the Spectrum
-"""
 Base.size(spec::Spectrum) = size(spec.wave)
-
-"""
-    length(::Spectrum)
-
-Returns the length of the Spectrum
-"""
 Base.length(spec::Spectrum) = length(spec.wave)
