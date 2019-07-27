@@ -9,3 +9,6 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 | Branch | Status | Documentation |
 |---|---|---|
 | master | [![Travis (.com) branch](https://img.shields.io/travis/com/mileslucas/Spectra.jl/master.svg?label=)](https://tracis-ci.com/mileslucas/Spectra.jl) | [![](https://img.shields.io/badge/docs-dev-blue.svg?label=)](https://mileslucas.com/Spectra.jl/dev)  |
+
+
+**This is a work in progress and is not currently ready for release**
