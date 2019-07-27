@@ -31,3 +31,35 @@ end
 
     @test spec.wave ≈ wave
 end
+
+@testset "Arithmetic" begin
+    spec = mock_spectrum()
+
+    # Scalars/ vectors
+    values = [100, randn(size(spec))]
+    for A in values 
+        # addition
+        s = spec + A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .+ A
+        @test s.sigma == spec.sigma
+
+        # subtraction
+        s = spec - A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .- A
+        @test s.sigma == spec.sigma
+
+        # multiplication
+        s = spec * A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .* A
+        @test s.sigma == spec.sigma .* abs.(A)
+
+        # division
+        s = spec / A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux ./ A
+        @test s.sigma == spec.sigma ./ abs.(A)
+    end
+end
