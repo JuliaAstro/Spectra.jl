@@ -5,14 +5,12 @@ version = "0.1.0"
 
 [deps]
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
-FITSIO = "525bcba6-941b-5504-bd06-fd0dc1a4d2eb"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
-WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
 
 [compat]
-FITSIO = "≥ 0.13.0"
-julia = "≥ 1.1.0"
+UnitfulAstro = "0.2.0"
+julia = "1.0.0"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

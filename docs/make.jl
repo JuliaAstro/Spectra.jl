@@ -5,7 +5,7 @@ makedocs(
     sitename = "Spectra.jl",
     format = Documenter.HTML(
         prettyurls = !("local" in ARGS),
-        canonical = "https://mileslucas.com/Spectra.jl/stable/",
+        canonical = "https://juliaastro.github.io/Spectra.jl/stable/",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
@@ -20,5 +20,5 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/mileslucas/Spectra.jl.git",
+    repo = "github.com/JuliaAstro/Spectra.jl.git",
 )

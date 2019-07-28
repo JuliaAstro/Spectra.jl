@@ -9,7 +9,7 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 
 From the REPL, press `]` to enter Pkg mode
 ```
-(v 1.1) pkg> add https://github.com/mileslucas/SpecUtils.jl
+(v 1.1) pkg> add https://github.com/JuliaAstro/Spectra.jl
 (v 1.1) pkg> test Spectra
 [...]
 julia> using Spectra

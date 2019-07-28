@@ -13,17 +13,6 @@ This provides the following standard library overrides
 ```@docs
 length
 size
-ndims
-```
-
-### Using the masks
-
-In order to use the passed masks, use the following functions
-
-```@docs
-wave(::Spectrum)
-flux(::Spectrum)
-σ(::Spectrum)
 ```
 
 ## Index
