@@ -62,4 +62,34 @@ end
         @test s.flux ≈ spec.flux ./ A
         @test s.sigma == spec.sigma ./ abs.(A)
     end
+
+    spec = mock_spectrum(with_units=true)
+
+    # Scalars/ vectors
+    values = [100u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"]
+    for A in values 
+        # addition
+        s = spec + A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .+ A
+        @test s.sigma == spec.sigma
+
+        # subtraction
+        s = spec - A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .- A
+        @test s.sigma == spec.sigma
+
+        # multiplication
+        s = spec * A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .* A
+        @test s.sigma == spec.sigma .* abs.(A)
+
+        # division
+        s = spec / A
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux ./ A
+        @test s.sigma == spec.sigma ./ abs.(A)
+    end
 end

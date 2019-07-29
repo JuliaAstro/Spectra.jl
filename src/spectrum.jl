@@ -17,7 +17,7 @@ mutable struct Spectrum{W <: Number,F <: Number}
 end
 
 """
-    Spectrum(wave::AbstractVector{W}, flux::AbstractVector{F}, [sigma::AbstractVector{F}]; name::String)
+    Spectrum(wave, flux, [sigma]; name="")
 
 A signle dimensional astronomical spectrum. If no sigma are provided, they are assumed to be unity. The name is an optional identifier for the Spectrum. Note that the dimensions of each array must be equal or an error will be thrown.
 
@@ -57,6 +57,7 @@ function Spectrum(wave,
     sigma ; 
     name::String = "")
     wave = Vector(wave)
+    flux, sigma = promote(flux, sigma)
     flux = Vector(flux)
     sigma = Vector(sigma)
     Spectrum(wave, flux, sigma, name)
@@ -66,6 +67,7 @@ function Spectrum(wave::AbstractVector,
         flux::AbstractVector, 
         sigma::AbstractVector ; 
         name::String = "")
+   flux, sigma = promote(flux, sigma)
    Spectrum(wave, flux, sigma, name)
 end
 
@@ -74,12 +76,16 @@ function Spectrum(wave::AbstractVector, flux::AbstractVector; name::String = "")
     return Spectrum(wave, flux, sigma, name = name)
 end
 
+function Base.show(io::IO, spec::Spectrum)
+    println(io, "Spectrum: $(spec.name)")
+end
 
 Base.size(spec::Spectrum) = size(spec.wave)
 Base.length(spec::Spectrum) = length(spec.wave)
 
 # Arithmetic
-Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, s.sigma, s.name)
-Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, s.sigma .* abs.(A), s.name)
-Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, s.sigma ./ abs.(A), s.name)
+Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, s.sigma, name = s.name)
+Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, s.sigma .* abs.(A), name = s.name)
+Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, s.sigma ./ abs.(A), name = s.name)
 Base.:-(s::Spectrum, A) = s + -A
+
