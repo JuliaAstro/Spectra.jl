@@ -1,5 +1,5 @@
 name = "Spectra"
-uuid = "9d2b7cbc-81e1-11e9-3b92-73cfcff3e3dc"
+uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
 authors = ["Miles Lucas <mdlucas@iastate.edu>"]
 version = "0.1.0"
 
@@ -10,8 +10,8 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
-UnitfulAstro = "0.2.0"
-julia = "1.1.0"
+UnitfulAstro = "≥0.2.0"
+julia = "^1.1.0"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
