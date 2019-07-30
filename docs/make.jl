@@ -9,7 +9,7 @@ makedocs(
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
-    modules = [SpecUtils],
+    modules = [Spectra],
     pages = [
         "Home" => "index.md",
         "Spectrum" => [
