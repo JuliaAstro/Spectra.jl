@@ -6,21 +6,22 @@ export extinct, extinct!
 
 DUST_LAWS = [:ccm89, :cal00, :od94]
 
-function Aλ(wave::Real, Rv::Real = 3.1, law::Symbol = :ccm89)
+function Aλ(wave::Number, Av::Real, Rv::Real, law::Symbol = :ccm89)
     @assert law in DUST_LAWS "$law not recognized. Please choose from $DUST_LAWS"
-    if typeof(wave) <: Unitful.Unitlike
+    if typeof(wave) <: Unitful.Quantity
         # Need to convert to anstrom natively
         wave = ustrip(u"angstrom", wave)
     end
-    eval(law)(wave, Rv)
+    return Av * eval(law)(wave, Rv)
 end
 
 function _extinct(spec::Spectrum, Av::Real, Rv::Real = 3.1, law::Symbol = :ccm89) 
-    factor = @. 10^(Av * Aλ(spec.wave, Rv, law))
-    if eltype(spec.flux) <: Unitful.Unitlike
-        factor *= unit(eltype(spec.flux))
+    factor = @. 10^(-0.4Aλ(spec.wave, Av, Rv, law))
+    if eltype(spec.flux) <: Unitful.Quantity
+        spec.flux .* factor * Unitful.NoUnits
+    else
+        spec.flux .* factor
     end
-    return spec.flux .* factor
 end
 
 """
