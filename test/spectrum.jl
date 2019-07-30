@@ -63,7 +63,7 @@ end
         @test s.sigma == spec.sigma ./ abs.(A)
     end
 
-    spec = mock_spectrum(with_units=true)
+    spec = mock_spectrum(use_units=true)
 
     # Scalars/ vectors
     values = [100u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"]
