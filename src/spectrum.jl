@@ -39,9 +39,7 @@ Spectrum: Just Noise
 
 There is easy integration with ``Unitful`` and its sub-projects
 ```jldoctest
-julia> using Spectra
-
-julia> using Unitful, UnitfulAstro
+julia> using Spectra, Unitful, UnitfulAstro
 
 julia> wave = range(1u"μm", 4u"μm", length=1000) .|> u"angstrom";
 
