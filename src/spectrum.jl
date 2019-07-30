@@ -23,6 +23,8 @@ A signle dimensional astronomical spectrum. If no sigma are provided, they are a
 
 # Examples
 ```jldoctest
+julia> using Spectra
+
 julia> wave = range(1e4, 4e4, length=1000);
 
 julia> flux = randn(size(wave));
@@ -37,6 +39,8 @@ Spectrum: Just Noise
 
 There is easy integration with ``Unitful`` and its sub-projects
 ```jldoctest
+julia> using Spectra
+
 julia> using Unitful, UnitfulAstro
 
 julia> wave = range(1u"μm", 4u"μm", length=1000) .|> u"angstrom";
@@ -80,7 +84,14 @@ function Base.show(io::IO, spec::Spectrum)
     println(io, "Spectrum: $(spec.name)")
 end
 
+"""
+    size(::Spectrum)
+"""
 Base.size(spec::Spectrum) = size(spec.wave)
+
+"""
+    length(::Spectrum)
+"""
 Base.length(spec::Spectrum) = length(spec.wave)
 
 # Arithmetic

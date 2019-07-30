@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Spectra = "9d2b7cbc-81e1-11e9-3b92-73cfcff3e3dc"
 
 [compat]
 Documenter = "~0.22"

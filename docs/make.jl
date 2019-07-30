@@ -4,7 +4,7 @@ using Spectra
 makedocs(
     sitename = "Spectra.jl",
     format = Documenter.HTML(
-        prettyurls = !("local" in ARGS),
+        prettyurls = get(ENV, "CI", nothing) == "true",
         canonical = "https://juliaastro.github.io/Spectra.jl/stable/",
     ),
     authors = "Miles Lucas and contributors.",
@@ -13,12 +13,13 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Spectrum" => [
-            "spectrum.md"
+            "spectrum.md",
+            "ops.md",
         ],
     ],
     strict = true,
 )
 
 deploydocs(
-    repo = "github.com/JuliaAstro/Spectra.jl.git",
+    repo = "https://github.com/JuliaAstro/Spectra.jl.git",
 )

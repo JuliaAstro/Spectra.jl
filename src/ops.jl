@@ -25,8 +25,7 @@ function _extinct(spec::Spectrum, Av::Real, Rv::Real = 3.1, law::Symbol = :ccm89
 end
 
 """
-    extinct(spec::Spectrum, Av::Real, Rv::Real=3.1; law=:ccm89)
-    extinct!(spec::Spectrum, Av::Real, Rv::Real=3.1; law=:ccm89)
+    extinct(::Spectrum, Av::Real, Rv::Real=3.1; law=:ccm89)
 
 Uses [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) to extinct a spectrum given the total extinction `Av` and the relative attenuation `Rv`. `law` must be one of the available extinction laws- currently `[:ccm89, :cal00, :od94]`. 
 """
@@ -35,6 +34,14 @@ function extinct(spec::Spectrum, Av::Real, Rv::Real = 3.1; law::Symbol = :ccm89)
     Spectrum(spec.wave, flux, spec.sigma, name = spec.name)
 end
 
+"""
+    extinct!(::Spectrum, Av::Real, Rv::Real=3.1; law=:ccm89)
+
+In-place version of `extinct`
+
+# See Also
+[`extinct`](@ref)
+"""
 function extinct!(spec::Spectrum, Av::Real, Rv::Real = 3.1; law::Symbol = :ccm89)
     spec.flux = _extinct(spec, Av, Rv, law)
 end
