@@ -20,5 +20,5 @@ makedocs(
 )
 
 deploydocs(
-    repo = "https://github.com/JuliaAstro/Spectra.jl.git",
+    repo = "github.com/JuliaAstro/Spectra.jl.git",
 )
