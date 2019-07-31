@@ -8,7 +8,7 @@
     @test extincted.flux ≈ spec_copy.flux
 
 # Bad law
-    @test_throws AssertionError extinct(spec, 0.3, law = :penguin)
+    @test_throws MethodError extinct(spec, 0.3, law = sin)
 
 # Unitful!
     f_unit = u"W/m^2/angstrom"
