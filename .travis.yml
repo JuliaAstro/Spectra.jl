@@ -15,6 +15,9 @@ matrix:
 
 codecov: true
 
+notifications:
+  email: false
+
 jobs:
   include:
     - stage: "Documentation"

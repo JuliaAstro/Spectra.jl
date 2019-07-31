@@ -5,7 +5,6 @@ makedocs(
     sitename = "Spectra.jl",
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true",
-        canonical = "https://juliaastro.github.io/Spectra.jl/stable/",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
