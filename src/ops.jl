@@ -2,7 +2,7 @@ using DustExtinction
 using Unitful, UnitfulAstro
 import Base
 
-export extinct, extinct!
+export extinct, extinct!, resample, resample!
 
 function Aλ(wave::Number, Av::Real, Rv::Real, law = ccm89)
     if typeof(wave) <: Unitful.Quantity
@@ -58,16 +58,21 @@ function extinct!(spec::Spectrum, Av::Real, Rv::Real = 3.1; law = ccm89)
     spec.flux = _extinct(spec, Av, Rv, law)
 end
 
-# TODO 
+# Resampling Ops
+
+using Interpolations
 
 function resample(spec::Spectrum, wavelengths)
-
+    flux = CubicSplineInterpolation(spec.wave, spec.flux).(wavelengths)
+    sigma = CubicSplineInterpolation(spec.wave, spec.sigma).(wavelengths)
+    Spectrum(wavelengths, flux, sigma, name = spec.name)
 end
 
 resample(spec::Spectrum, other::Spectrum) = resample(spec, other.wave)
 
 function resample!(spec::Spectrum, wavelengths)
-
+    spec.flux = CubicSplineInterpolation(spec.wave, spec.flux).(wavelengths)
+    spec.sigma = CubicSplineInterpolation(spec.wave, spec.sigma).(wavelengths)
 end
 
 resample!(spec::Spectrum, other::Spectrum) = resample!(spec, other.wave)

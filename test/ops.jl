@@ -27,3 +27,13 @@
 
 
 end
+
+@testset "Resampling" begin
+    spec = mock_spectrum()
+    new_wave = range(minimum(spec.wave), maximum(spec.wave), length=Integer(length(spec.wave) ÷ 2.4))
+    res_spec = resample(spec, new_wave)
+
+    @test res_spec.wave == new_wave
+    @test length(res_spec.flux) == length(new_wave)
+    @test length(res_spec.sigma) == length(new_wave)
+end
