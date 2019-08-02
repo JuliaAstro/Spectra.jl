@@ -1,6 +1,7 @@
 export Spectrum
 
 import Base: size, length
+import Unitful
 
 mutable struct Spectrum{W <: Number,F <: Number}
     wave::AbstractVector{W}
@@ -74,7 +75,8 @@ function Spectrum(wave::AbstractVector,
 end
 
 function Spectrum(wave::AbstractVector, flux::AbstractVector; name::String = "")
-    sigma = fill!(similar(flux), 1)
+    fill_val = eltype(flux) <: Quantity ? 1*unit(eltype(flux)) : 1
+    sigma = repeat([fill_val], length(flux))
     return Spectrum(wave, flux, sigma, name = name)
 end
 
@@ -91,6 +93,56 @@ Base.size(spec::Spectrum) = size(spec.wave)
     length(::Spectrum)
 """
 Base.length(spec::Spectrum) = length(spec.wave)
+
+
+"""
+    Unitful.ustrip(::Spectrum)
+
+Remove the units from a spectrum. Useful for processing spectra in tools that don't play nicely with `Unitful.jl`
+
+# Examples
+```jldoctest
+julia> using Spectra, Unitful, UnitfulAstro
+
+julia> wave = range(1e4, 3e4, length=1000) |> collect;
+
+julia> flux = wave .* 10 .+ randn(1000);
+
+julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
+Spectrum:
+
+
+julia> strip_spec = ustrip(spec)
+Spectrum: 
+
+
+```
+"""
+Unitful.ustrip(spec::Spectrum) = Spectrum(ustrip.(spec.wave), ustrip.(spec.flux), ustrip.(spec.sigma), name = spec.name)
+
+"""
+    Unitful.unit(::Spectrum)
+
+Get the units of a spectrum. Returns a tuple of the wavelength units and flux/sigma units
+
+# Examples
+```jldoctest
+julia> using Spectra, Unitful, UnitfulAstro
+
+julia> wave = range(1e4, 3e4, length=1000) |> collect;
+
+julia> flux = wave .* 10 .+ randn(1000);
+
+julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
+Spectrum:
+
+
+julia> w_unit, f_unit = unit(spec)
+(Å, W Å^-1 m^-2)
+
+```
+"""
+Unitful.unit(spec::Spectrum) = Tuple(unit.(typeof(spec).parameters))
 
 # Arithmetic
 Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, s.sigma, name = s.name)

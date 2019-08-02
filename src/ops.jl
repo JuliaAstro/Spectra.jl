@@ -62,17 +62,34 @@ end
 
 using Interpolations
 
+function _resample(spec::Spectrum, wavelengths)
+    unitlike = false
+    if eltype(spec.wave) <: Quantity
+        unitlike = true
+        w_unit, f_unit = unit(spec)
+        spec = ustrip(spec)
+        wavelengths = ustrip.(w_unit, wavelengths)
+    end
+    knots = (spec.wave,)
+    flux = interpolate(knots, spec.flux, Gridded(Linear())).(wavelengths)
+    sigma = interpolate(knots, spec.sigma, Gridded(Linear())).(wavelengths)
+    if unitlike
+        wavelengths *= w_unit
+        flux *= f_unit
+        sigma *= f_unit
+    end
+    return wavelengths, flux, sigma
+end
+
 function resample(spec::Spectrum, wavelengths)
-    flux = CubicSplineInterpolation(spec.wave, spec.flux).(wavelengths)
-    sigma = CubicSplineInterpolation(spec.wave, spec.sigma).(wavelengths)
-    Spectrum(wavelengths, flux, sigma, name = spec.name)
+    wave, flux, sigma = _resample(spec, wavelengths)
+    Spectrum(wave, flux, sigma, name = spec.name)
 end
 
 resample(spec::Spectrum, other::Spectrum) = resample(spec, other.wave)
 
 function resample!(spec::Spectrum, wavelengths)
-    spec.flux = CubicSplineInterpolation(spec.wave, spec.flux).(wavelengths)
-    spec.sigma = CubicSplineInterpolation(spec.wave, spec.sigma).(wavelengths)
+    spec.wave, spec.flux, spec.sigma = _resample(spec, wavelengths)
 end
 
 resample!(spec::Spectrum, other::Spectrum) = resample!(spec, other.wave)

@@ -30,6 +30,18 @@ end
     spec = Spectrum(wave, sigma, flux)
 
     @test spec.wave ≈ wave
+
+    # Test stripping
+    w_unit, f_unit = unit(spec)
+    @test w_unit == unit(eltype(spec.wave))
+    @test f_unit == unit(eltype(spec.flux))
+    @test f_unit == unit(eltype(spec.sigma))
+
+    strip_spec = ustrip(spec)
+    @test strip_spec.wave == ustrip.(spec.wave)
+    @test strip_spec.flux == ustrip.(spec.flux)
+    @test strip_spec.sigma == ustrip.(spec.sigma)
+    @test strip_spec.name == spec.name
 end
 
 @testset "Arithmetic" begin

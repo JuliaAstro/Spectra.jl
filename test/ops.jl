@@ -1,3 +1,4 @@
+using Unitful
 
 @testset "Extinction" begin
     # Standard usage    
@@ -36,4 +37,25 @@ end
     @test res_spec.wave == new_wave
     @test length(res_spec.flux) == length(new_wave)
     @test length(res_spec.sigma) == length(new_wave)
+    
+    resample!(spec, new_wave)
+    @test res_spec.wave == spec.wave
+    @test res_spec.flux == spec.flux
+    @test res_spec.sigma == spec.sigma
+
+    # Unitful
+    spec = mock_spectrum(use_units=true)
+    new_wave = range(minimum(spec.wave), maximum(spec.wave), length=Integer(length(spec.wave) ÷ 2.4))
+    @assert unit(eltype(new_wave)) == unit(eltype(spec.wave))
+    res_spec = resample(spec, new_wave)
+
+    @test res_spec.wave == new_wave
+    @test length(res_spec.flux) == length(new_wave)
+    @test length(res_spec.sigma) == length(new_wave)
+
+    resample!(spec, new_wave)
+    @test res_spec.wave == spec.wave
+    @test res_spec.flux == spec.flux
+    @test res_spec.sigma == spec.sigma
+
 end
