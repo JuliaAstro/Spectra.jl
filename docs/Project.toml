@@ -3,4 +3,4 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Spectra = "391af1a9-06f1-59d3-8d21-0be089654739"
 
 [compat]
-Documenter = "~0.22"
+Documenter = "^0.22"

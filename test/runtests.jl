@@ -20,3 +20,7 @@ end
 
 include("spectrum.jl")
 include("ops.jl")
+
+# doctests
+using Documenter
+doctest(Spectra)

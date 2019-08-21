@@ -23,3 +23,10 @@ If you found this software or any derivative work useful in your academic work, 
 ```
 TODO
 ```
+
+```@meta
+DocTestSetup = quote
+    using Pkg
+    Pkg.install("Unitful", "UnitfulAstro")
+end
+```
