@@ -1,6 +1,11 @@
 using Test
-using Random
 using Spectra
+
+# doctests (before others to isolate dependencies)
+using Documenter
+doctest(Spectra)
+
+using Random
 using Unitful, UnitfulAstro
 
 Random.seed!(8675309)
@@ -21,6 +26,4 @@ end
 include("spectrum.jl")
 include("ops.jl")
 
-# doctests
-using Documenter
-doctest(Spectra)
+

@@ -27,6 +27,6 @@ TODO
 ```@meta
 DocTestSetup = quote
     using Pkg
-    Pkg.install("Unitful", "UnitfulAstro")
+    Pkg.add(["Unitful", "UnitfulAstro"])
 end
 ```

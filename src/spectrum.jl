@@ -108,13 +108,9 @@ julia> wave = range(1e4, 3e4, length=1000) |> collect;
 
 julia> flux = wave .* 10 .+ randn(1000);
 
-julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
-Spectrum:
+julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom");
 
-
-julia> strip_spec = ustrip(spec)
-Spectrum: 
-
+julia> strip_spec = ustrip(spec);
 
 ```
 """
@@ -133,9 +129,7 @@ julia> wave = range(1e4, 3e4, length=1000) |> collect;
 
 julia> flux = wave .* 10 .+ randn(1000);
 
-julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
-Spectrum:
-
+julia> spec = Spectrum(wave * u"angstrom", flux * u"W/m^2/angstrom");
 
 julia> w_unit, f_unit = unit(spec)
 (Å, W Å^-1 m^-2)
