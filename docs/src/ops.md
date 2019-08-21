@@ -8,3 +8,10 @@ The following operations and transformations are provided to work on `Spectra`
 extinct
 extinct!
 ```
+
+## Resampling
+
+```@docs
+resample
+resample!
+```

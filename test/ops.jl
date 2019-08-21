@@ -58,4 +58,38 @@ end
     @test res_spec.flux == spec.flux
     @test res_spec.sigma == spec.sigma
 
+    # Test resampling to another Spectrum
+    spec1 = mock_spectrum(Integer(1e4))
+    spec2 = mock_spectrum(Integer(1e3))
+    res_spec = resample(spec1, spec2)
+    @test res_spec.wave == spec2.wave
+
+    resample!(spec1, spec2)
+    @test spec1.wave == spec2.wave
+    @test spec1.flux == res_spec.flux
+    @test spec1.sigma == res_spec.sigma
+
+    # Unitful
+    spec1 = mock_spectrum(Integer(1e4), use_units=true)
+    spec2 = mock_spectrum(Integer(1e3), use_units=true)
+    res_spec = resample(spec1, spec2)
+
+    @test res_spec.wave == spec2.wave
+    @test unit(eltype(spec1.flux)) == unit(eltype(spec2.flux)) == unit(eltype(res_spec.flux))
+    @test unit(eltype(spec1.sigma)) == unit(eltype(spec2.sigma)) == unit(eltype(res_spec.sigma))
+
+    # Test when spectra2 has different units
+    spec1 = mock_spectrum(Integer(1e4), use_units=true)
+    spec2 = mock_spectrum(Integer(1e3), use_units=true)
+    spec1.wave = uconvert.(u"cm", spec1.wave)
+    resample!(spec1, spec2)
+    @test ustrip.(spec1.wave) ≈ ustrip.(unit(eltype(spec1.wave)), spec2.wave)
+
+    # address bug when doing the same thing but affecting spec2
+    spec1 = mock_spectrum(Integer(1e4), use_units=true)
+    spec2 = mock_spectrum(Integer(1e3), use_units=true)
+    spec2.wave = uconvert.(u"cm", spec2.wave)
+    resample!(spec1, spec2)
+    @test ustrip.(spec1.wave) ≈ ustrip.(unit(eltype(spec1.wave)), spec2.wave)
+
 end

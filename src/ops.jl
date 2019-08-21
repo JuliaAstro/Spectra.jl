@@ -69,7 +69,15 @@ function _resample(spec::Spectrum, wavelengths)
         w_unit, f_unit = unit(spec)
         spec = ustrip(spec)
         wavelengths = ustrip.(w_unit, wavelengths)
+        # Address issue where conversion can lead to floating point errors leading to a BoundsError in the interpolation
+        if wavelengths[1] < spec.wave[1] && wavelengths[1] ≈ spec.wave[1]
+            wavelengths[1] = spec.wave[1]
+        end
+        if wavelengths[end] > spec.wave[end] && wavelengths[end] ≈ spec.wave[end]
+            wavelengths[end] = spec.wave[end]
+        end
     end
+
     knots = (spec.wave,)
     flux = interpolate(knots, spec.flux, Gridded(Linear())).(wavelengths)
     sigma = interpolate(knots, spec.sigma, Gridded(Linear())).(wavelengths)
