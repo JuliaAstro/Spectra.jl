@@ -1,4 +1,4 @@
-export Spectrum
+export Spectrum, unit, ustrip
 
 import Base: size, length
 import Unitful
@@ -38,7 +38,7 @@ Spectrum: Just Noise
 
 ```
 
-There is easy integration with ``Unitful`` and its sub-projects
+There is easy integration with `Unitful` and its sub-projects
 ```jldoctest
 julia> using Spectra, Unitful, UnitfulAstro
 

@@ -3,6 +3,7 @@
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
 ```@contents
+Pages = ["index.md", "spectrum.md", "ops.md"]
 ```
 
 ## Installation

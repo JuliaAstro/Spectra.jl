@@ -52,7 +52,7 @@ end
 In-place version of `extinct`
 
 # See Also
-[`extinct`](@ref)
+[`Spectra.extinct`](@ref)
 """
 function extinct!(spec::Spectrum, Av::Real, Rv::Real = 3.1; law = ccm89)
     spec.flux = _extinct(spec, Av, Rv, law)
@@ -89,13 +89,36 @@ function _resample(spec::Spectrum, wavelengths)
     return wavelengths, flux, sigma
 end
 
-function resample(spec::Spectrum, wavelengths)
-    wave, flux, sigma = _resample(spec, wavelengths)
+
+"""
+    resample!(::Spectrum, wavelengths)
+    resample!(::Spectrum, other::Spectrum)
+
+Resamples a spectrum onto a new wavelength grid- either given explicitly or taken from the wavelengths of another spectrum. The resampling is done using `Interpolations.interpolate` with a `Gridded(Linear())` boundary condition.
+
+!!! warning
+    When using Unitful, there can be floating point errors when converting the wavelengths to the units of the given Spectrum's wavelengths. When this happens it is possible to create a `BoundsError` (eg `3.0 μm` → `30000.00000004 Å`). When this happens the wavelength grid is explicitly truncated to the minimum and maximum of the spectrum wavelengths.
+
+# See Also
+[`Interpolations.interpolate`](https://juliamath.github.io/Interpolations.jl/stable/api/#Interpolations.interpolate-Union{Tuple{IT},%20Tuple{AbstractArray,IT}}%20where%20IT%3C:Union{NoInterp,%20Tuple{Vararg{Union{NoInterp,%20BSpline},N}%20where%20N},%20BSpline})
+"""
+function resample(spec::Spectrum, wavelengths) 
+    wave, flux, sigma = _resample(spec, wavelengths) 
     Spectrum(wave, flux, sigma, name = spec.name)
 end
 
 resample(spec::Spectrum, other::Spectrum) = resample(spec, other.wave)
 
+
+"""
+    resample!(::Spectrum, wavelengths)
+    resample!(::Spectrum, other::Spectrum)
+
+In-place version of `resample`
+
+# See Also
+[`Spectra.resample`](@ref)
+"""
 function resample!(spec::Spectrum, wavelengths)
     spec.wave, spec.flux, spec.sigma = _resample(spec, wavelengths)
 end
