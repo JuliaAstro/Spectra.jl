@@ -4,20 +4,23 @@ authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
 version = "0.1.0"
 
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
+FastConv = "d7899f00-a588-5e12-9855-37624a64ff9a"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 Interpolations = "≥0.9.0"
+Unitful = "≥0.17.0"
 UnitfulAstro = "≥0.2.0"
-julia = "^1.1.0"
+julia = "1.1.0"
 
 [extras]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Documenter"]
+test = ["Test", "Random"]
