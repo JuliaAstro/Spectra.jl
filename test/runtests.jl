@@ -19,6 +19,6 @@ function mock_spectrum(n::Int = Int(1e3); use_units::Bool = false)
 end
 
 include("spectrum.jl")
-# include("ops.jl")
+include("ops.jl")
 
 

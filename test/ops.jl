@@ -17,14 +17,11 @@ using Unitful
     @test expected ≈ extinct(spec, 0.3, law = law).flux
 
     # Unitful!
-    f_unit = u"W/m^2/angstrom"
-    unitful_spec = Spectrum(spec.wave * u"angstrom", 
-                            spec.flux * f_unit, 
-                            spec.sigma * f_unit, 
-                            name = "Unitful Test Spectrum")
+    unitful_spec = mock_spectrum(use_units=true)
     unitful_extincted = extinct(unitful_spec, 0.3)
     @test unit(eltype(unitful_extincted.flux)) == unit(eltype(unitful_spec.flux))
-    @test ustrip(unitful_extincted.flux) ≈ extincted.flux
+    expected = extinct(ustrip(unitful_spec), 0.3)
+    @test ustrip.(unitful_extincted.flux) ≈ expected.flux
 
 
 end
@@ -92,4 +89,9 @@ end
     resample!(spec1, spec2)
     @test ustrip.(spec1.wave) ≈ ustrip.(unit(eltype(spec1.wave)), spec2.wave)
 
+end
+
+@testset "Broadening" begin
+    spec = mock_spectrum()
+    
 end

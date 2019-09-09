@@ -4,22 +4,9 @@ import Base
 
 export extinct, extinct!, resample, resample!
 
-function Aλ(wave::Number, Av::Real, Rv::Real, law = ccm89)
-    if typeof(wave) <: Unitful.Quantity
-        # Need to convert to anstrom natively
-        wave = ustrip(u"angstrom", wave)
-    end
-    return Av * law(wave, Rv)
-end
-
-function _extinct(spec::Spectrum, Av::Real, Rv::Real = 3.1, law = ccm89)
-    factor = @. 10^(-0.4Aλ(spec.wave, Av, Rv, law))
-    if eltype(spec.flux) <: Unitful.Quantity
-        spec.flux .* factor * Unitful.NoUnits
-    else
-        spec.flux .* factor
-    end
-end
+_extinct(wave::Real, flux::Real, Av, Rv = 3.1, law = ccm89) =  flux * 10^(-0.4*Av * law(wave, Rv))
+# Unitful version
+_extinct(wave::Quantity, flux::Quantity, Av, Rv=3.1, law = ccm89) = flux * (Av * law(wave, Rv))
 
 """
     extinct(::Spectrum, Av::Real, Rv::Real=3.1; law=ccm89)
@@ -42,8 +29,8 @@ true
 ```
 """
 function extinct(spec::Spectrum, Av::Real, Rv::Real = 3.1; law = ccm89)
-    flux = _extinct(spec, Av, Rv, law)
-    Spectrum(spec.wave, flux, spec.sigma, name = spec.name)
+    flux = _extinct.(spec.wave, spec.flux, Av, Rv, law)
+    Spectrum(spec.wave, flux, name = spec.name)
 end
 
 """
@@ -52,7 +39,8 @@ end
 In-place version of `extinct`
 """
 function extinct!(spec::Spectrum, Av::Real, Rv::Real = 3.1; law = ccm89)
-    spec.flux = _extinct(spec, Av, Rv, law)
+    spec.flux .= _extinct.(spec.wave, spec.flux, Av, Rv, law)
+    spec
 end
 
 # Resampling Ops
@@ -77,13 +65,11 @@ function _resample(spec::Spectrum, wavelengths)
 
     knots = (spec.wave,)
     flux = interpolate(knots, spec.flux, Gridded(Linear())).(wavelengths)
-    sigma = interpolate(knots, spec.sigma, Gridded(Linear())).(wavelengths)
     if unitlike
         wavelengths *= w_unit
         flux *= f_unit
-        sigma *= f_unit
     end
-    return wavelengths, flux, sigma
+    return wavelengths, flux
 end
 
 
@@ -97,8 +83,8 @@ Resamples a spectrum onto a new wavelength grid- either given explicitly or take
     When using Unitful, there can be floating point errors when converting the wavelengths to the units of the given Spectrum's wavelengths. When this happens it is possible to create a `BoundsError` (eg `3.0 μm` → `30000.00000004 Å`). When this happens the wavelength grid is explicitly truncated to the minimum and maximum of the spectrum wavelengths.
 """
 function resample(spec::Spectrum, wavelengths) 
-    wave, flux, sigma = _resample(spec, wavelengths) 
-    Spectrum(wave, flux, sigma, name = spec.name)
+    wave, flux = _resample(spec, wavelengths) 
+    Spectrum(wave, flux, name = spec.name)
 end
 
 resample(spec::Spectrum, other::Spectrum) = resample(spec, other.wave)
@@ -111,7 +97,25 @@ resample(spec::Spectrum, other::Spectrum) = resample(spec, other.wave)
 In-place version of `resample`
 """
 function resample!(spec::Spectrum, wavelengths)
-    spec.wave, spec.flux, spec.sigma = _resample(spec, wavelengths)
+    spec.wave, spec.flux = _resample(spec, wavelengths)
 end
 
 resample!(spec::Spectrum, other::Spectrum) = resample!(spec, other.wave)
+
+## Broadening ops
+include("kernels.jl")
+using Distributions
+using FastConv
+
+function _broaden(flux, sigma, kernel::Kernel)
+    k = evaluate(kernel)
+    broad_flux = convn(flux, k)
+    broad_sigma = convn(sigma, k)
+end
+
+function broaden(spec::Spectrum, kernel::Kernel)
+    w_unit, f_unit = unit(spec)
+    s = ustrip(spec)
+    broad_flux, broad_sigma = _broaden(s.flux, s.sigma, kernel)
+    return Spectrum(spec.wave, broad_flux*f_unit, broad_sigma*f_unit, name=spec.name)
+end
