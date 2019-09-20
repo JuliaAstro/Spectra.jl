@@ -37,10 +37,14 @@ end
 end
 
 @testset "Arithmetic" begin
-    spec = mock_spectrum()
+    wave = range(1e4, 5e4, length = 1000)
+    sigma = randn(size(wave))
+    flux = 100 .± sigma
+
+    spec = Spectrum(wave, flux)
 
     # Scalars/ vectors
-    values = [100, randn(size(spec))]
+    values = [10, randn(size(spec))]
     for A in values 
         # addition
         s = spec + A
@@ -63,10 +67,10 @@ end
         @test s.flux ≈ spec.flux ./ A
     end
 
-    spec = mock_spectrum(use_units=true)
+    spec = Spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name=spec.name)
 
     # Scalars/ vectors
-    values = [100u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"]
+    values = [10u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"]
     for A in values 
         # addition
         s = spec + A

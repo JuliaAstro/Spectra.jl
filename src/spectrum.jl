@@ -128,7 +128,8 @@ Unitful.unit(spec::Spectrum) = Tuple(unit.(typeof(spec).parameters))
 Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, name = s.name)
 Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, name = s.name)
 Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, name = s.name)
-Base.:-(s::Spectrum, A) = s + -A
+Base.:-(s::Spectrum) = Spectrum(s.wave, -s.flux, name=s.name)
+Base.:-(s::Spectrum, A) = Spectrum(s.wave, s.flux .- A, name=s.name)
 
 
 ## Plotting

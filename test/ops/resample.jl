@@ -1,48 +1,3 @@
-using Unitful
-using Measurements: value
-
-@testset "Reddening Av=$Av" for Av = [0.5, 1.0, 2.0]
-    # Regression usage
-    spec = mock_spectrum()
-    spec2 = deepcopy(spec)
-    reddened = @inferred redden(spec, Av)
-    @inferred redden!(spec2, Av)
-    @test reddened.flux ≈ spec2.flux
-    @inferred deredden!(spec2, Av)
-    @test spec.flux ≈ spec2.flux
-    dereddened = @inferred deredden(reddened, Av)
-    @test dereddened.flux ≈ spec.flux
-
-    # Custom law
-    law(λ, RV) = sin(RV * λ) / RV
-    expected = @. spec.flux * 10^(-0.4 * Av * law(spec.wave, π))
-    @test expected ≈ redden(spec, Av, law = law, RV=π).flux
-    
-    # Bad law
-    @test_throws MethodError redden(spec, Av, law = sin)
-
-    # Unitful
-    spec = mock_spectrum(use_units=true)
-    spec2 = deepcopy(spec)
-    reddened = @inferred redden(spec, Av)
-    @inferred redden!(spec2, Av)
-    @test reddened.flux ≈ spec2.flux
-    @inferred deredden!(spec2, Av)
-    @test spec.flux ≈ spec2.flux
-    dereddened = @inferred deredden(reddened, Av)
-    @test dereddened.flux ≈ spec.flux
-end
-
-@testset "Reddening Av=0" begin
-    # Test no change when Av = 0
-    Av = 0.0
-    spec = mock_spectrum()
-    reddened = redden(spec, Av)
-    @test reddened.flux ≈ spec.flux
-    dereddened = deredden(reddened, Av)
-    @test dereddened.flux ≈ spec.flux
-end
-
 # @testset "Resampling" begin
 #     spec = mock_spectrum()
 #     new_wave = range(minimum(spec.wave), maximum(spec.wave), length=Integer(length(spec.wave) ÷ 2.4))
@@ -101,8 +56,3 @@ end
 #     @test ustrip.(spec1.wave) ≈ ustrip.(unit(eltype(spec1.wave)), spec2.wave)
 
 # end
-
-@testset "Broadening" begin
-    spec = mock_spectrum()
-    
-end
