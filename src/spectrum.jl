@@ -1,6 +1,6 @@
 export Spectrum, unit, ustrip
 
-import Base: size, length
+import Base
 import Unitful
 
 mutable struct Spectrum{W <: Number,F <: Number}
@@ -53,16 +53,6 @@ julia> spec = Spectrum(wave, flux, name="Unitful")
 Spectrum: Unitful
 ```
 """
-function Spectrum(wave, 
-    flux;
-    name::String = "")
-    wave = Vector(wave)
-    flux, sigma = promote(flux, sigma)
-    flux = Vector(flux)
-    sigma = Vector(sigma)
-    Spectrum(wave, flux, sigma, name)
-end
-
 function Spectrum(wave::AbstractVector, 
         flux::AbstractVector;
         name::String = "")
@@ -140,3 +130,25 @@ Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, name = s.name)
 Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, name = s.name)
 Base.:-(s::Spectrum, A) = s + -A
 
+
+## Plotting
+using RecipesBase, Unitful, Measurements
+
+@recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W,T}) where {W<:Real, T<:Real}
+    seriestype --> :path
+    yaxis --> :log
+    label --> spec.name
+    x := spec.wave
+    y := Measurements.value.(spec.flux)
+end
+
+@recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W, T}) where {W <: Quantity, T<: Quantity}
+    seriestype --> :path
+    yaxis --> :log
+    xunit, yunit = unit(spec)
+    xlabel --> string(xunit)
+    ylabel --> string(yunit)
+    label --> spec.name
+    x := spec.wave
+    y := Measurements.value.(spec.flux)
+end

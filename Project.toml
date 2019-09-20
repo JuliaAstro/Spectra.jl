@@ -8,15 +8,15 @@ Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
 FastConv = "d7899f00-a588-5e12-9855-37624a64ff9a"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
-DustExtinction = "≥0.5.0"
+DustExtinction = "≥0.6.0"
 Interpolations = "≥0.9.0"
-Unitful = "≥0.17.0"
-UnitfulAstro = "≥0.2.0"
 julia = "1.1.0"
 
 [extras]
