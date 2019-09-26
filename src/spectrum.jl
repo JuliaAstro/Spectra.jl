@@ -1,19 +1,51 @@
-export Spectrum, unit, ustrip
+using WCS, Unitful
+
+export Spectrum, unit, ustrip, SpectralAxis
 
 import Base
 import Unitful
+using PhysicalConstants.CODATA2018: c_0
 
-mutable struct Spectrum{W <: Number,F <: Number}
-    wave::AbstractVector{W}
-    flux::AbstractVector{F}
-    name::String
-    function Spectrum(wave::AbstractVector{W},
-            flux::AbstractVector{F},
-            name::String) where {W <: Number,F <: Number}
-        @assert size(wave) == size(flux) "No ragged orders allowed"
-        new{W,F}(wave, flux, name)
+mutable struct SpectralAxis
+    λ::Vector{<:Quantity}
+    ν::Vector{<:Quantity}
+    function SpectralAxis(λ::Vector{<:Quantity}, ν::Vector{<:Quantity})
+        @assert size(λ) == size(ν) "λ and ν must have same size"
+        return new(λ, ν)
     end
 end
+
+SpectralAxis(λ, ν) = SpectralAxis(collect(λ), collect(ν))
+
+function SpectralAxis(;λ=nothing, ν=nothing)
+    if !isnothing(λ) && !isnothing(ν)
+        return SpectralAxis(λ, ν)
+    elseif isnothing(ν)
+        ν = c_0 ./ λ .|> u"Hz"
+    elseif isnothing(λ)
+        λ = c_0 ./ ν .|> u"m"
+    else
+        error("Must supply either λ or ν")
+    end
+    return SpectralAxis(λ, ν)
+end
+
+function SpectralAxis(wcs::WCSTransform)
+    # TODO
+end
+
+
+#########
+#Spectrum
+#########
+abstract type AbstractSpectrum end
+
+mutable struct Spectrum <: AbstractSpectrum
+    flux::AbstractVector{<:Quantity}
+    spectral::SpectralAxis
+    meta::Dict
+end
+
 
 """
     Spectrum(wave, flux; name="")
@@ -130,26 +162,3 @@ Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, name = s.name)
 Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, name = s.name)
 Base.:-(s::Spectrum) = Spectrum(s.wave, -s.flux, name=s.name)
 Base.:-(s::Spectrum, A) = Spectrum(s.wave, s.flux .- A, name=s.name)
-
-
-## Plotting
-using RecipesBase, Unitful, Measurements
-
-@recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W,T}) where {W<:Real, T<:Real}
-    seriestype --> :path
-    yaxis --> :log
-    label --> spec.name
-    x := spec.wave
-    y := Measurements.value.(spec.flux)
-end
-
-@recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W, T}) where {W <: Quantity, T<: Quantity}
-    seriestype --> :path
-    yaxis --> :log
-    xunit, yunit = unit(spec)
-    xlabel --> string(xunit)
-    ylabel --> string(yunit)
-    label --> spec.name
-    x := spec.wave
-    y := Measurements.value.(spec.flux)
-end

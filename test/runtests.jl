@@ -6,6 +6,7 @@ using Unitful, UnitfulAstro, Measurements
 
 Random.seed!(8675309)
 
-include("spectrum.jl")
-include("ops/ops.jl")
+include("spectralaxis.jl")
+# include("spectrum.jl")
+# include("ops/ops.jl")
 
