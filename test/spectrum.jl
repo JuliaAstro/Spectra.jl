@@ -3,17 +3,16 @@
     sigma = randn(size(wave))
     flux = 100 .± sigma
 
-    spec = Spectrum(wave, flux)
+    spec = spectrum(wave, flux)
 
-    @test spec.wave ≈ collect(wave)
+    @test spec.wave == wave
     @test size(spec) === (1000,)
     @test length(spec) == 1000
-    @test spec.flux ≈ flux
+    @test spec.flux == flux
     @test Measurements.uncertainty.(spec.flux) ≈ sigma
 
     flux_trimmed = flux[200:800]
-    @test_throws AssertionError Spectrum(wave, flux_trimmed)
-
+    @test_throws AssertionError spectrum(wave, flux_trimmed)
 end
 
 @testset "Unitful Spectrum" begin
@@ -21,7 +20,7 @@ end
     sigma = randn(size(wave))
     flux = (100 .± sigma)u"W/m^2/angstrom"
 
-    spec = Spectrum(wave, flux)
+    spec = spectrum(wave, flux, name = "test")
 
     @test spec.wave ≈ wave
 
@@ -33,7 +32,7 @@ end
     strip_spec = ustrip(spec)
     @test strip_spec.wave == ustrip.(spec.wave)
     @test strip_spec.flux == ustrip.(spec.flux)
-    @test strip_spec.name == spec.name
+    @test strip_spec.meta == spec.meta
 end
 
 @testset "Arithmetic" begin
@@ -41,7 +40,7 @@ end
     sigma = randn(size(wave))
     flux = 100 .± sigma
 
-    spec = Spectrum(wave, flux)
+    spec = spectrum(wave, flux)
 
     # Scalars/ vectors
     values = [10, randn(size(spec))]
@@ -67,11 +66,10 @@ end
         @test s.flux ≈ spec.flux ./ A
     end
 
-    spec = Spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name=spec.name)
+    spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm")
 
     # Scalars/ vectors
-    values = [10u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"]
-    for A in values 
+    for A in [10u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"] 
         # addition
         s = spec + A
         @test s.wave == spec.wave
@@ -81,15 +79,17 @@ end
         s = spec - A
         @test s.wave == spec.wave
         @test s.flux ≈ spec.flux .- A
+    end
 
+    for A in [10, randn(size(spec))] 
         # multiplication
         s = spec * A
         @test s.wave == spec.wave
         @test s.flux ≈ spec.flux .* A
 
         # division
-        s = spec / A
+        s = spec / 10
         @test s.wave == spec.wave
-        @test s.flux ≈ spec.flux ./ A
+        @test s.flux ≈ spec.flux ./ 10
     end
 end

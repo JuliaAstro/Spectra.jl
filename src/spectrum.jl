@@ -1,56 +1,15 @@
 using WCS, Unitful
-
-export Spectrum, unit, ustrip, SpectralAxis
-
-import Base
-import Unitful
 using PhysicalConstants.CODATA2018: c_0
 
-mutable struct SpectralAxis
-    λ::Vector{<:Quantity}
-    ν::Vector{<:Quantity}
-    function SpectralAxis(λ::Vector{<:Quantity}, ν::Vector{<:Quantity})
-        @assert size(λ) == size(ν) "λ and ν must have same size"
-        return new(λ, ν)
-    end
-end
+export spectrum
 
-SpectralAxis(λ, ν) = SpectralAxis(collect(λ), collect(ν))
-
-function SpectralAxis(;λ=nothing, ν=nothing)
-    if !isnothing(λ) && !isnothing(ν)
-        return SpectralAxis(λ, ν)
-    elseif isnothing(ν)
-        ν = c_0 ./ λ .|> u"Hz"
-    elseif isnothing(λ)
-        λ = c_0 ./ ν .|> u"m"
-    else
-        error("Must supply either λ or ν")
-    end
-    return SpectralAxis(λ, ν)
-end
-
-function SpectralAxis(wcs::WCSTransform)
-    # TODO
-end
-
-
-#########
-#Spectrum
-#########
-abstract type AbstractSpectrum end
-
-mutable struct Spectrum <: AbstractSpectrum
-    flux::AbstractVector{<:Quantity}
-    spectral::SpectralAxis
-    meta::Dict
-end
-
+#--------------------------------------------------------------------------------------
 
 """
-    Spectrum(wave, flux; name="")
+    spectrum(wave::Vector{<:Real}, flux::Vector{<:Real}; kwds...)
+    spectrum(wave::Vector{<:Quantity}, flux::Vector{<:Quantity}; kwds...)
 
-A signle dimensional astronomical spectrum. If no sigma are provided, they are assumed to be unity. The name is an optional identifier for the Spectrum. Note that the dimensions of each array must be equal or an error will be thrown.
+Construct a  single dimensional astronomical spectrum. Note that the dimensions of each array must be equal or an error will be thrown.
 
 # Examples
 ```jldoctest
@@ -60,46 +19,65 @@ julia> wave = range(1e4, 4e4, length=1000);
 
 julia> flux = randn(size(wave));
 
-julia> spec = Spectrum(wave, flux)
-Spectrum:
+julia> spec = spectrum(wave, flux)
+Spectrum (1000,)
 
-julia> spec = Spectrum(wave, flux, name="Just Noise")
-Spectrum: Just Noise
+julia> spec = spectrum(wave, flux, name="Just Noise")
+Spectrum (1000,)
+  name: Just Noise
 
 ```
 
 There is easy integration with `Unitful` and its sub-projects
 ```jldoctest
-julia> using Spectra, Unitful, UnitfulAstro
+julia> using Spectra, Unitful, UnitfulAstro, Measurements
 
-julia> wave = range(1u"μm", 4u"μm", length=1000) .|> u"angstrom";
+julia> wave = range(1, 4, length=1000)u"μm";
 
 julia> sigma = randn(size(wave));
 
-julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom"; # There will be implicit unit promotion
+julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
-julia> unit(flux[1])
-kg m^-1 s^-3
+julia> spec = spectrum(wave, flux)
+UnitfulSpectrum (1000,)
+  λ (μm) f (erg Å^-1 cm^-2 s^-1)
 
-julia> spec = Spectrum(wave, flux, name="Unitful")
-Spectrum: Unitful
 ```
 """
-function Spectrum(wave::AbstractVector, 
-        flux::AbstractVector;
-        name::String = "")
-   Spectrum(wave, flux, name)
+spectrum(wave, flux; kwds...) = spectrum(collect(wave), collect(flux); kwds...)
+
+function spectrum(wave::Vector{<:Real}, flux::Vector{<:Real}; kwds...) 
+    @assert size(wave) == size(flux) "wave and flux must have equal size"
+    Spectrum(wave, flux, kwds)
 end
 
+function spectrum(wave::Vector{<:Quantity}, flux::Vector{<:Quantity}; kwds...)
+    @assert size(wave) == size(flux) "wave and flux must have equal size"
+    @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
+    UnitfulSpectrum(wave, flux, kwds)
+end
+
+#--------------------------------------------------------------------------------------
+
+abstract type AbstractSpectrum end
+
+"""
+    Spectrum <: AbstractSpectrum
+
+A 1-dimensional spectrum stored as vectors of real numbers. The wavelengths are assumed to be in angstrom.
+"""
+mutable struct Spectrum <: AbstractSpectrum
+    wave::Vector{<:Real}
+    flux::Vector{<:Real}
+    meta::Dict
+end
+
+
 function Base.show(io::IO, spec::Spectrum)
-    println(io, "Spectrum: $(spec.name)")
-    if eltype(spec.wave) <: Quantity
-        wtype, ftype = unit(spec)
-    else
-        wtype = eltype(spec.wave)
-        ftype = eltype(spec.flux)
+    print(io, "Spectrum $(size(spec))")
+    for (key, val) in spec.meta
+        print(io, "\n  $key: $val")
     end
-    println(io, "  λ ($wtype) f ($ftype)")
 end
 
 """
@@ -113,8 +91,55 @@ Base.size(spec::Spectrum) = size(spec.flux)
 Base.length(spec::Spectrum) = length(spec.flux)
 
 
+# Arithmetic
+Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, s.meta)
+Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, s.meta)
+Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, s.meta)
+Base.:-(s::Spectrum) = Spectrum(s.wave, -s.flux, s.meta)
+Base.:-(s::Spectrum, A) = Spectrum(s.wave, s.flux .- A, s.meta)
+
+#--------------------------------------------------------------------------------------
+
 """
-    Unitful.ustrip(::Spectrum)
+    UnitfulSpectrum <: AbstractSpectrum
+
+A 1-dimensional spectrum stored as vectors of quantities.
+"""
+mutable struct UnitfulSpectrum <: AbstractSpectrum
+    wave::Vector{<:Quantity}
+    flux::Vector{<:Quantity}
+    meta::Dict
+end
+
+function Base.show(io::IO, spec::UnitfulSpectrum)
+    println(io, "UnitfulSpectrum $(size(spec))")
+    wtype, ftype = unit(spec)
+    print(io, "  λ ($wtype) f ($ftype)")
+    for (key, val) in spec.meta
+        print(io, "\n  $key: $val")
+    end
+end
+
+"""
+    size(::UnitfulSpectrum)
+"""
+Base.size(spec::UnitfulSpectrum) = size(spec.flux)
+
+"""
+    length(::UnitfulSpectrum)
+"""
+Base.length(spec::UnitfulSpectrum) = length(spec.flux)
+
+
+# Arithmetic
+Base.:+(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .+ A, s.meta)
+Base.:*(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .* A, s.meta)
+Base.:/(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux ./ A, s.meta)
+Base.:-(s::UnitfulSpectrum) = UnitfulSpectrum(s.wave, -s.flux, s.meta)
+Base.:-(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .- A, s.meta)
+
+"""
+    Unitful.ustrip(::UnitfulSpectrum)
 
 Remove the units from a spectrum. Useful for processing spectra in tools that don't play nicely with `Unitful.jl`
 
@@ -122,20 +147,23 @@ Remove the units from a spectrum. Useful for processing spectra in tools that do
 ```jldoctest
 julia> using Spectra, Unitful, UnitfulAstro
 
-julia> wave = range(1e4, 3e4, length=1000) |> collect;
+julia> wave = range(1e4, 3e4, length=1000);
 
 julia> flux = wave .* 10 .+ randn(1000);
 
-julia> spec = Spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom");
+julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
+UnitfulSpectrum (1000,)
+  λ (Å) f (W Å^-1 m^-2)
 
-julia> strip_spec = ustrip(spec);
+julia> ustrip(spec)
+Spectrum (1000,)
 
 ```
 """
-Unitful.ustrip(spec::Spectrum) = Spectrum(ustrip.(spec.wave), ustrip.(spec.flux), name = spec.name)
+Unitful.ustrip(spec::UnitfulSpectrum) = Spectrum(ustrip.(spec.wave), ustrip.(spec.flux), spec.meta)
 
 """
-    Unitful.unit(::Spectrum)
+    Unitful.unit(::UnitfulSpectrum)
 
 Get the units of a spectrum. Returns a tuple of the wavelength units and flux/sigma units
 
@@ -143,22 +171,15 @@ Get the units of a spectrum. Returns a tuple of the wavelength units and flux/si
 ```jldoctest
 julia> using Spectra, Unitful, UnitfulAstro
 
-julia> wave = range(1e4, 3e4, length=1000) |> collect;
+julia> wave = range(1e4, 3e4, length=1000);
 
 julia> flux = wave .* 10 .+ randn(1000);
 
-julia> spec = Spectrum(wave * u"angstrom", flux * u"W/m^2/angstrom");
+julia> spec = spectrum(wave * u"angstrom", flux * u"W/m^2/angstrom");
 
 julia> w_unit, f_unit = unit(spec)
 (Å, W Å^-1 m^-2)
 
 ```
 """
-Unitful.unit(spec::Spectrum) = Tuple(unit.(typeof(spec).parameters))
-
-# Arithmetic
-Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, name = s.name)
-Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, name = s.name)
-Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, name = s.name)
-Base.:-(s::Spectrum) = Spectrum(s.wave, -s.flux, name=s.name)
-Base.:-(s::Spectrum, A) = Spectrum(s.wave, s.flux .- A, name=s.name)
+Unitful.unit(spec::UnitfulSpectrum) = unit(eltype(spec.wave)), unit(eltype(spec.flux))
