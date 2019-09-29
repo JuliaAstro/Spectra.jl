@@ -74,9 +74,9 @@ end
 
 
 function Base.show(io::IO, spec::Spectrum)
-    println(io, "Spectrum $(size(spec))")
+    print(io, "Spectrum $(size(spec))")
     for (key, val) in spec.meta
-        println(io, "  $key: $val")
+        print(io, "\n  $key: $val")
     end
 end
 
@@ -111,12 +111,12 @@ mutable struct UnitfulSpectrum <: AbstractSpectrum
     meta::Dict
 end
 
-function Base.show(io::IO, spec::UnitfulSpectrum)
+function Base.show(io::IO, spec::UnitfulSpectrum)    
     println(io, "UnitfulSpectrum $(size(spec))")
     wtype, ftype = unit(spec)
-    println(io, "  λ ($wtype) f ($ftype)")
+    print(io, "  λ ($wtype) f ($ftype)")
     for (key, val) in spec.meta
-        println(io, "  $key: $val")
+        print(io, "\n  $key: $val")
     end
 end
 

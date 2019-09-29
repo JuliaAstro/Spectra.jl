@@ -15,8 +15,7 @@
     @test_throws AssertionError spectrum(wave, flux_trimmed)
     expected = """
     Spectrum (1000,)
-      name: test spectrum
-    """
+      name: test spectrum"""
     @test sprint(show, spec) == expected
 end
 
@@ -41,8 +40,7 @@ end
     expected = """
     UnitfulSpectrum (1000,)
       λ (Å) f (W Å^-1 m^-2)
-      name: test
-    """
+      name: test"""
     @test sprint(show, spec) == expected
 end
 

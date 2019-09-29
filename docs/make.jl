@@ -13,7 +13,7 @@ makedocs(
         "Home" => "index.md",
         "Spectrum" => [
             "spectrum.md",
-            "ops.md",
+            "transforms.md",
         ],
     ],
     strict = true,
