@@ -7,9 +7,8 @@ function mock_spectrum(n::Int = Int(1e3); use_units::Bool = false)
         wave *= u"angstrom"
         flux *= u"erg/s/cm^2/angstrom"
     end
-    Spectrum(wave, flux, name="Test Spectrum")
+    spectrum(wave, flux, name="Test Spectrum")
 end
 
 
 include("redden.jl")
-

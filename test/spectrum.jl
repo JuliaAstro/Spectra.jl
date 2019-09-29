@@ -3,7 +3,7 @@
     sigma = randn(size(wave))
     flux = 100 .± sigma
 
-    spec = spectrum(wave, flux)
+    spec = spectrum(wave, flux, name="test spectrum")
 
     @test spec.wave == wave
     @test size(spec) === (1000,)
@@ -13,6 +13,11 @@
 
     flux_trimmed = flux[200:800]
     @test_throws AssertionError spectrum(wave, flux_trimmed)
+    expected = """
+    Spectrum (1000,)
+      name: test spectrum
+    """
+    @test sprint(show, spec) == expected
 end
 
 @testset "Unitful Spectrum" begin
@@ -33,6 +38,12 @@ end
     @test strip_spec.wave == ustrip.(spec.wave)
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
+    expected = """
+    UnitfulSpectrum (1000,)
+      λ (Å) f (W Å^-1 m^-2)
+      name: test
+    """
+    @test sprint(show, spec) == expected
 end
 
 @testset "Arithmetic" begin
@@ -40,7 +51,7 @@ end
     sigma = randn(size(wave))
     flux = 100 .± sigma
 
-    spec = spectrum(wave, flux)
+    spec = spectrum(wave, flux, name="test spectrum")
 
     # Scalars/ vectors
     values = [10, randn(size(spec))]
@@ -66,7 +77,7 @@ end
         @test s.flux ≈ spec.flux ./ A
     end
 
-    spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm")
+    spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name="test unitfulspectrum")
 
     # Scalars/ vectors
     for A in [10u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"] 

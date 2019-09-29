@@ -74,29 +74,29 @@ end
 
 
 function Base.show(io::IO, spec::Spectrum)
-    print(io, "Spectrum $(size(spec))")
+    println(io, "Spectrum $(size(spec))")
     for (key, val) in spec.meta
-        print(io, "\n  $key: $val")
+        println(io, "  $key: $val")
     end
 end
 
 """
     size(::Spectrum)
 """
-Base.size(spec::Spectrum) = size(spec.flux)
+Base.size(spec::AbstractSpectrum) = size(spec.flux)
 
 """
     length(::Spectrum)
 """
-Base.length(spec::Spectrum) = length(spec.flux)
+Base.length(spec::AbstractSpectrum) = length(spec.flux)
 
 
 # Arithmetic
-Base.:+(s::Spectrum, A) = Spectrum(s.wave, s.flux .+ A, s.meta)
-Base.:*(s::Spectrum, A) = Spectrum(s.wave, s.flux .* A, s.meta)
-Base.:/(s::Spectrum, A) = Spectrum(s.wave, s.flux ./ A, s.meta)
-Base.:-(s::Spectrum) = Spectrum(s.wave, -s.flux, s.meta)
-Base.:-(s::Spectrum, A) = Spectrum(s.wave, s.flux .- A, s.meta)
+Base.:+(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .+ A; s.meta...)
+Base.:*(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .* A; s.meta...)
+Base.:/(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux ./ A; s.meta...)
+Base.:-(s::AbstractSpectrum) = spectrum(s.wave, -s.flux; s.meta...)
+Base.:-(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .- A; s.meta...)
 
 #--------------------------------------------------------------------------------------
 
@@ -114,29 +114,11 @@ end
 function Base.show(io::IO, spec::UnitfulSpectrum)
     println(io, "UnitfulSpectrum $(size(spec))")
     wtype, ftype = unit(spec)
-    print(io, "  λ ($wtype) f ($ftype)")
+    println(io, "  λ ($wtype) f ($ftype)")
     for (key, val) in spec.meta
-        print(io, "\n  $key: $val")
+        println(io, "  $key: $val")
     end
 end
-
-"""
-    size(::UnitfulSpectrum)
-"""
-Base.size(spec::UnitfulSpectrum) = size(spec.flux)
-
-"""
-    length(::UnitfulSpectrum)
-"""
-Base.length(spec::UnitfulSpectrum) = length(spec.flux)
-
-
-# Arithmetic
-Base.:+(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .+ A, s.meta)
-Base.:*(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .* A, s.meta)
-Base.:/(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux ./ A, s.meta)
-Base.:-(s::UnitfulSpectrum) = UnitfulSpectrum(s.wave, -s.flux, s.meta)
-Base.:-(s::UnitfulSpectrum, A) = UnitfulSpectrum(s.wave, s.flux .- A, s.meta)
 
 """
     Unitful.ustrip(::UnitfulSpectrum)
