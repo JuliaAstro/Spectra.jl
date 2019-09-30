@@ -56,7 +56,7 @@ wave = range(1e3, 4e4, length=100)
 flux = @. 1.2e9 / wave^5 * 1 / (exp(35969 / wave) - 1)
 spec = spectrum(wave, flux)
 
-plot(spec, yaxis=:identity)
+plot(spec, yscale=:identity)
 savefig("spec-plot.svg"); nothing # hide
 ```
 

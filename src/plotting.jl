@@ -9,13 +9,12 @@ using RecipesBase, Unitful, Measurements
     spec.wave, Measurements.value.(spec.flux)
 end
 
-# @recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W, T}) where {W <: Quantity, T<: Quantity}
-#     seriestype --> :path
-#     yaxis --> :log
-#     xunit, yunit = unit(spec)
-#     xlabel --> string(xunit)
-#     ylabel --> string(yunit)
-#     label --> spec.name
-#     x := spec.wave
-#     y := Measurements.value.(spec.flux)
-# end
+@recipe function f(spec::UnitfulSpectrum)
+    seriestype --> :path
+    yscale --> :log
+    wunit, funit = unit(spec)
+    xlabel --> "wave ($wunit)"
+    ylabel --> "flux density ($funit)"
+    label --> ""
+    spec.wave, Measurements.value.(spec.flux)
+end

@@ -8,4 +8,5 @@ Random.seed!(8675309)
 
 include("spectrum.jl")
 include("transforms/transforms.jl")
+include("plotting.jl")
 
