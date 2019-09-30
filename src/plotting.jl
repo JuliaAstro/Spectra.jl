@@ -1,13 +1,13 @@
-## Plotting
-# using RecipesBase, Unitful, Measurements
+using RecipesBase, Unitful, Measurements
 
-# @recipe function f(::Type{Spectrum, spec::Spectrum{W,T}) where {W<:Real, T<:Real}
-#     seriestype --> :path
-#     yaxis --> :log
-#     label --> spec.name
-#     x := spec.wave
-#     y := Measurements.value.(spec.flux)
-# end
+@recipe function f(spec::Spectrum)
+    seriestype --> :path
+    yscale --> :log
+    xlabel --> "wave (angstrom)"
+    ylabel --> "flux density"
+    label --> ""
+    spec.wave, Measurements.value.(spec.flux)
+end
 
 # @recipe function f(::Type{Spectrum{W, T}}, spec::Spectrum{W, T}) where {W <: Quantity, T<: Quantity}
 #     seriestype --> :path
