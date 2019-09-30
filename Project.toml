@@ -4,9 +4,9 @@ authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
 version = "0.1.0"
 
 [deps]
+DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
-FastConv = "d7899f00-a588-5e12-9855-37624a64ff9a"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
@@ -17,9 +17,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
 
 [compat]
-DustExtinction = "≥0.6.0"
-Interpolations = "≥0.9.0"
-julia = "1.1.0"
+julia = "1.0.0"
 
 [extras]
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

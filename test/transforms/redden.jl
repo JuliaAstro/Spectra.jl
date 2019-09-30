@@ -11,9 +11,9 @@
     @test dereddened.flux ≈ spec.flux
 
     # Custom law
-    law(λ, RV) = sin(RV * λ) / RV
+    law(λ, Rv) = sin(Rv * λ) / Rv
     expected = @. spec.flux * 10^(-0.4 * Av * law(spec.wave, π))
-    @test expected ≈ redden(spec, Av, law = law, RV=π).flux
+    @test expected ≈ redden(spec, Av, law = law, Rv=π).flux
     
     # Bad law
     @test_throws MethodError redden(spec, Av, law = sin)

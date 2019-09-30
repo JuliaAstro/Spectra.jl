@@ -17,7 +17,7 @@ julia> using Spectra
 
 julia> wave = range(1e4, 4e4, length=1000);
 
-julia> flux = randn(size(wave));
+julia> flux = 100 .* ones(size(wave));
 
 julia> spec = spectrum(wave, flux)
 Spectrum (1000,)
@@ -28,7 +28,8 @@ Spectrum (1000,)
 
 ```
 
-There is easy integration with `Unitful` and its sub-projects
+There is easy integration with [Unitful.jl](https://github.com/painterqubits/unitful.jl) and its sub-projects and [Measurements.jl](https://github.com/juliaphysics/measurements.jl)
+
 ```jldoctest
 julia> using Spectra, Unitful, UnitfulAstro, Measurements
 

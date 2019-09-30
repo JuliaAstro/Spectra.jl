@@ -4,12 +4,11 @@ include("redden.jl")
 
 ## Broadening ops
 include("kernels.jl")
-using Distributions
-using FastConv
+using Distributions, DSP
 
 function _broaden(flux, kernel::Kernel)
     k = evaluate(kernel)
-    broad_flux = convn(flux, k)
+    broad_flux = conv(flux, k)
 end
 
 function broaden(spec::Spectrum, kernel::Kernel)
