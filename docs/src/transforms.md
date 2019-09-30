@@ -2,6 +2,13 @@
 
 The following operations and transformations are provided to work on `Spectra`
 
+```@meta
+DocTestSetup = quote
+  using Spectra, Random
+  Random.seed!(11894)
+end
+```
+
 ## Extinction
 
 By levaraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
@@ -14,19 +21,19 @@ julia> wave = (1:0.5:3)u"μm"
 
 julia> sigma = randn(size(wave))
 5-element Array{Float64,1}:
- -1.1801017658060196 
- -1.9975816223291203 
- -0.29087262313445955
-  0.05366178453504935
- -0.9024156296738536
+ -0.585703503275916  
+  1.1359199050439328 
+  0.1290826073042479 
+ -0.7877421634518855 
+ -0.19106542134120702
 
 julia> flux = (100 .± sigma)u"W/m^2/μm"
 5-element Array{Quantity{Measurement{Float64},𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(μm^-1, m^-2, W),𝐌*𝐋^-1*𝐓^-3,nothing}},1}:
-  100.0 ± -1.2 W μm^-1 m^-2
-  100.0 ± -2.0 W μm^-1 m^-2
- 100.0 ± -0.29 W μm^-1 m^-2
- 100.0 ± 0.054 W μm^-1 m^-2
-  100.0 ± -0.9 W μm^-1 m^-2
+ 100.0 ± -0.59 W μm^-1 m^-2
+   100.0 ± 1.1 W μm^-1 m^-2
+  100.0 ± 0.13 W μm^-1 m^-2
+ 100.0 ± -0.79 W μm^-1 m^-2
+ 100.0 ± -0.19 W μm^-1 m^-2
 
 julia> spec = spectrum(wave, flux)
 UnitfulSpectrum (5,)
@@ -38,11 +45,11 @@ UnitfulSpectrum (5,)
 
 julia> red.flux
 5-element Array{Quantity{Measurement{Float64},𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(μm^-1, m^-2, W),𝐌*𝐋^-1*𝐓^-3,nothing}},1}:
-     89.4 ± 1.1 W μm^-1 m^-2
-     94.4 ± 1.9 W μm^-1 m^-2
-   96.41 ± 0.28 W μm^-1 m^-2
- 97.479 ± 0.052 W μm^-1 m^-2
-   98.11 ± 0.89 W μm^-1 m^-2
+ 89.44 ± 0.52 W μm^-1 m^-2
+   94.4 ± 1.1 W μm^-1 m^-2
+ 96.41 ± 0.12 W μm^-1 m^-2
+ 97.48 ± 0.77 W μm^-1 m^-2
+ 98.11 ± 0.19 W μm^-1 m^-2
 
 julia> deredden!(red, 0.3)
 UnitfulSpectrum (5,)
@@ -53,10 +60,11 @@ true
 
 ```
 
+### API/Reference
+
 ```@docs
 redden
 redden!
 deredden
 deredden!
 ```
-

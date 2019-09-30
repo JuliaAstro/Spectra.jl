@@ -3,16 +3,15 @@
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
 ```@contents
-Pages = ["index.md", "spectrum.md", "ops.md"]
+Pages = ["index.md", "spectrum.md", "transforms.md"]
 ```
 
 ## Installation
 
 From the REPL, press `]` to enter Pkg mode
 ```
-(v 1.1) pkg> add https://github.com/JuliaAstro/Spectra.jl
-(v 1.1) pkg> test Spectra
-[...]
+(v 1.2) pkg> add https://github.com/JuliaAstro/Spectra.jl
+
 julia> using Spectra
 ```
 
@@ -23,3 +22,7 @@ If you found this software or any derivative work useful in your academic work, 
 ```
 TODO
 ```
+
+## Contributing
+
+Please see [contributing](@ref contrib) for information on contributing and extending Spectra.jl.

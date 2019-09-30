@@ -1,5 +1,5 @@
 using Documenter
-using Spectra
+using Spectra, Unitful
 
 makedocs(
     sitename = "Spectra.jl",
@@ -11,12 +11,11 @@ makedocs(
     modules = [Spectra],
     pages = [
         "Home" => "index.md",
-        "Spectrum" => [
-            "spectrum.md",
-            "transforms.md",
-        ],
+        "spectrum.md",
+        "transforms.md",
+        "contrib.md",
     ],
-    strict = true,
+    # strict = true,
 )
 
 deploydocs(
