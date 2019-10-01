@@ -36,3 +36,4 @@ Manifest.toml
 .history
 
 # End of https://www.gitignore.io/api/julia,visualstudiocode
+*.fits
