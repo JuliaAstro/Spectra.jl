@@ -115,6 +115,12 @@ Base.:/(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux ./ A; s
 Base.:-(s::T) where {T <: AbstractSpectrum} = spectrum(s.wave, -s.flux; s.meta...)
 Base.:-(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .- A; s.meta...)
 
+# Multi-Spectrum
+Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .+ o.flux; s.meta...)
+Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .* o.flux; s.meta...)
+Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux ./ o.flux; s.meta...)
+Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .- o.flux; s.meta...)
+
 #--------------------------------------------------------------------------------------
 
 """
