@@ -1,13 +1,23 @@
 @testset "Spectrum" begin
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
+    sigma[7] = 1
+    sigma[134] = 0.1
     flux = 100 .± sigma
+    flux[7] = 1000 ± 1
+    flux[134] = 1 ± 0.1
 
-    spec = spectrum(wave, flux, name="test spectrum")
+    spec = spectrum(wave, flux, name = "test spectrum")
 
     @test spec.wave == wave
     @test size(spec) === (1000,)
     @test length(spec) == 1000
+    @test maximum(spec) == 1000 ± 1
+    @test minimum(spec) == 1 ± 0.1
+    @test argmax(spec) == 7
+    @test argmin(spec) == 134
+    @test findmax(spec) == (1000 ± 1, 7)
+    @test findmin(spec) == (1 ± 0.1, 134)
     @test spec.flux == flux
     @test Measurements.uncertainty.(spec.flux) ≈ sigma
 
@@ -17,16 +27,32 @@
     Spectrum (1000,)
       name: test spectrum"""
     @test sprint(show, spec) == expected
+    @test spec.name == "test spectrum"
 end
 
 @testset "Unitful Spectrum" begin
-    wave = range(1e4, 5e4, length = 1000)u"angstrom"
+    wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
-    flux = (100 .± sigma)u"W/m^2/angstrom"
+    sigma[7] = 1
+    sigma[134] = 0.1
+    flux = 100 .± sigma
+    flux[7] = 1000 ± 1
+    flux[134] = 1 ± 0.1
 
-    spec = spectrum(wave, flux, name = "test")
+    funit = u"W/m^2/angstrom"
+    spec = spectrum(wave * u"angstrom", flux * funit, name = "test")
 
-    @test spec.wave ≈ wave
+    @test spec.wave ≈ wave * u"angstrom"
+
+    @test size(spec) === (1000,)
+    @test length(spec) == 1000
+    @test maximum(spec) == (1000 ± 1) * funit
+    @test minimum(spec) == (1 ± 0.1) * funit
+    @test argmax(spec) == 7
+    @test argmin(spec) == 134
+    @test findmax(spec) == ((1000 ± 1) * funit, 7)
+    @test findmin(spec) == ((1 ± 0.1) * funit, 134)
+    @test spec.name == "test"
 
     # Test stripping
     w_unit, f_unit = unit(spec)
@@ -49,7 +75,7 @@ end
     sigma = randn(size(wave))
     flux = 100 .± sigma
 
-    spec = spectrum(wave, flux, name="test spectrum")
+    spec = spectrum(wave, flux, name = "test spectrum")
 
     # Scalars/ vectors
     values = [10, randn(size(spec))]
@@ -75,7 +101,7 @@ end
         @test s.flux ≈ spec.flux ./ A
     end
 
-    spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name="test unitfulspectrum")
+    spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name = "test unitfulspectrum")
 
     # Scalars/ vectors
     for A in [10u"W/m^2/cm", randn(size(spec))u"W/m^2/cm"] 

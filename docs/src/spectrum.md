@@ -19,6 +19,12 @@ Spectra.Spectrum
 Spectra.UnitfulSpectrum
 ```
 
+One of our utilities provides a standard blackbody spectrum
+
+```@docs
+Spectra.blackbody
+```
+
 
 ## Basic operations
 

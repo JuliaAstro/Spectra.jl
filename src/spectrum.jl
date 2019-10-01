@@ -1,5 +1,4 @@
 using WCS, Unitful
-using PhysicalConstants.CODATA2018: c_0
 
 export spectrum
 
@@ -25,6 +24,9 @@ Spectrum (1000,)
 julia> spec = spectrum(wave, flux, name="Just Noise")
 Spectrum (1000,)
   name: Just Noise
+
+julia> spec.name
+Just Noise
 
 ```
 
@@ -62,6 +64,22 @@ end
 
 abstract type AbstractSpectrum end
 
+function Base.getproperty(spec::T, nm::Symbol) where {T<:AbstractSpectrum}
+    if nm in keys(getfield(spec, :meta))
+        return getfield(spec, :meta)[nm]
+    else
+        return getfield(spec, nm)
+    end
+end
+
+function Base.propertynames(spec::T) where {T<:AbstractSpectrum}
+    natural = (:wave, :flux, :meta)
+    meta = keys(spec.meta)
+    println(natural)
+    println(meta)
+    return (natural..., meta...)
+end
+
 """
     Spectrum <: AbstractSpectrum
 
@@ -82,14 +100,40 @@ function Base.show(io::IO, spec::Spectrum)
 end
 
 """
-    size(::Spectrum)
+    size(::AbstractSpectrum)
 """
 Base.size(spec::AbstractSpectrum) = size(spec.flux)
 
 """
-    length(::Spectrum)
+    length(::AbstractSpectrum)
 """
 Base.length(spec::AbstractSpectrum) = length(spec.flux)
+
+"""
+    maximum(::AbstractSpectrum)
+"""
+Base.maximum(spec::AbstractSpectrum) = maximum(spec.flux)
+"""
+    minimum(::AbstractSpectrum)
+"""
+Base.minimum(spec::AbstractSpectrum) = minimum(spec.flux)
+"""
+    argmax(::AbstractSpectrum)
+"""
+Base.argmax(spec::AbstractSpectrum) = argmax(spec.flux)
+"""
+    argmin(::AbstractSpectrum)
+"""
+Base.argmin(spec::AbstractSpectrum) = argmin(spec.flux)
+"""
+    findmax(::AbstractSpectrum)
+"""
+Base.findmax(spec::AbstractSpectrum) = findmax(spec.flux)
+"""
+    findmin(::AbstractSpectrum)
+"""
+Base.findmin(spec::AbstractSpectrum) = findmin(spec.flux)
+
 
 
 # Arithmetic
