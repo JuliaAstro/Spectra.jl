@@ -88,7 +88,7 @@ A 1-dimensional spectrum stored as vectors of real numbers. The wavelengths are 
 mutable struct Spectrum <: AbstractSpectrum
     wave::Vector{<:Real}
     flux::Vector{<:Real}
-    meta::Dict
+    meta::Dict{Symbol, Any}
 end
 
 
@@ -125,7 +125,7 @@ A 1-dimensional spectrum stored as vectors of quantities.
 mutable struct UnitfulSpectrum <: AbstractSpectrum
     wave::Vector{<:Quantity}
     flux::Vector{<:Quantity}
-    meta::Dict
+    meta::Dict{Symbol, Any}
 end
 
 function Base.show(io::IO, spec::UnitfulSpectrum)    

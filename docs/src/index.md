@@ -9,7 +9,7 @@ Pages = ["index.md", "spectrum.md", "transforms.md"]
 ## Installation
 
 From the REPL, press `]` to enter Pkg mode
-```
+```julia
 (v 1.2) pkg> add https://github.com/JuliaAstro/Spectra.jl
 
 julia> using Spectra
@@ -25,4 +25,4 @@ TODO
 
 ## Contributing
 
-Please see [contributing](@ref contrib) for information on contributing and extending Spectra.jl.
+Please see [Contributing](@ref contrib) for information on contributing and extending Spectra.jl.
