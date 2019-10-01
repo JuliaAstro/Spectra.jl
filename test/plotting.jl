@@ -1,4 +1,4 @@
-using RecipesBase
+using RecipesBase, Unitful
 import Measurements: value
 
 @testset "Plotting" begin
@@ -11,19 +11,17 @@ import Measurements: value
     spec = spectrum(wave, flux, name = "Test Spectrum")
 
     rec = RecipesBase.apply_recipe(Dict{Symbol,Any}(), spec)
-    @test getfield(rec[1], 1) == Dict{Symbol,Any}(:yscale => :log, 
-        :label => "", 
+    @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
         :xlabel => "wave (Å)", 
         :ylabel => "flux density (erg Å^-1 cm^-2 s^-1)",
         :seriestype => :path)
-    @test rec[1].args == (spec.wave, value.(spec.flux))
+    @test rec[1].args == (ustrip.(spec.wave), value.(ustrip.(spec.flux)))
 
 
     strip_spec = ustrip(spec)
 
     rec = RecipesBase.apply_recipe(Dict{Symbol,Any}(), strip_spec)
-    @test getfield(rec[1], 1) == Dict{Symbol,Any}(:yscale => :log, 
-        :label => "", 
+    @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
         :xlabel => "wave (angstrom)", 
         :ylabel => "flux density",
         :seriestype => :path)

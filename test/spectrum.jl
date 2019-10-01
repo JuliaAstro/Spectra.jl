@@ -101,6 +101,26 @@ end
         @test s.flux ≈ spec.flux ./ A
     end
 
+    # Other spectra
+    spec2 = deepcopy(spec)
+
+    s = spec + spec2
+    @test s.wave == spec.wave
+    @test s.flux ≈ 2 .* spec.flux
+    
+    s = spec - spec2
+    @test s.wave == spec.wave
+    @test s.flux ≈ zeros(size(spec))
+    
+    s = spec * spec2
+    @test s.wave == spec.wave
+    @test s.flux ≈ spec.flux.^2
+        
+    s = spec / spec2
+    @test s.wave == spec.wave
+    @test s.flux ≈ ones(size(spec))
+
+
     spec = spectrum(spec.wave * u"cm", spec.flux * u"W/m^2/cm", name = "test unitfulspectrum")
 
     # Scalars/ vectors

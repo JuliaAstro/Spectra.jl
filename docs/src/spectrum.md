@@ -67,7 +67,7 @@ using Plots, Spectra
 wave = range(1e3, 5e4, length=100)
 spec = blackbody(wave, 2000)
 
-plot(spec, yscale=:identity)
+plot(spec)
 savefig("spec-plot.svg"); nothing # hide
 ```
 
