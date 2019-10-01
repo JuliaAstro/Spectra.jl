@@ -26,7 +26,7 @@ Spectrum (1000,)
   name: Just Noise
 
 julia> spec.name
-Just Noise
+"Just Noise"
 
 ```
 
@@ -64,7 +64,7 @@ end
 
 abstract type AbstractSpectrum end
 
-function Base.getproperty(spec::T, nm::Symbol) where {T<:AbstractSpectrum}
+function Base.getproperty(spec::T, nm::Symbol) where {T <: AbstractSpectrum}
     if nm in keys(getfield(spec, :meta))
         return getfield(spec, :meta)[nm]
     else
@@ -72,7 +72,7 @@ function Base.getproperty(spec::T, nm::Symbol) where {T<:AbstractSpectrum}
     end
 end
 
-function Base.propertynames(spec::T) where {T<:AbstractSpectrum}
+function Base.propertynames(spec::T) where {T <: AbstractSpectrum}
     natural = (:wave, :flux, :meta)
     meta = keys(spec.meta)
     println(natural)
@@ -99,49 +99,21 @@ function Base.show(io::IO, spec::Spectrum)
     end
 end
 
-"""
-    size(::AbstractSpectrum)
-"""
-Base.size(spec::AbstractSpectrum) = size(spec.flux)
-
-"""
-    length(::AbstractSpectrum)
-"""
-Base.length(spec::AbstractSpectrum) = length(spec.flux)
-
-"""
-    maximum(::AbstractSpectrum)
-"""
-Base.maximum(spec::AbstractSpectrum) = maximum(spec.flux)
-"""
-    minimum(::AbstractSpectrum)
-"""
-Base.minimum(spec::AbstractSpectrum) = minimum(spec.flux)
-"""
-    argmax(::AbstractSpectrum)
-"""
-Base.argmax(spec::AbstractSpectrum) = argmax(spec.flux)
-"""
-    argmin(::AbstractSpectrum)
-"""
-Base.argmin(spec::AbstractSpectrum) = argmin(spec.flux)
-"""
-    findmax(::AbstractSpectrum)
-"""
-Base.findmax(spec::AbstractSpectrum) = findmax(spec.flux)
-"""
-    findmin(::AbstractSpectrum)
-"""
-Base.findmin(spec::AbstractSpectrum) = findmin(spec.flux)
-
-
+Base.size(spec::T) where {T <: AbstractSpectrum} = size(spec.flux)
+Base.length(spec::T) where {T <: AbstractSpectrum} = length(spec.flux)
+Base.maximum(spec::T) where {T <: AbstractSpectrum} = maximum(spec.flux)
+Base.minimum(spec::T) where {T <: AbstractSpectrum} = minimum(spec.flux)
+Base.argmax(spec::T) where {T <: AbstractSpectrum} = argmax(spec.flux)
+Base.argmin(spec::T) where {T <: AbstractSpectrum} = argmin(spec.flux)
+Base.findmax(spec::T) where {T <: AbstractSpectrum} = findmax(spec.flux)
+Base.findmin(spec::T) where {T <: AbstractSpectrum} = findmin(spec.flux)
 
 # Arithmetic
-Base.:+(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .+ A; s.meta...)
-Base.:*(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .* A; s.meta...)
-Base.:/(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux ./ A; s.meta...)
-Base.:-(s::AbstractSpectrum) = spectrum(s.wave, -s.flux; s.meta...)
-Base.:-(s::AbstractSpectrum, A) = spectrum(s.wave, s.flux .- A; s.meta...)
+Base.:+(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .+ A; s.meta...)
+Base.:*(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .* A; s.meta...)
+Base.:/(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux ./ A; s.meta...)
+Base.:-(s::T) where {T <: AbstractSpectrum} = spectrum(s.wave, -s.flux; s.meta...)
+Base.:-(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .- A; s.meta...)
 
 #--------------------------------------------------------------------------------------
 

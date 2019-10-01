@@ -20,7 +20,7 @@ The physical constants are calculated using [PhysicalConstants.jl](https://githu
 
 # Examples
 ```jldoctest
-julia> using Unitful
+julia> using Spectra, Unitful, UnitfulAstro
 
 julia> wave = range(1, 3, length=100)u"μm"
 (1.0:0.020202020202020204:3.0) μm
@@ -31,7 +31,7 @@ UnitfulSpectrum (100,)
   T: 2000 K
   name: Blackbody
 
-julia> blackbody(ustrip.(wave), 6000)
+julia> blackbody(ustrip.(u"angstrom", wave), 6000)
 Spectrum (100,)
   T: 6000
   name: Blackbody
@@ -39,8 +39,7 @@ Spectrum (100,)
 julia> bb.wave[argmax(bb)]
 1.4444444444444444 μm
 
-# See if it matches up with Wien's law
-julia> 2898u"μm*K" / bb.T
+julia> 2898u"μm*K" / bb.T # See if it matches up with Wien's law
 1.449 μm
 ```
 """

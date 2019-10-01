@@ -6,3 +6,4 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 Documenter = "0.23"
+UnitfulAstro = ">=0.4.0"

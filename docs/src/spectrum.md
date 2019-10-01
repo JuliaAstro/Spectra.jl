@@ -1,7 +1,3 @@
-# Spectrum
-
-Here we will go over the different spectral types and how we use them.
-
 ```@meta
 DocTestSetup = quote
   using Spectra, Random
@@ -9,40 +5,50 @@ DocTestSetup = quote
 end
 ```
 
-## Spectra
+# Spectrum
+
+Here we will go over the different spectral types and how we use them.
+
+## Types
 
 Spectra are defined as possible subtypes of `AbstractSpectrum`. You can use these directly for construction, or use the catch-all [`spectrum`](@ref) function, which is preferred.
 
 ```@docs
-spectrum
 Spectra.Spectrum
 Spectra.UnitfulSpectrum
 ```
 
-One of our utilities provides a standard blackbody spectrum
+## Constructors
 
 ```@docs
+Spectra.spectrum
 Spectra.blackbody
 ```
 
 
 ## Basic operations
 
-For more advanced transformations, see [Transformations]
+For more advanced transformations, see [Transformations](@ref)
 
-```@docs
-Base.length
-Base.size
-```
+| Function                           |
+|:-----------------------------------|
+| `Base.length(::AbstractSpectrum)`  |
+| `Base.size(::AbstractSpectrum)`    |
+| `Base.maximum(::AbstractSpectrum)` |
+| `Base.minimum(::AbstractSpectrum)` |
+| `Base.argmax(::AbstractSpectrum)`  |
+| `Base.argmin(::AbstractSpectrum)`  |
+| `Base.findmax(::AbstractSpectrum)`  |
+| `Base.findmin(::AbstractSpectrum)`  |
 
-The following basic arithmetic is provided
+### Arithmetic
 
-|Function           |
-|:------------------|
-| `+(::AbstractSpectrum, A)` |
-| `-(::AbstractSpectrum, A)` |
-| `*(::AbstractSpectrum, A)` |
-| `/(::AbstractSpectrum, A)` |
+| Function                           |
+|:-----------------------------------|
+| `+(::AbstractSpectrum, A)`         |
+| `-(::AbstractSpectrum, A)`         |
+| `*(::AbstractSpectrum, A)`         |
+| `/(::AbstractSpectrum, A)`         |
 
 ## Unitful helpers
 
@@ -58,9 +64,8 @@ We provide simple plotting recipes for spectra using [Plots.jl](https://github.c
 ```@example
 using Plots, Spectra
 
-wave = range(1e3, 4e4, length=100)
-flux = @. 1.2e9 / wave^5 * 1 / (exp(35969 / wave) - 1)
-spec = spectrum(wave, flux)
+wave = range(1e3, 5e4, length=100)
+spec = blackbody(wave, 2000)
 
 plot(spec, yscale=:identity)
 savefig("spec-plot.svg"); nothing # hide
@@ -72,4 +77,9 @@ savefig("spec-plot.svg"); nothing # hide
 
 ```@index
 Pages = ["spectrum.md"]
+```
+
+
+```@meta
+DocTestSetup = nothing
 ```

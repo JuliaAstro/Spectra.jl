@@ -1,13 +1,13 @@
-# Transformations
-
-The following operations and transformations are provided to work on `Spectra`
-
 ```@meta
 DocTestSetup = quote
   using Spectra, Random
   Random.seed!(11894)
 end
 ```
+
+# Transformations
+
+The following operations and transformations are provided to work on `Spectra`
 
 ## Extinction
 
@@ -67,4 +67,8 @@ redden
 redden!
 deredden
 deredden!
+```
+
+```@meta
+DocTestSetup = nothing
 ```
