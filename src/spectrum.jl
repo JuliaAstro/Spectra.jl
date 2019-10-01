@@ -109,17 +109,17 @@ Base.findmax(spec::T) where {T <: AbstractSpectrum} = findmax(spec.flux)
 Base.findmin(spec::T) where {T <: AbstractSpectrum} = findmin(spec.flux)
 
 # Arithmetic
-Base.:+(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .+ A; s.meta...)
-Base.:*(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .* A; s.meta...)
-Base.:/(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux ./ A; s.meta...)
-Base.:-(s::T) where {T <: AbstractSpectrum} = spectrum(s.wave, -s.flux; s.meta...)
-Base.:-(s::T, A) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .- A; s.meta...)
+Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ A, s.meta)
+Base.:*(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* A, s.meta)
+Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ A, s.meta)
+Base.:-(s::T) where {T <: AbstractSpectrum} = T(s.wave, -s.flux, s.meta)
+Base.:-(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .- A, s.meta)
 
 # Multi-Spectrum
-Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .+ o.flux; s.meta...)
-Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .* o.flux; s.meta...)
-Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux ./ o.flux; s.meta...)
-Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = spectrum(s.wave, s.flux .- o.flux; s.meta...)
+Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ o.flux, s.meta)
+Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* o.flux, s.meta)
+Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ o.flux * unit(s)[2], s.meta)
+Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .- o.flux, s.meta)
 
 #--------------------------------------------------------------------------------------
 
@@ -142,6 +142,8 @@ function Base.show(io::IO, spec::UnitfulSpectrum)
         print(io, "\n  $key: $val")
     end
 end
+
+Base.:/(s::T, o::T) where {T <: UnitfulSpectrum} = NormalizedSpectrum(s.wave, s.flux ./ o.flux, s.meta)
 
 """
     Unitful.ustrip(::UnitfulSpectrum)
@@ -188,3 +190,21 @@ julia> w_unit, f_unit = unit(spec)
 ```
 """
 Unitful.unit(spec::UnitfulSpectrum) = unit(eltype(spec.wave)), unit(eltype(spec.flux))
+
+
+
+
+struct NormalizedSpectrum <: AbstractSpectrum
+    wave::Vector{<:Quantity}
+    flux::Vector{<:Real}
+    meta::Dict{Symbol, Any}
+end
+
+function Base.show(io::IO, spec::NormalizedSpectrum)    
+    println(io, "NormalizedSpectrum $(size(spec))")
+    wtype = unit(eltype(spec.wave))
+    print(io, "  λ ($wtype)")
+    for (key, val) in spec.meta
+        print(io, "\n  $key: $val")
+    end
+end

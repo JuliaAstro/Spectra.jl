@@ -1,7 +1,7 @@
 using RecipesBase, Unitful, Measurements
 
 @recipe function f(spec::Spectrum)
-    seriestype --> :path
+    seriestype --> :step
     xlabel --> "wave (angstrom)"
     ylabel --> "flux density"
     label --> ""
@@ -9,7 +9,7 @@ using RecipesBase, Unitful, Measurements
 end
 
 @recipe function f(spec::UnitfulSpectrum)
-    seriestype --> :path
+    seriestype --> :step
     wunit, funit = unit(spec)
     xlabel --> "wave ($wunit)"
     ylabel --> "flux density ($funit)"

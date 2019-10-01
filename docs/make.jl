@@ -13,6 +13,8 @@ makedocs(
         "Home" => "index.md",
         "spectrum.md",
         "transforms.md",
+        "fitting.md",
+        "analysis.md",
         "contrib.md",
     ],
     # strict = true,

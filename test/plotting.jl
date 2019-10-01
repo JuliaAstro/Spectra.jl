@@ -14,7 +14,7 @@ import Measurements: value
     @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
         :xlabel => "wave (Å)", 
         :ylabel => "flux density (erg Å^-1 cm^-2 s^-1)",
-        :seriestype => :path)
+        :seriestype => :step)
     @test rec[1].args == (ustrip.(spec.wave), value.(ustrip.(spec.flux)))
 
 
@@ -24,6 +24,6 @@ import Measurements: value
     @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
         :xlabel => "wave (angstrom)", 
         :ylabel => "flux density",
-        :seriestype => :path)
+        :seriestype => :step)
     @test rec[1].args == (strip_spec.wave, value.(strip_spec.flux))
 end
