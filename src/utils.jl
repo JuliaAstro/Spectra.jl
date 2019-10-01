@@ -1,0 +1,60 @@
+using Unitful, UnitfulAstro
+using PhysicalConstants.CODATA2018: h, c_0, k_B
+
+export blackbody
+
+"""
+    blackbody(wave::Vector{<:Quantity}, T::Quantity)
+    blackbody(wave::Vector{<:Real}, T::Real)
+
+Create a blackbody spectrum using Planck's law. The curve follows the mathematical form 
+
+``B_\\lambda(T) = \\frac{2hc^2}{\\lambda^5}\\frac{1}{e^{hc/\\lambda k_B T} - 1}``
+
+If `wave` and `T` are not `Unitful.Quantity`, they are assumed to be in angstrom and Kelvin, and the returned flux will be in units `W m^-2 Å^-1`. 
+
+The physical constants are calculated using [PhysicalConstants.jl](https://github.com/juliaphysics/physicalconstants.jl), specifically the CODATA2018 measurement set. 
+
+# References
+[Planck's Law](https://en.wikipedia.org/wiki/Planck%27s_law)
+
+# Examples
+```jldoctest
+julia> using Unitful
+
+julia> wave = range(1, 3, length=100)u"μm"
+(1.0:0.020202020202020204:3.0) μm
+
+julia> bb = blackbody(wave, 2000u"K")
+UnitfulSpectrum (100,)
+  λ (μm) f (W μm^-1 m^-2)
+  T: 2000 K
+  name: Blackbody
+
+julia> blackbody(ustrip.(wave), 6000)
+Spectrum (100,)
+  T: 6000
+  name: Blackbody
+
+julia> bb.wave[argmax(bb)]
+1.4444444444444444 μm
+
+# See if it matches up with Wien's law
+julia> 2898u"μm*K" / bb.T
+1.449 μm
+```
+"""
+function blackbody(wave::Vector{<:Quantity}, T::Quantity)
+    out_unit = u"W/m^2" / unit(eltype(wave))
+    flux = _blackbody(wave, T) .|> out_unit
+    return spectrum(wave, flux, name = "Blackbody", T = T)
+end
+
+function blackbody(wave::Vector{<:Real}, T::Real)
+    flux = ustrip.(u"W/m^2/angstrom", _blackbody(wave * u"angstrom", T * u"K"))
+    return spectrum(wave, flux, name = "Blackbody", T = T)
+end
+
+blackbody(wave, T) = blackbody(collect(wave), T)
+
+_blackbody(wave::Vector{<:Quantity}, T::Quantity) = @. 2h * c_0^2 / wave^5 / (exp(h * c_0 / (wave * k_B * T)) - 1)
