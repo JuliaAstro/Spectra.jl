@@ -16,3 +16,11 @@ end
     label --> ""
     ustrip.(spec.wave), Measurements.value.(ustrip.(spec.flux))
 end
+
+@recipe function f(spec::EchelleSpectrum)
+    seriestype --> :step
+    xlabel --> "wave (angstrom)"
+    ylabel --> "flux density"
+    label --> ["Order $i" for i in 1:size(spec, 1)]
+    spec.wave', spec.flux'
+end

@@ -60,6 +60,11 @@ function spectrum(wave::Vector{<:Quantity}, flux::Vector{<:Quantity}; kwds...)
     UnitfulSpectrum(wave, flux, kwds)
 end
 
+function spectrum(wave::Matrix{<:Real}, flux::Matrix{<:Real}; kwds...)
+    @assert size(wave) == size(flux) "wave and flux must have equal size"
+    EchelleSpectrum(wave, flux, kwds)
+end
+
 #--------------------------------------------------------------------------------------
 
 abstract type AbstractSpectrum end
@@ -100,6 +105,7 @@ function Base.show(io::IO, spec::Spectrum)
 end
 
 Base.size(spec::T) where {T <: AbstractSpectrum} = size(spec.flux)
+Base.size(spec::T, i) where {T <: AbstractSpectrum} = size(spec.flux, i)
 Base.length(spec::T) where {T <: AbstractSpectrum} = length(spec.flux)
 Base.maximum(spec::T) where {T <: AbstractSpectrum} = maximum(spec.flux)
 Base.minimum(spec::T) where {T <: AbstractSpectrum} = minimum(spec.flux)
@@ -142,8 +148,6 @@ function Base.show(io::IO, spec::UnitfulSpectrum)
         print(io, "\n  $key: $val")
     end
 end
-
-Base.:/(s::T, o::T) where {T <: UnitfulSpectrum} = NormalizedSpectrum(s.wave, s.flux ./ o.flux, s.meta)
 
 """
     Unitful.ustrip(::UnitfulSpectrum)
@@ -191,20 +195,31 @@ julia> w_unit, f_unit = unit(spec)
 """
 Unitful.unit(spec::UnitfulSpectrum) = unit(eltype(spec.wave)), unit(eltype(spec.flux))
 
+#--------------------------------------------------------------------------------------
 
-
-
-struct NormalizedSpectrum <: AbstractSpectrum
-    wave::Vector{<:Quantity}
-    flux::Vector{<:Real}
+struct EchelleSpectrum <: AbstractSpectrum
+    wave::Matrix{<:Real}
+    flux::Matrix{<:Real}
     meta::Dict{Symbol, Any}
 end
 
-function Base.show(io::IO, spec::NormalizedSpectrum)    
-    println(io, "NormalizedSpectrum $(size(spec))")
-    wtype = unit(eltype(spec.wave))
-    print(io, "  λ ($wtype)")
+function Base.show(io::IO, spec::EchelleSpectrum)    
+    println(io, "EchelleSpectrum $(size(spec))")
     for (key, val) in spec.meta
         print(io, "\n  $key: $val")
     end
+end
+
+function Base.getindex(spec::EchelleSpectrum, i::Integer)
+    wave = spec.wave[i, :]
+    flux = spec.flux[i, :]
+    meta = merge(Dict(:Order => i), spec.meta)
+    return Spectrum(wave, flux, meta)
+end
+
+function Base.getindex(spec::EchelleSpectrum, I::AbstractVector)
+    waves = spec.wave[I, :]
+    flux = spec.flux[I, :]
+    meta = merge(Dict(:Orders => (first(I), last(I))), spec.meta)
+    return EchelleSpectrum(waves, flux, meta)
 end
