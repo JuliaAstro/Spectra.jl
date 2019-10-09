@@ -12,8 +12,8 @@ import Measurements: value
 
     rec = RecipesBase.apply_recipe(Dict{Symbol,Any}(), spec)
     @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
-        :xlabel => "wave (Å)", 
-        :ylabel => "flux density (erg Å^-1 cm^-2 s^-1)",
+        :xlabel => "wave", 
+        :ylabel => "flux density",
         :seriestype => :step)
     @test rec[1].args == (ustrip.(spec.wave), value.(ustrip.(spec.flux)))
 
@@ -22,7 +22,7 @@ import Measurements: value
 
     rec = RecipesBase.apply_recipe(Dict{Symbol,Any}(), strip_spec)
     @test getfield(rec[1], 1) == Dict{Symbol,Any}(:label => "", 
-        :xlabel => "wave (angstrom)", 
+        :xlabel => "wave", 
         :ylabel => "flux density",
         :seriestype => :step)
     @test rec[1].args == (strip_spec.wave, value.(strip_spec.flux))

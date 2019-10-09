@@ -24,7 +24,7 @@
     flux_trimmed = flux[200:800]
     @test_throws AssertionError spectrum(wave, flux_trimmed)
     expected = """
-    Spectrum (1000,)
+    Spectrum(Float64, Measurement{Float64})
       name: test spectrum"""
     @test sprint(show, spec) == expected
     @test spec.name == "test spectrum"
@@ -64,8 +64,7 @@ end
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
     expected = """
-    UnitfulSpectrum (1000,)
-      λ (Å) f (W Å^-1 m^-2)
+    Spectrum(Quantity{Float64,𝐋,Unitful.FreeUnits{(Å,),𝐋,nothing}}, Quantity{Measurement{Float64},𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(Å^-1, m^-2, W),𝐌*𝐋^-1*𝐓^-3,nothing}})
       name: test"""
     @test sprint(show, spec) == expected
 end

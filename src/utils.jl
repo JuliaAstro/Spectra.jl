@@ -43,17 +43,22 @@ julia> 2898u"μm*K" / bb.T # See if it matches up with Wien's law
 1.449 μm
 ```
 """
-function blackbody(wave::Vector{<:Quantity}, T::Quantity)
+function blackbody(wave::AbstractVector{<:Quantity}, T::Quantity)
     out_unit = u"W/m^2" / unit(eltype(wave))
     flux = _blackbody(wave, T) .|> out_unit
     return spectrum(wave, flux, name = "Blackbody", T = T)
 end
 
-function blackbody(wave::Vector{<:Real}, T::Real)
+function blackbody(wave::AbstractVector{<:Real}, T::Real)
     flux = ustrip.(u"W/m^2/angstrom", _blackbody(wave * u"angstrom", T * u"K"))
     return spectrum(wave, flux, name = "Blackbody", T = T)
 end
 
-blackbody(wave, T) = blackbody(collect(wave), T)
+_blackbody(wave::AbstractVector{<:Quantity}, T::Quantity) = blackbody(T).(wave)
 
-_blackbody(wave::Vector{<:Quantity}, T::Quantity) = @. 2h * c_0^2 / wave^5 / (exp(h * c_0 / (wave * k_B * T)) - 1)
+"""
+  blackbody(T::Quantity)
+
+Returns a function for calculating blackbody curves. 
+"""
+blackbody(T::Quantity) = w->2h * c_0^2 / w^5 / (exp(h * c_0 / (w * k_B * T)) - 1)

@@ -1,10 +1,10 @@
 using Documenter
-using Spectra, Unitful
+using Spectra
 
-makedocs(
-    sitename = "Spectra.jl",
-    format = Documenter.HTML(
-        prettyurls = get(ENV, "CI", nothing) == "true",
+DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
+
+makedocs(sitename = "Spectra.jl",
+    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
@@ -20,6 +20,4 @@ makedocs(
     # strict = true,
 )
 
-deploydocs(
-    repo = "github.com/JuliaAstro/Spectra.jl.git",
-)
+deploydocs(repo = "github.com/JuliaAstro/Spectra.jl.git")
