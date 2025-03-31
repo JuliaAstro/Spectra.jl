@@ -22,10 +22,11 @@ DustExtinction = ">=0.6.0"
 julia = "1"
 
 [extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Random", "RecipesBase", "Measurements"]
+test = ["Aqua", "Test", "Random", "RecipesBase", "Measurements"]
