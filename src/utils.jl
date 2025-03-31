@@ -57,7 +57,7 @@ end
 _blackbody(wave::AbstractVector{<:Quantity}, T::Quantity) = blackbody(T).(wave)
 
 """
-  blackbody(T::Quantity)
+    blackbody(T::Quantity)
 
 Returns a function for calculating blackbody curves.
 """
