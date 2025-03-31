@@ -42,7 +42,7 @@ end
 """
     continuum(::AbstractSpectrum, deg::Int=3)
 
-Return a continuum-normalized spectrum by fitting the continuum with a Chebyshev polynomial of degree `deg`. 
+Return a continuum-normalized spectrum by fitting the continuum with a Chebyshev polynomial of degree `deg`.
 """
 continuum(spec::AbstractSpectrum, deg::Int = 3) = continuum!(deepcopy(spec), deg)
 
