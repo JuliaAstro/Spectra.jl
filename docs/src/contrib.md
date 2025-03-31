@@ -8,7 +8,7 @@ Most of the code written within this library should work as long as your subtype
 - `flux::AbstractArray`
 - `meta::Dict{Symbol, Any}`
 
-Variations of `wave` and `flux` ought to work given the appropriate methods being written. For instance, [`Spectra.UnitfulSpectrum`](@ref) does not work with [Interpolations.jl](https://github.com/juliamath/interpolations.jl) natively, so it was wrapped to provide the correct interface.
+Variations of `wave` and `flux` ought to work given the appropriate methods being written.
 
 ## Contributing Guidelines
 
