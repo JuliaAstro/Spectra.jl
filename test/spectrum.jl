@@ -64,7 +64,7 @@ end
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
     expected = """
-    Spectrum(Quantity{Float64,𝐋,Unitful.FreeUnits{(Å,),𝐋,nothing}}, Quantity{Measurement{Float64},𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(Å^-1, m^-2, W),𝐌*𝐋^-1*𝐓^-3,nothing}})
+    Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
       name: test"""
     @test sprint(show, spec) == expected
 end
