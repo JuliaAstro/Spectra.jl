@@ -26,13 +26,12 @@ julia> wave = range(1, 3, length=100)u"μm"
 (1.0:0.020202020202020204:3.0) μm
 
 julia> bb = blackbody(wave, 2000u"K")
-UnitfulSpectrum (100,)
-  λ (μm) f (W μm^-1 m^-2)
+Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Unitful.Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
   T: 2000 K
   name: Blackbody
 
 julia> blackbody(ustrip.(u"angstrom", wave), 6000)
-Spectrum (100,)
+Spectrum(Float64, Float64)
   T: 6000
   name: Blackbody
 

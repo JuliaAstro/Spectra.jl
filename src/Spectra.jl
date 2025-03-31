@@ -56,6 +56,7 @@ julia> flux = ones(10, 100) .* collect(1:10);
 
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
+  # orders: 10
 ```
 """
 function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...)
