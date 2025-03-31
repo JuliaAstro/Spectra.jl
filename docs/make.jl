@@ -1,5 +1,7 @@
 using Documenter
 using Spectra
+using Unitful
+using Measurements
 
 DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
 

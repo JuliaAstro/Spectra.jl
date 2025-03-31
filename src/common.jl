@@ -83,7 +83,7 @@ julia> wave = range(1e4, 3e4, length=1000);
 julia> flux = wave .* 10 .+ randn(1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
-Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
 
 julia> ustrip(spec)
 Spectrum(Float64, Float64)
@@ -111,4 +111,3 @@ julia> w_unit, f_unit = unit(spec)
 ```
 """
 Unitful.unit(spec::AbstractSpectrum) = unit(eltype(spec.wave)), unit(eltype(spec.flux))
-
