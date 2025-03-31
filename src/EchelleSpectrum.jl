@@ -1,6 +1,6 @@
 struct EchelleSpectrum{W <: Number,F <: Number} <: AbstractSpectrum{W,F}
-    wave::Matrix{<:Real}
-    flux::Matrix{<:Real}
+    wave::Matrix{W}
+    flux::Matrix{F}
     meta::Dict{Symbol,Any}
 end
 
