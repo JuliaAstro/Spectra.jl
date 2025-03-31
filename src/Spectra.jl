@@ -44,7 +44,7 @@ julia> sigma = randn(size(wave));
 julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
 ```
 
 For a multi-order spectrum, all orders must have the same length, so be sure to pad any ragged orders with NaN.
