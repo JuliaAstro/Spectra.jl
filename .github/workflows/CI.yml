@@ -28,4 +28,4 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           files: lcov.info
-          token: ${{ secret.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
