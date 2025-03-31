@@ -6,7 +6,7 @@ export spectrum
 include("common.jl")
 
 # Spectrum types and basic arithmetic
-include("Spectrum.jl")
+include("spectrum.jl")
 include("EchelleSpectrum.jl")
 
 """
@@ -29,10 +29,10 @@ Spectrum(Float64, Float64)
 
 julia> spec.name
 "Just Noise"
-
 ```
 
-There is easy integration with [Unitful.jl](https://github.com/painterqubits/unitful.jl) and its sub-projects and [Measurements.jl](https://github.com/juliaphysics/measurements.jl)
+There is easy integration with [Unitful.jl](https://github.com/painterqubits/unitful.jl)
+and its sub-projects and [Measurements.jl](https://github.com/juliaphysics/measurements.jl)
 
 ```jldoctest
 julia> using Unitful, UnitfulAstro, Measurements
@@ -44,8 +44,7 @@ julia> sigma = randn(size(wave));
 julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Quantity{Float64,𝐋,Unitful.FreeUnits{(μm,),𝐋,nothing}}, Quantity{Measurement{Float64},𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1),𝐌*𝐋^-1*𝐓^-3,nothing}})
-
+Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
 ```
 
 For a multi-order spectrum, all orders must have the same length, so be sure to pad any ragged orders with NaN.
@@ -57,10 +56,9 @@ julia> flux = ones(10, 100) .* collect(1:10);
 
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
-
 ```
 """
-function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...) 
+function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...)
     @assert size(wave) == size(flux) "wave and flux must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
