@@ -15,15 +15,12 @@ Spectra are defined as possible subtypes of `AbstractSpectrum`. You can use thes
 
 ```@docs
 Spectra.Spectrum
-Spectra.EchelleSpectrum
 ```
 
 ## Constructors
 
 ```@docs
 Spectra.spectrum
-Spectra.blackbody
-Spectra.blackbody
 ```
 
 

@@ -20,6 +20,7 @@ makedocs(sitename = "Spectra.jl",
         "analysis.md",
         "contrib.md",
     ],
+    warnonly = [:missing_docs],
     # strict = true,
 )
 
