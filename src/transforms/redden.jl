@@ -19,7 +19,10 @@ end
 """
     redden(::AbstractSpectrum, Av; Rv = 3.1, law = ccm89)
 
-Redden a spectrum using common color laws provided by [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl). `Av` is the total extinction, `Rv` is the selective extinction (3.1 is a common value for the Milky Way) and `law` is the color law to use for determining the extinction. 
+Redden a spectrum using common color laws provided by [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl).
+`Av` is the total extinction, `Rv` is the selective extinction (3.1 is a common
+value for the Milky Way) and `law` is the color law to use for determining the
+extinction.
 """
 function redden(spec::AbstractSpectrum, Av; Rv = 3.1, law = ccm89)
     tmp_spec = deepcopy(spec)
@@ -40,7 +43,10 @@ end
 """
     deredden(::AbstractSpectrum, Av; Rv = 3.1, law = ccm89)
 
-Deredden a spectrum using common color laws provided by [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl). `Av` is the total extinction, `Rv` is the selective extinction (3.1 is a common value for the Milky Way) and `law` is the color law to use for determining the extinction. 
+Deredden a spectrum using common color laws provided by [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl).
+`Av` is the total extinction, `Rv` is the selective extinction (3.1 is a common
+value for the Milky Way) and `law` is the color law to use for determining the
+extinction.
 """
 function deredden(spec::AbstractSpectrum, Av; Rv = 3.1, law = ccm89)
     tmp_spec = deepcopy(spec)
