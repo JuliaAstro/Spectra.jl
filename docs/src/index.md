@@ -22,8 +22,9 @@ Here is a quick demo of some of our features
 ```jldoctest guide
 julia> using Spectra, FITSIO, Unitful, UnitfulAstro, Plots
 
-julia> download("https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12", "sdss.fits")
-"sdss.fits"
+julia> fitsurl = "https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12";
+
+julia> # download(fitsurl, "sdss.fits");
 
 julia> f = FITS("sdss.fits")
 File: sdss.fits
