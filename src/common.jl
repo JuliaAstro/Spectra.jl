@@ -62,6 +62,7 @@ Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ A, s.meta)
 Base.:-(s::T) where {T <: AbstractSpectrum} = T(s.wave, -s.flux, s.meta)
 Base.:-(s::AbstractSpectrum, A) = s + -A
 Base.:-(A, s::AbstractSpectrum) = s - A
+Base.:-(s::AbstractSpectrum, o::AbstractSpectrum) = s - o # Satisfy Aqua
 
 # Multi-Spectrum
 Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ o.flux, s.meta)
