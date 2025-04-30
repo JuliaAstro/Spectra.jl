@@ -1,3 +1,9 @@
+# Custom law
+struct CustomLaw <: DustExtinction.ExtinctionLaw
+    Rv::Float64
+end
+(law::CustomLaw)(wave) = sin(law.Rv * wave) / law.Rv
+
 @testset "Reddening Av=$Av" for Av = [0.5, 1.0, 2.0]
     # Regression usage
     spec = mock_spectrum()
@@ -11,10 +17,9 @@
     @test dereddened.flux ≈ spec.flux
 
     # Custom law
-    law(λ, Rv) = sin(Rv * λ) / Rv
-    expected = @. spec.flux * 10^(-0.4 * Av * law(spec.wave, π))
-    @test expected ≈ redden(spec, Av, law = law, Rv=π).flux
-    
+    expected = @. spec.flux * 10^(-0.4 * Av * CustomLaw(π)(spec.wave))
+    @test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π).flux
+
     # Bad law
     @test_throws MethodError redden(spec, Av, law = sin)
 

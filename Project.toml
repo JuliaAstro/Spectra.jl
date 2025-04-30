@@ -4,11 +4,7 @@ authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
 version = "0.1.0"
 
 [deps]
-DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
-Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
@@ -18,25 +14,12 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
 
 [compat]
-DSP = "0.8"
-Distributions = "0.25"
 DustExtinction = ">=0.6.0"
-Interpolations = "0.15"
-LaTeXStrings = "1"
+LinearAlgebra = "1.5"
 Measurements = "2"
 PhysicalConstants = "0.2"
 RecipesBase = "1"
 Unitful = "1"
 UnitfulAstro = "1"
 WCS = "0.6"
-julia = "1"
-
-[extras]
-Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
-Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Aqua", "Test", "Random", "RecipesBase", "Measurements"]
+julia = "1.6"

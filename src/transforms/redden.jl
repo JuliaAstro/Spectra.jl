@@ -12,7 +12,7 @@ export redden,
 In-place version of [`redden`](@ref)
 """
 function redden!(spec::T, Av; Rv = 3.1, law = CCM89) where {T <: AbstractSpectrum}
-    @. spec.flux = redden(spec.flux, spec.wave, Av; Rv, law)
+    @. spec.flux = redden(law, spec.wave, spec.flux; Rv, Av)
     return spec
 end
 
@@ -36,7 +36,7 @@ end
 In-place version of [`deredden`](@ref)
 """
 function deredden!(spec::AbstractSpectrum, Av; Rv = 3.1, law = CCM89)
-    @. spec.flux = deredden(spec.flux, spec.wave, Av; Rv, law)
+    @. spec.flux = deredden(law, spec.wave, spec.flux; Rv, Av)
     return spec
 end
 

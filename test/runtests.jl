@@ -1,5 +1,6 @@
 using Test
 using Spectra
+using DustExtinction
 
 using Random
 using Unitful, UnitfulAstro, Measurements
