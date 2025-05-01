@@ -1,4 +1,4 @@
-@testset "Spectrum" begin
+@testset "Spectrum - Single" begin
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
     sigma[7] = 1
@@ -28,6 +28,42 @@
       name: test spectrum"""
     @test sprint(show, spec) == expected
     @test spec.name == "test spectrum"
+end
+
+@testset "Spectrum - Echelle" begin
+    n_orders = 3
+    n_wavs = 1000
+    wave_1 = range(1e4, 5e4, length=n_wavs)
+    wave = repeat(wave_1, 1, n_orders)
+    sigma = randn(size(wave_1))
+    sigma[7] = 1
+    sigma[134] = 0.1
+    flux_1 = 100 .± sigma
+    flux_1[7] = 1000 ± 1
+    flux_1[134] = 1 ± 0.1
+    flux = repeat(flux_1, 1, n_orders)
+
+    spec = spectrum(wave, flux, name = "Test Echelle Spectrum")
+
+    @test spec.wave == wave
+    @test size(spec) == (n_wavs, n_orders)
+    @test length(spec) == n_orders * n_wavs
+    @test maximum(spec) == 1000 ± 1
+    @test minimum(spec) == 1 ± 0.1
+    @test argmax(spec) == CartesianIndex(7, 1)
+    @test argmin(spec) == CartesianIndex(134, 1)
+    @test findmax(spec) == (1000 ± 1, CartesianIndex(7, 1))
+    @test findmin(spec) == (1 ± 0.1, CartesianIndex(134, 1))
+    @test eachcol(Measurements.uncertainty.(spec.flux)) ≈ fill(sigma, n_orders)
+
+    flux_trimmed = flux[200:800, :]
+    @test_throws AssertionError spectrum(wave, flux_trimmed)
+    expected = """
+    EchelleSpectrum(Float64, Measurement{Float64})
+      # orders: 1000
+      name: Test Echelle Spectrum"""
+    @test sprint(show, spec) == expected
+    @test spec.name == "Test Echelle Spectrum"
 end
 
 @testset "Unitful Spectrum" begin
