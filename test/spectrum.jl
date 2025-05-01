@@ -66,7 +66,7 @@ end
     @test spec.name == "Test Echelle Spectrum"
 end
 
-@testset "Unitful Spectrum" begin
+@testset "Unitful Spectrum - Single" begin
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
     sigma[7] = 1
@@ -102,6 +102,56 @@ end
     expected = """
     Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
       name: test"""
+    @test sprint(show, spec) == expected
+end
+
+@testset "Unitful Spectrum - Echelle" begin
+    n_orders = 3
+    n_wavs = 1000
+    wave_1 = range(1e4, 5e4, length=n_wavs)
+    wave = repeat(wave_1, 1, n_orders)
+    sigma = randn(size(wave_1))
+    sigma[7] = 1
+    sigma[134] = 0.1
+    flux_1 = 100 .± sigma
+    flux_1[7] = 1000 ± 1
+    flux_1[134] = 1 ± 0.1
+    flux = repeat(flux_1, 1, n_orders)
+
+    wunit = u"angstrom"
+    funit = u"W/m^2/angstrom"
+
+    wave *= wunit
+    flux *= funit
+
+    spec = spectrum(wave, flux, name = "test echelle")
+
+    @test spec.wave ≈ wave
+
+    @test size(spec) === (n_wavs, n_orders)
+    @test length(spec) == n_wavs * n_orders
+    @test maximum(spec) == (1000 ± 1) * funit
+    @test minimum(spec) == (1 ± 0.1) * funit
+    @test argmax(spec) == CartesianIndex(7, 1)
+    @test argmin(spec) == CartesianIndex(134, 1)
+    @test findmax(spec) == ((1000 ± 1) * funit, CartesianIndex(7, 1))
+    @test findmin(spec) == ((1 ± 0.1) * funit, CartesianIndex(134, 1))
+    @test spec.name == "test echelle"
+
+    # Test stripping
+    w_unit, f_unit = unit(spec)
+    @test w_unit == u"angstrom"
+    @test f_unit == u"W/m^2/angstrom"
+
+    strip_spec = ustrip(spec)
+    @test strip_spec.wave == ustrip.(spec.wave)
+    @test strip_spec.flux == ustrip.(spec.flux)
+    @test strip_spec.meta == spec.meta
+    sprint(show, spec)
+    expected = """
+    EchelleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+      # orders: 1000
+      name: test echelle"""
     @test sprint(show, spec) == expected
 end
 
