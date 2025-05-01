@@ -9,6 +9,9 @@
 
     spec = spectrum(wave, flux, name = "test spectrum")
 
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
     @test size(spec) === (1000,)
@@ -55,6 +58,11 @@ end
 
     @test (spec_i.name, spec_i.wave, spec_i.flux) == (spec_i_expected.name, spec_i_expected.wave, spec_i_expected.flux)
     @test (spec_I.name, spec_I.wave, spec_I.flux) == (spec_I_expected.name, spec_I_expected.wave, spec_I_expected.flux)
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test propertynames(spec_i) == (:wave, :flux, :meta, :Order, :name)
+    @test propertynames(spec_I) == (:wave, :flux, :meta, :name, :Orders)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
     @test size(spec) == (n_orders, n_wavs)
@@ -91,6 +99,9 @@ end
 
     @test spec.wave ≈ wave * u"angstrom"
 
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test size(spec) === (1000,)
     @test length(spec) == 1000
@@ -140,6 +151,9 @@ end
 
     @test spec.wave ≈ wave
 
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test size(spec) === (n_orders, n_wavs)
     @test length(spec) == n_wavs * n_orders
@@ -172,12 +186,17 @@ end
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
     flux = 100 .± sigma
+    flux_2 = 200 .± sigma
 
     spec = spectrum(wave, flux, name = "test spectrum")
+    spec_2 = spectrum(wave, flux_2, name = "test spectrum")
 
-    # Scalars/ vectors
+    # negation
+    @test -spec.flux == -flux
+
+    # Scalars / vectors
     values = [10, randn(size(spec))]
-    for A in values 
+    for A in values
         # addition
         s = spec + A
         @test s.wave == spec.wave
@@ -187,6 +206,12 @@ end
         s = spec - A
         @test s.wave == spec.wave
         @test s.flux ≈ spec.flux .- A
+        s = A - spec
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec.flux .- A
+        s = spec_2 - spec
+        @test s.wave == spec.wave
+        @test s.flux ≈ spec_2.flux .- spec.flux
 
         # multiplication
         s = spec * A
