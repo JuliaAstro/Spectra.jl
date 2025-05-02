@@ -1,8 +1,8 @@
 # Spectra.jl
 
-[![CI](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml)
-[![codecov](https://codecov.io/gh/JuliaAstro/Spectra.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/juliaastro/Spectra.jl)
-![GitHub](https://img.shields.io/github/license/juliaastro/Spectra.jl.svg?color=orange)
+[![CI](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/juliaastro/Spectra.jl/graph/badge.svg?token=EjMJcszaoQ)](https://codecov.io/gh/juliaastro/Spectra.jl)
+![GitHub](https://img.shields.io/github/license/juliaastro/Spectra.jl.svg)
 
 
 [![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/Spectra/dev)
