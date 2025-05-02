@@ -9,6 +9,7 @@ Pages = ["index.md", "spectrum.md", "transforms.md"]
 ## Installation
 
 From the REPL, press `]` to enter Pkg mode
+
 ```julia-repl
 pkg> add https://github.com/JuliaAstro/Spectra.jl
 
