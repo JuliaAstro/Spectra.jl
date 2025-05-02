@@ -12,7 +12,7 @@ Variations of `wave` and `flux` ought to work given the appropriate methods bein
 
 ## Contributing Guidelines
 
-In general, for contributing, use the following guidelines
+In general, for contributing, use the following guidelines:
 
 - Write clean, pragmatic julia code
 - New features must come with adequete unit testing and documentation
