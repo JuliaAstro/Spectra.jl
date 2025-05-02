@@ -5,8 +5,8 @@
 ![GitHub](https://img.shields.io/github/license/juliaastro/Spectra.jl.svg?color=orange)
 
 
-[![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.github.io/Spectra.jl/dev)
-[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.github.io/Spectra.jl/stable)
+[![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/Spectra/dev)
+[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.org/Spectra/stable)
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 

@@ -8,6 +8,7 @@ DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
 makedocs(sitename = "Spectra.jl",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", nothing) == "true",
+        canonical = "https://juliaastro.org/Spectra/stable/",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
