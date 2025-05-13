@@ -57,7 +57,7 @@ Base.findmin(spec::AbstractSpectrum) = findmin(spec.flux)
 
 # Arithmetic
 Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ A, s.meta)
-Base.:*(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* A, s.meta)
+Base.:*(s::T, A::AbstractVector) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* A, s.meta)
 Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ A, s.meta)
 Base.:-(s::T) where {T <: AbstractSpectrum} = T(s.wave, -s.flux, s.meta)
 Base.:-(s::AbstractSpectrum, A) = s + -A
