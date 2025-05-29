@@ -25,4 +25,7 @@ makedocs(sitename = "Spectra.jl",
     # strict = true,
 )
 
-deploydocs(repo = "github.com/JuliaAstro/Spectra.jl.git")
+deploydocs(;
+    repo = "github.com/JuliaAstro/Spectra.jl.git",
+    versions = "v#.#.#",
+)
