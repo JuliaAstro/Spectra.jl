@@ -19,7 +19,16 @@ jobs:
         with:
           version: '1'
       - uses: julia-actions/cache@v2
-      - uses: julia-actions/julia-docdeploy@v1
+      - name: Install dependencies
+        shell: julia --color=yes --project=docs {0}
+        run: |
+          using Pkg
+          Pkg.instantiate()
+      - name: Deploy docs
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          julia --color=yes --project=docs docs/make.jl dev-only
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

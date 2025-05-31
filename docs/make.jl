@@ -25,7 +25,15 @@ makedocs(sitename = "Spectra.jl",
     # strict = true,
 )
 
+versions = if "dev-only" in ARGS
+    @info "Building dev-only docs"
+    "dev"
+    else
+    @info "Building only released docs"
+    ["stable" => "v^", "v#.#"] # Restrict to minor releases
+end
+
 deploydocs(;
     repo = "github.com/JuliaAstro/Spectra.jl.git",
-    versions = "v#.#.#",
+    versions,
 )
