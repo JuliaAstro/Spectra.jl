@@ -51,7 +51,7 @@ julia> plot(spec);
 ```jldoctest guide
 julia> cont_fit = continuum(spec)
 Spectrum(Quantity{Float32, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  coeffs: Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}}[1.983152216046405e-15 erg Å^-1 cm^-2 s^-1, -1.8822245369267038e-16 erg Å^-1 cm^-2 s^-1, -1.0422750370065006e-16 erg Å^-1 cm^-2 s^-1, 4.8112282273206135e-17 erg Å^-1 cm^-2 s^-1]
+  coeffs: Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}}[1.983151896157275e-15 erg Å^-1 cm^-2 s^-1, -1.8822235406858172e-16 erg Å^-1 cm^-2 s^-1, -1.0422747454613038e-16 erg Å^-1 cm^-2 s^-1, 4.811210106139895e-17 erg Å^-1 cm^-2 s^-1]
   normalized: true
 
 julia> plot(cont_fit, xlims=(6545, 6600));
