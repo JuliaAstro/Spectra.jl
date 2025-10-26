@@ -1,7 +1,9 @@
+using Spectra: blackbody
+
 @testset "Blackbody T=$T" for T in [2000, 4000, 6000]
     wave = range(1e3, 5e4, length = 1000)
     b = 2.897771955185172e7
-    
+
     bb = @inferred blackbody(wave, T)
     @test typeof(bb) <: Spectra.Spectrum
     @test bb.T == T

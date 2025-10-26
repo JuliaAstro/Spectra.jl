@@ -1,18 +1,21 @@
-using Test
-using Spectra
-using DustExtinction
+using ParallelTestRunner: runtests, find_tests, parse_args
+import Spectra
 
-using Random
-using Unitful, UnitfulAstro, Measurements
-using Aqua
+const init_code = quote
+    #using Test
+    #using Spectra
+    #using DustExtinction
 
-Random.seed!(8675309)
+    #using Random
+    #using Unitful, UnitfulAstro, Measurements
 
-@testset "Spectra.jl" begin
-    include("spectrum.jl")
-    include("utils.jl")
-    include("transforms/transforms.jl")
-    include("plotting.jl")
-
-    Aqua.test_all(Spectra)
+    using Spectra: Spectra, spectrum
+    using Measurements: Measurements, ±
+    using Unitful: @u_str, unit, ustrip
+    import Random
 end
+
+args = parse_args(Base.ARGS)
+testsuite = find_tests(@__DIR__)
+
+runtests(Spectra, args; testsuite, init_code)

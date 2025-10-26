@@ -1,5 +1,4 @@
-using RecipesBase, Unitful
-import Measurements: value
+using RecipesBase
 
 @testset "Plotting - Single" begin
     wave = range(1e4, 3e4, length = 1000)
@@ -15,7 +14,7 @@ import Measurements: value
         :xlabel => "wave",
         :ylabel => "flux density",
         :seriestype => :step)
-    @test rec[1].args == (ustrip.(spec.wave), value.(ustrip.(spec.flux)))
+    @test rec[1].args == (ustrip.(spec.wave), Measurements.value.(ustrip.(spec.flux)))
 
 
     strip_spec = ustrip(spec)
@@ -25,7 +24,7 @@ import Measurements: value
         :xlabel => "wave",
         :ylabel => "flux density",
         :seriestype => :step)
-    @test rec[1].args == (strip_spec.wave, value.(strip_spec.flux))
+    @test rec[1].args == (strip_spec.wave, Measurements.value.(strip_spec.flux))
 end
 
 @testset "Plotting - Echelle" begin
