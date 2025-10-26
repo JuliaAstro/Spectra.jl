@@ -1,4 +1,10 @@
-using Spectra: redden
+using Spectra:
+    redden,
+    redden!,
+    deredden,
+    deredden!
+
+using DustExtinction: DustExtinction
 
 function mock_spectrum(n::Int = Int(1e3); use_units::Bool = false)
     wave = range(1e4, 3e4, length = n)
@@ -12,7 +18,7 @@ function mock_spectrum(n::Int = Int(1e3); use_units::Bool = false)
     spectrum(wave, flux, name="Test Spectrum")
 end
 
-@testset redden begin
+@testset "redden" begin
     # Custom law
     struct CustomLaw <: DustExtinction.ExtinctionLaw
         Rv::Float64
