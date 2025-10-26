@@ -2,13 +2,6 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import Spectra
 
 const init_code = quote
-    #using Test
-    #using Spectra
-    #using DustExtinction
-
-    #using Random
-    #using Unitful, UnitfulAstro, Measurements
-
     using Spectra: Spectra, spectrum
     using Measurements: Measurements, ±
     using Unitful: @u_str, unit, ustrip
