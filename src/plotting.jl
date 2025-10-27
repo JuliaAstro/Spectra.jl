@@ -1,5 +1,3 @@
-using RecipesBase, Unitful, Measurements
-
 @recipe function f(spec::Spectrum)
     seriestype --> :step
     xlabel --> "wave"

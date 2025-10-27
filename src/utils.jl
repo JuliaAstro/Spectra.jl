@@ -1,8 +1,3 @@
-using Unitful, UnitfulAstro
-using PhysicalConstants.CODATA2018: h, c_0, k_B
-
-export blackbody
-
 """
     blackbody(wave::Vector{<:Quantity}, T::Quantity)
     blackbody(wave::Vector{<:Real}, T::Real)

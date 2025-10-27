@@ -2,12 +2,10 @@
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
+ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Spectra = "391af1a9-06f1-59d3-8d21-0be089654739"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
-
-[sources]
-Spectra = {path = ".."}
