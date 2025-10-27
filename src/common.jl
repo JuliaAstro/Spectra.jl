@@ -1,9 +1,3 @@
-using WCS
-using Unitful
-
-export AbstractSpectrum
-#--------------------------------------------------------------------------------------
-
 """
     AbstractSpectrum{W<:Number, F<:Number}
 

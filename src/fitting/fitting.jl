@@ -1,4 +1,4 @@
-using LinearAlgebra
+using LinearAlgebra: /, \, diagm, pinv
 
 export continuum, line_flux, equivalent_width
 

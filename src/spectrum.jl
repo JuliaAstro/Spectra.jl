@@ -1,5 +1,3 @@
-using Unitful
-
 """
     Spectrum <: AbstractSpectrum
 

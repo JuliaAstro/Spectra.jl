@@ -1,6 +1,16 @@
 module Spectra
 
-export spectrum
+# common.jl
+export AbstractSpectrum, spectrum
+# utils.jl
+export blackbody
+# transforms/redden.jl
+export redden, redden!, deredden, deredden!
+
+using RecipesBase: @recipe
+using Measurements: Measurements, Measurement
+using Unitful: Unitful, Quantity, @u_str, ustrip, unit, dimension
+using PhysicalConstants.CODATA2018: h, c_0, k_B
 
 # AbstractSpectrum and common functionality
 include("common.jl")
@@ -31,7 +41,7 @@ julia> spec.name
 "Just Noise"
 ```
 
-There is easy integration with [Unitful.jl](https://github.com/painterqubits/unitful.jl)
+There is easy integration with [Unitful.jl](https://github.com/JuliaPhysics/Unitful.jl)
 and its sub-projects and [Measurements.jl](https://github.com/juliaphysics/measurements.jl)
 
 ```jldoctest

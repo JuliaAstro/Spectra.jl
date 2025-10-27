@@ -1,7 +1,10 @@
 name = "Spectra"
 uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
-authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
 version = "0.1.0"
+authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
+
+[workspace]
+projects = ["test", "docs"]
 
 [deps]
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
@@ -11,7 +14,6 @@ PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
-WCS = "15f3aee2-9e10-537f-b834-a6fb8bdb944d"
 
 [compat]
 DustExtinction = ">=0.6.0"
@@ -21,8 +23,4 @@ PhysicalConstants = "0.2"
 RecipesBase = "1"
 Unitful = "1"
 UnitfulAstro = "1"
-WCS = "0.6"
 julia = "1.10"
-
-[workspace]
-projects = ["test", "docs"]
