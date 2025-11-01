@@ -11,6 +11,17 @@ end
 
 Spectrum(wave, flux, meta::Dict{Symbol,Any}) = Spectrum(collect(wave), collect(flux), meta)
 
+Base.size(spec::Spectrum) = (length(spec.wave), )
+Base.IndexStyle(::Type{<:Spectrum}) = IndexLinear()
+
+function Base.getindex(spec::Spectrum, i::Int)
+    return Spectrum([spec.wave[i]], [spec.flux[i]], spec.meta)
+end
+
+function Base.getindex(spec::Spectrum, inds)
+    return Spectrum(spec.wave[inds], spec.flux[inds], spec.meta)
+end
+
 function Base.show(io::IO, spec::Spectrum)
     print(io, "Spectrum($(eltype(spec.wave)), $(eltype(spec.flux)))")
     for (key, val) in spec.meta
