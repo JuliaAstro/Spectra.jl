@@ -10,12 +10,14 @@ Random.seed!(8675309)
     flux[134] = 1 ± 0.1
 
     spec = spectrum(wave, flux, name = "test spectrum")
+    spec_indexed = spec[begin:end]
 
     @test propertynames(spec) == (:wave, :flux, :meta, :name)
     @test Spectra.wave(spec) == spec.wave
     @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
+    @test spec_indexed.wave == wave
     @test size(spec) === (1000,)
     @test length(spec) == 1000
     @test maximum(spec) == 1000 ± 1
@@ -25,6 +27,7 @@ Random.seed!(8675309)
     @test findmax(spec) == (1000 ± 1, 7)
     @test findmin(spec) == (1 ± 0.1, 134)
     @test spec.flux == flux
+    @test spec_indexed.flux == flux
     @test Measurements.uncertainty.(spec.flux) ≈ sigma
 
     flux_trimmed = flux[200:800]
