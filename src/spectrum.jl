@@ -22,6 +22,9 @@ function Base.getindex(spec::Spectrum, inds)
     return Spectrum(spec.wave[inds], spec.flux[inds], spec.meta)
 end
 
+Base.firstindex(spec::Spectrum) = firstindex(spec.wave)
+Base.lastindex(spec::Spectrum) = lastindex(spec.wave)
+
 function Base.show(io::IO, spec::Spectrum)
     print(io, "Spectrum($(eltype(spec.wave)), $(eltype(spec.flux)))")
     for (key, val) in spec.meta
