@@ -6,6 +6,8 @@ export AbstractSpectrum, spectrum
 export blackbody
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
+# resampling: ../ext/DataInterpolationsExt.jl
+export resample
 
 using RecipesBase: @recipe
 using Measurements: Measurements, Measurement
@@ -89,6 +91,36 @@ function spectrum(wave::AbstractMatrix{<:Quantity}, flux::AbstractMatrix{<:Quant
     @assert size(wave) == size(flux) "wave and flux must have equal size"
     @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     EchelleSpectrum(wave, flux, Dict{Symbol,Any}(kwds))
+end
+
+# Stub
+"""
+    function resample(spec, wave_sampled, interp)
+
+Resample a spectrum onto the given wavelength grid `wave_sampled` using the supplied interpolator `interp`. Currently supports interpolators from the [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl) package.
+
+# Examples
+
+```julia-repl
+julia> using DataInterpolations
+
+julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
+
+julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
+
+ # BYO interpolator
+julia> interp = LinearInterpolation(spec.flux, spec.wave; extrapolation = ExtrapolationType.Constant);
+
+julia> spec_sampled = resample(spec, wave_sampled, interp);
+```
+"""
+function resample(spec, wave_sampled, interp)
+    error("""Supported interpolation package not loaded. Please try adding one of the supported interpolation packages below:
+
+    - DataInterpolations.jl
+
+    PRs to add additional interpolation packages are welcome!
+    """)
 end
 
 # tools
