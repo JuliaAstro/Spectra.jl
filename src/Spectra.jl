@@ -128,6 +128,48 @@ function resample(spec, wave_sampled, interp)
     """)
 end
 
+"""
+    SpectrumResampler(spec::Spectrum, interp)
+Type representing the spectrum `spec` with interpolator `interp`.
+
+```jldoctest
+julia> using Spectra: spectrum, flux, wave, SpectrumResampler
+
+julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
+
+julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
+
+julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
+
+julia> interp = LinearInterpolation(flux(spec), wave(spec); extrapolation = ExtrapolationType.Constant);
+
+julia> resampler = SpectrumResampler(spec, interp);
+
+julia> result = resampler(wave_sampled);
+
+julia> result isa SpectrumResampler
+true
+
+julia> wave(result) == wave_sampled
+true
+
+julia> flux(result) == interp.(wave_sampled)
+true
+```
+"""
+struct SpectrumResampler{A <: Spectrum, B}
+    spectrum::A
+    interp::B
+end
+wave(s::SpectrumResampler) = wave(s.spectrum)
+flux(s::SpectrumResampler) = flux(s.spectrum)
+Spectrum(s::SpectrumResampler) = s.spectrum
+function (spec::SpectrumResampler)(wave_sampled)
+    newspec = spectrum(wave_sampled, spec.interp.(wave_sampled); meta = Spectrum(spec).meta)
+    return SpectrumResampler(newspec, spec.interp)
+end
+resample(spec::SpectrumResampler, wave_sampled) = spec(wave_sampled)
+
 # tools
 include("utils.jl")
 include("transforms/transforms.jl")
