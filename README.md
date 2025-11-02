@@ -9,7 +9,7 @@
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
-~**Warning: This is a work in progress and is under heavy development**~
+**Warning: This is a work in progress and is under heavy development**
 
 **Primary Author:** Miles Lucas [@mileslucas](https://github.com/mileslucas)
 
