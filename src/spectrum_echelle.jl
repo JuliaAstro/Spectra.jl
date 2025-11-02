@@ -20,5 +20,5 @@ Base.lastindex(spec::EchelleSpectrum) = lastindex(flux(spec), 1)
 function Base.show(io::IO, spec::EchelleSpectrum)
     println(io, "EchelleSpectrum($(eltype(wave(spec))), $(eltype(flux(spec))))")
     println(io, "  # orders: $(size(spec, 1))")
-    println(io, "meta: ", meta(spec))
+    print(io, "  meta: ", meta(spec))
 end

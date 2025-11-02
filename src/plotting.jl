@@ -1,4 +1,4 @@
-@recipe function f(spec::Spectrum)
+@recipe function f(spec::SingleSpectrum)
     seriestype --> :step
     xlabel --> "wave"
     ylabel --> "flux density"

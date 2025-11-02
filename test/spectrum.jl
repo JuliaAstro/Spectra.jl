@@ -33,8 +33,10 @@ Random.seed!(8675309)
     flux_trimmed = flux[200:800]
     @test_throws AssertionError spectrum(wave, flux_trimmed)
     expected = """
-    Spectrum(Float64, Measurements.Measurement{Float64})
-      name: test spectrum"""
+    SingleSpectrum(Float64, Measurements.Measurement{Float64})
+      wave: (10000.0, 50000.0)
+      flux: (1.0 ± 0.1, 1000.0 ± 1.0)
+      meta: Dict{Symbol, Any}(:name => "test spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "test spectrum"
 end
@@ -85,7 +87,7 @@ end
     expected = """
     EchelleSpectrum(Float64, Measurements.Measurement{Float64})
       # orders: 3
-      name: Test Echelle Spectrum"""
+      meta: Dict{Symbol, Any}(:name => "Test Echelle Spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "Test Echelle Spectrum"
 end
@@ -128,8 +130,10 @@ end
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
     expected = """
-    Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-      name: test"""
+    SingleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+      wave: (10000.0 Å, 50000.0 Å)
+      flux: (1.0 ± 0.1 W Å^-1 m^-2, 1000.0 ± 1.0 W Å^-1 m^-2)
+      meta: Dict{Symbol, Any}(:name => "test")"""
     @test sprint(show, spec) == expected
 end
 
@@ -183,7 +187,7 @@ end
     expected = """
     EchelleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
       # orders: 3
-      name: test echelle"""
+      meta: Dict{Symbol, Any}(:name => "test echelle")"""
     @test sprint(show, spec) == expected
 end
 

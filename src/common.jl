@@ -20,22 +20,6 @@ mutable struct Spectrum{W<:Number, F<:Number, N} <: AbstractSpectrum{W, F}
     meta::Dict{Symbol,Any}
 end
 
-Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
-
-function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
-    if nm in keys(getfield(spec, :meta))
-        return getfield(spec, :meta)[nm]
-    else
-        return getfield(spec, nm)
-    end
-end
-
-function Base.propertynames(spec::AbstractSpectrum)
-    natural = (:wave, :flux, :meta)
-    meta = keys(meta(spec))
-    return (natural..., meta...)
-end
-
 """
     wave(::AbstractSpectrum)
 
@@ -56,6 +40,22 @@ flux(spec::AbstractSpectrum) = spec.flux
 Return the meta of the spectrum.
 """
 meta(spec::AbstractSpectrum) = spec.meta
+
+Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
+
+function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
+    if nm in keys(getfield(spec, :meta))
+        return getfield(spec, :meta)[nm]
+    else
+        return getfield(spec, nm)
+    end
+end
+
+function Base.propertynames(spec::AbstractSpectrum)
+    natural = (:wave, :flux, :meta)
+    m = keys(meta(spec))
+    return (natural..., m...)
+end
 
 # Collection
 Base.eltype(spec::AbstractSpectrum) = eltype(flux(spec))
@@ -79,10 +79,10 @@ Base.:-(A, s::AbstractSpectrum) = s - A
 Base.:-(s::AbstractSpectrum, o::AbstractSpectrum) = s - o # Satisfy Aqua
 
 # Multi-Spectrum
-Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ flux(s), meta(s))
-Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* flux(s), meta(s))
-Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ flux(s) * unit(s)[2], meta(s))
-Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .- flux(s), meta(s))
+Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ flux(o), meta(s))
+Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* flux(o), meta(s))
+Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ flux(o) * unit(s)[2], meta(s))
+Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .- flux(o), meta(s))
 
 """
     Unitful.ustrip(::AbstractSpectrum)

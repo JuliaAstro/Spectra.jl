@@ -16,7 +16,7 @@ Base.lastindex(spec::SingleSpectrum) = lastindex(wave(spec))
 
 function Base.show(io::IO, spec::SingleSpectrum)
     println(io, "SingleSpectrum($(eltype(wave(spec))), $(eltype(flux(spec))))")
-    println(io, "wave: ", wave(spec))
-    println(io, "flux: ", flux(spec))
-    println(io, "meta: ", meta(spec))
+    println(io, "  wave: ", (extrema∘wave)(spec))
+    println(io, "  flux: ", (extrema∘flux)(spec))
+    print(io, "  meta: ", meta(spec))
 end
