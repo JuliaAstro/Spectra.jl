@@ -115,7 +115,7 @@ julia> spec_sampled = resample(spec, wave_sampled, interp);
 ```
 """
 function resample(spec, wave_sampled, interp)
-    error("""Supported interpolation package not loaded. Please try adding one of the supported interpolation packages below:
+    error("""No supported interpolation package loaded. To enable resampling, load one of the supported interpolation packages below:
 
     - DataInterpolations.jl
 
