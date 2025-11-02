@@ -36,10 +36,16 @@ julia> flux = (100 .± sigma)u"W/m^2/μm"
  100.0 ± -1.2 W μm^-1 m^-2
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (1.0 μm, 3.0 μm)
+  flux: (100.0 ± 0.94 W μm^-1 m^-2, 100.0 ± -1.2 W μm^-1 m^-2)
+  meta: Dict{Symbol, Any}()
 
 julia> red = redden(spec, 0.3)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (1.0 μm, 3.0 μm)
+  flux: (89.44 ± 0.84 W μm^-1 m^-2, 98.1 ± 1.2 W μm^-1 m^-2)
+  meta: Dict{Symbol, Any}()
 
 julia> red.flux
 5-element Vector{Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}}}:
@@ -50,7 +56,10 @@ julia> red.flux
   98.1 ± 1.2 W μm^-1 m^-2
 
 julia> deredden!(red, 0.3)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (1.0 μm, 3.0 μm)
+  flux: (100.0 ± 0.94 W μm^-1 m^-2, 100.0 ± 1.2 W μm^-1 m^-2)
+  meta: Dict{Symbol, Any}()
 
 julia> red.flux ≈ spec.flux
 true

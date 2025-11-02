@@ -21,14 +21,16 @@ julia> wave = range(1, 3, length=100)u"μm"
 (1.0:0.020202020202020204:3.0) μm
 
 julia> bb = blackbody(wave, 2000u"K")
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  T: 2000 K
-  name: Blackbody
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (1.0 μm, 3.0 μm)
+  flux: (49010.54557924032 W μm^-1 m^-2, 131058.60552995963 W μm^-1 m^-2)
+  meta: Dict{Symbol, Any}(:T => 2000 K, :name => "Blackbody")
 
 julia> blackbody(ustrip.(u"angstrom", wave), 6000)
-Spectrum(Float64, Float64)
-  T: 6000
-  name: Blackbody
+SingleSpectrum(Float64, Float64)
+  wave: (10000.0, 30000.0)
+  flux: (40.04325690910415, 1190.9562575755397)
+  meta: Dict{Symbol, Any}(:T => 6000, :name => "Blackbody")
 
 julia> bb.wave[argmax(bb)]
 1.4444444444444444 μm

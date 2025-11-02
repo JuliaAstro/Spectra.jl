@@ -33,11 +33,16 @@ julia> wave = range(1e4, 4e4, length=1000);
 julia> flux = 100 .* ones(size(wave));
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Float64, Float64)
+SingleSpectrum(Float64, Float64)
+  wave: (10000.0, 40000.0)
+  flux: (100.0, 100.0)
+  meta: Dict{Symbol, Any}()
 
 julia> spec = spectrum(wave, flux, name="Just Noise")
-Spectrum(Float64, Float64)
-  name: Just Noise
+SingleSpectrum(Float64, Float64)
+  wave: (10000.0, 40000.0)
+  flux: (100.0, 100.0)
+  meta: Dict{Symbol, Any}(:name => "Just Noise")
 
 julia> spec.name
 "Just Noise"
@@ -56,7 +61,10 @@ julia> sigma = randn(size(wave));
 julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (1.0 μm, 4.0 μm)
+  flux: (100.0 ± 1.2 erg Å^-1 cm^-2 s^-1, 100.0 ± 1.1 erg Å^-1 cm^-2 s^-1)
+  meta: Dict{Symbol, Any}()
 ```
 
 For a multi-order spectrum, all orders must have the same length, so be sure to pad any ragged orders with NaN.
@@ -69,6 +77,7 @@ julia> flux = ones(10, 100) .* collect(1:10);
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
   # orders: 10
+  meta: Dict{Symbol, Any}()
 ```
 """
 function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...)

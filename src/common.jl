@@ -58,23 +58,23 @@ function Base.propertynames(spec::AbstractSpectrum)
 end
 
 # Collection
+Base.argmax(spec::AbstractSpectrum) = argmax(flux(spec))
+Base.argmin(spec::AbstractSpectrum) = argmin(flux(spec))
 Base.eltype(spec::AbstractSpectrum) = eltype(flux(spec))
-Base.size(spec::AbstractSpectrum) = size(flux(spec))
-Base.size(spec::AbstractSpectrum, i) = size(flux(spec), i)
+Base.findmax(spec::AbstractSpectrum) = findmax(flux(spec))
+Base.findmin(spec::AbstractSpectrum) = findmin(flux(spec))
 Base.length(spec::AbstractSpectrum) = length(flux(spec))
 Base.maximum(spec::AbstractSpectrum) = maximum(flux(spec))
 Base.minimum(spec::AbstractSpectrum) = minimum(flux(spec))
-Base.argmax(spec::AbstractSpectrum) = argmax(flux(spec))
-Base.argmin(spec::AbstractSpectrum) = argmin(flux(spec))
-Base.findmax(spec::AbstractSpectrum) = findmax(flux(spec))
-Base.findmin(spec::AbstractSpectrum) = findmin(flux(spec))
+Base.size(spec::AbstractSpectrum) = size(flux(spec))
+Base.size(spec::AbstractSpectrum, i) = size(flux(spec), i)
 function Base.iterate(spec::AbstractSpectrum, state=0)
     state == length(spec) && return nothing
     return spec[begin + state], state + 1
 end
-Base.:(==)(s::AbstractSpectrum, o::AbstractSpectrum) = wave(s) == wave(o) && flux(s) == flux(o) && meta(s) == meta(o)
 
 # Arithmetic
+Base.:(==)(s::AbstractSpectrum, o::AbstractSpectrum) = wave(s) == wave(o) && flux(s) == flux(o) && meta(s) == meta(o)
 Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ A, meta(s))
 Base.:*(s::T, A::Union{Real, AbstractVector}) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* A, meta(s))
 Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ A, meta(s))
@@ -103,10 +103,16 @@ julia> wave = range(1e4, 3e4, length=1000);
 julia> flux = wave .* 10 .+ randn(1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  wave: (10000.0 Å, 30000.0 Å)
+  flux: (99999.8952204731 W Å^-1 m^-2, 299999.8866277076 W Å^-1 m^-2)
+  meta: Dict{Symbol, Any}()
 
 julia> ustrip(spec)
-Spectrum(Float64, Float64)
+SingleSpectrum(Float64, Float64)
+  wave: (10000.0, 30000.0)
+  flux: (99999.8952204731, 299999.8866277076)
+  meta: Dict{Symbol, Any}()
 ```
 """
 Unitful.ustrip(spec::AbstractSpectrum) = spectrum(ustrip.(wave(spec)), ustrip.(flux(spec)); meta(spec)...)

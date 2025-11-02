@@ -7,7 +7,7 @@ DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
 
 makedocs(sitename = "Spectra.jl",
     format = Documenter.HTML(;
-        prettyurls = get(ENV, "CI", nothing) == "true",
+        prettyurls = true,
         canonical = "https://juliaastro.org/Spectra/stable/",
     ),
     authors = "Miles Lucas and contributors.",
@@ -18,7 +18,7 @@ makedocs(sitename = "Spectra.jl",
         "spectrum.md",
         "transforms.md",
         "fitting.md",
-        "analysis.md",
+        "utils.md",
         "contrib.md",
     ],
     warnonly = [:missing_docs],
