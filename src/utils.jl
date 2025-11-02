@@ -56,3 +56,24 @@ _blackbody(wave::AbstractVector{<:Quantity}, T::Quantity) = blackbody(T).(wave)
 Returns a function for calculating blackbody curves.
 """
 blackbody(T::Quantity) = w->2h * c_0^2 / w^5 / (exp(h * c_0 / (w * k_B * T)) - 1)
+
+"""
+    equivalent_width(::AbstractSpectrum)
+
+Calculate the equivalent width of the given continuum-normalized spectrum. Return value has units equal to wavelengths.
+"""
+function equivalent_width(spec::AbstractSpectrum)
+    dx = spec.wave[end] - spec.wave[1]
+    flux = ustrip(line_flux(spec))
+    return dx - flux * unit(dx)
+end
+
+"""
+    line_flux(::AbstractSpectrum)
+
+Calculate the line flux of the given continuum-normalized spectrum. Return value has units equal to flux.
+"""
+function line_flux(spec::AbstractSpectrum)
+    avg_dx = diff(spec.wave)
+    return sum(spec.flux[2:end] .* avg_dx)
+end

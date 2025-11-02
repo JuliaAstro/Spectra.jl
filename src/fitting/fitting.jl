@@ -1,6 +1,5 @@
 using LinearAlgebra: /, \, diagm, pinv
 
-export continuum, line_flux, equivalent_width
 
 function chebvander(x::AbstractVector{T}, deg::Int) where {T <: Number}
     v = Matrix{T}(undef, length(x), deg + 1)
@@ -45,24 +44,3 @@ end
 Return a continuum-normalized spectrum by fitting the continuum with a Chebyshev polynomial of degree `deg`.
 """
 continuum(spec::AbstractSpectrum, deg::Int = 3) = continuum!(deepcopy(spec), deg)
-
-"""
-    equivalent_width(::AbstractSpectrum)
-
-Calculate the equivalent width of the given continuum-normalized spectrum. Return value has units equal to wavelengths.
-"""
-function equivalent_width(spec::AbstractSpectrum)
-    dx = spec.wave[end] - spec.wave[1]
-    flux = ustrip(line_flux(spec))
-    return dx - flux * unit(dx)
-end
-
-"""
-    line_flux(::AbstractSpectrum)
-
-Calculate the line flux of the given continuum-normalized spectrum. Return value has units equal to flux.
-"""
-function line_flux(spec::AbstractSpectrum)
-    avg_dx = diff(spec.wave)
-    return sum(spec.flux[2:end] .* avg_dx)
-end

@@ -68,6 +68,11 @@ Base.argmax(spec::AbstractSpectrum) = argmax(flux(spec))
 Base.argmin(spec::AbstractSpectrum) = argmin(flux(spec))
 Base.findmax(spec::AbstractSpectrum) = findmax(flux(spec))
 Base.findmin(spec::AbstractSpectrum) = findmin(flux(spec))
+function Base.iterate(spec::AbstractSpectrum, state=0)
+    state == length(spec) && return nothing
+    return spec[begin + state], state + 1
+end
+Base.:(==)(s::AbstractSpectrum, o::AbstractSpectrum) = wave(s) == wave(o) && flux(s) == flux(o) && meta(s) == meta(o)
 
 # Arithmetic
 Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ A, meta(s))

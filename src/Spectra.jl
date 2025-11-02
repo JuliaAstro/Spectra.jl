@@ -3,7 +3,9 @@ module Spectra
 # common.jl
 export AbstractSpectrum, SingleSpectrum, EchelleSpectrum, spectrum
 # utils.jl
-export blackbody
+export blackbody, line_flux, equivalent_width
+# fitting/fitting.jl
+export continuum, continuum!
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
 

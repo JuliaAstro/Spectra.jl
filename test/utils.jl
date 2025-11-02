@@ -1,4 +1,4 @@
-using Spectra: blackbody
+using Spectra: spectrum, blackbody, line_flux, equivalent_width
 
 @testset "Blackbody T=$T" for T in [2000, 4000, 6000]
     wave = range(1e3, 5e4, length = 1000)
@@ -16,4 +16,14 @@ using Spectra: blackbody
     @test unit(bb)[2] == u"W/m^2/angstrom"
     @test bb.T == T
     @test bb.wave[argmax(bb)] ≈ b * u"angstrom*K" / T rtol = 0.01
+end
+
+@testset "Line flux" begin
+    spec = spectrum([3, 5, 4], [6, 7, 8])
+    @test line_flux(spec) == 6
+end
+
+@testset "Equivalent width" begin
+    spec = spectrum([1, 2, 3], [1, -10, 1])
+    @test equivalent_width(spec) == 11
 end
