@@ -17,7 +17,6 @@ include("common.jl")
 
 # Spectrum types and basic arithmetic
 include("spectrum.jl")
-include("EchelleSpectrum.jl")
 
 """
     spectrum(wave, flux; kwds...)
