@@ -163,9 +163,9 @@ struct SpectrumResampler{A <: Spectrum, B}
 end
 wave(s::SpectrumResampler) = wave(s.spectrum)
 flux(s::SpectrumResampler) = flux(s.spectrum)
-Spectrum(s::SpectrumResampler) = s.spectrum
+spectrum(s::SpectrumResampler) = s.spectrum
 function (spec::SpectrumResampler)(wave_sampled)
-    newspec = spectrum(wave_sampled, spec.interp.(wave_sampled); meta = Spectrum(spec).meta)
+    newspec = spectrum(wave_sampled, spec.interp.(wave_sampled); meta = spectrum(spec).meta)
     return SpectrumResampler(newspec, spec.interp)
 end
 resample(spec::SpectrumResampler, wave_sampled) = spec(wave_sampled)
