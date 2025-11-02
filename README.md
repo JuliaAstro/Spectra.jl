@@ -11,8 +11,6 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 
 ~**Warning: This is a work in progress and is under heavy development**~
 
-**Status:** Currently I (Miles) am not working with spectra anymore and can't dedicate much time to this- I hope to revisit this package but it is no longer in active development.
-
 **Primary Author:** Miles Lucas [@mileslucas](https://github.com/mileslucas)
 
 ## Installation
