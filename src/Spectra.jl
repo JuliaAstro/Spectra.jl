@@ -109,7 +109,7 @@ julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
 julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
 
  # BYO interpolator
-julia> interp = LinearInterpolation(spec.flux, spec.wave; extrapolation = ExtrapolationType.Constant);
+julia> interp = LinearInterpolation(flux(spec), wave(spec); extrapolation = ExtrapolationType.Constant);
 
 julia> spec_sampled = resample(spec, wave_sampled, interp);
 ```
