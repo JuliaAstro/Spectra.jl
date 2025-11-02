@@ -9,6 +9,19 @@ An abstract holder for astronomical spectra. All types inheriting from this must
 """
 abstract type AbstractSpectrum{W,F} end
 
+"""
+    Spectrum <: AbstractSpectrum
+
+A spectrum or spectra stored as arrays of real numbers. The wavelengths are assumed to be in angstrom.
+"""
+mutable struct Spectrum{W<:Number, F<:Number, N} <: AbstractSpectrum{W, F}
+    wave::AbstractArray{W, N}
+    flux::AbstractArray{F, N}
+    meta::Dict{Symbol,Any}
+end
+
+Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
+
 function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
     if nm in keys(getfield(spec, :meta))
         return getfield(spec, :meta)[nm]
@@ -19,7 +32,7 @@ end
 
 function Base.propertynames(spec::AbstractSpectrum)
     natural = (:wave, :flux, :meta)
-    meta = keys(spec.meta)
+    meta = keys(meta(spec))
     return (natural..., meta...)
 end
 
@@ -37,32 +50,39 @@ Return the flux of the spectrum.
 """
 flux(spec::AbstractSpectrum) = spec.flux
 
+"""
+    meta(::AbstractSpectrum)
+
+Return the meta of the spectrum.
+"""
+meta(spec::AbstractSpectrum) = spec.meta
+
 # Collection
-Base.eltype(spec::AbstractSpectrum) = eltype(spec.flux)
-Base.size(spec::AbstractSpectrum) = size(spec.flux)
-Base.size(spec::AbstractSpectrum, i) = size(spec.flux, i)
-Base.length(spec::AbstractSpectrum) = length(spec.flux)
-Base.maximum(spec::AbstractSpectrum) = maximum(spec.flux)
-Base.minimum(spec::AbstractSpectrum) = minimum(spec.flux)
-Base.argmax(spec::AbstractSpectrum) = argmax(spec.flux)
-Base.argmin(spec::AbstractSpectrum) = argmin(spec.flux)
-Base.findmax(spec::AbstractSpectrum) = findmax(spec.flux)
-Base.findmin(spec::AbstractSpectrum) = findmin(spec.flux)
+Base.eltype(spec::AbstractSpectrum) = eltype(flux(spec))
+Base.size(spec::AbstractSpectrum) = size(flux(spec))
+Base.size(spec::AbstractSpectrum, i) = size(flux(spec), i)
+Base.length(spec::AbstractSpectrum) = length(flux(spec))
+Base.maximum(spec::AbstractSpectrum) = maximum(flux(spec))
+Base.minimum(spec::AbstractSpectrum) = minimum(flux(spec))
+Base.argmax(spec::AbstractSpectrum) = argmax(flux(spec))
+Base.argmin(spec::AbstractSpectrum) = argmin(flux(spec))
+Base.findmax(spec::AbstractSpectrum) = findmax(flux(spec))
+Base.findmin(spec::AbstractSpectrum) = findmin(flux(spec))
 
 # Arithmetic
-Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ A, s.meta)
-Base.:*(s::T, A::Union{Real, AbstractVector}) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* A, s.meta)
-Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ A, s.meta)
-Base.:-(s::T) where {T <: AbstractSpectrum} = T(s.wave, -s.flux, s.meta)
+Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ A, meta(s))
+Base.:*(s::T, A::Union{Real, AbstractVector}) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* A, meta(s))
+Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ A, meta(s))
+Base.:-(s::T) where {T <: AbstractSpectrum} = T(wave(s), -flux(s), meta(s))
 Base.:-(s::AbstractSpectrum, A) = s + -A
 Base.:-(A, s::AbstractSpectrum) = s - A
 Base.:-(s::AbstractSpectrum, o::AbstractSpectrum) = s - o # Satisfy Aqua
 
 # Multi-Spectrum
-Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .+ o.flux, s.meta)
-Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .* o.flux, s.meta)
-Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux ./ o.flux * unit(s)[2], s.meta)
-Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(s.wave, s.flux .- o.flux, s.meta)
+Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ flux(s), meta(s))
+Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* flux(s), meta(s))
+Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ flux(s) * unit(s)[2], meta(s))
+Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .- flux(s), meta(s))
 
 """
     Unitful.ustrip(::AbstractSpectrum)
@@ -84,7 +104,7 @@ julia> ustrip(spec)
 Spectrum(Float64, Float64)
 ```
 """
-Unitful.ustrip(spec::AbstractSpectrum) = spectrum(ustrip.(spec.wave), ustrip.(spec.flux); spec.meta...)
+Unitful.ustrip(spec::AbstractSpectrum) = spectrum(ustrip.(wave(spec)), ustrip.(flux(spec)); meta(spec)...)
 
 """
     Unitful.unit(::AbstractSpectrum)
@@ -105,4 +125,4 @@ julia> w_unit, f_unit = unit(spec)
 (Å, W Å^-1 m^-2)
 ```
 """
-Unitful.unit(spec::AbstractSpectrum) = unit(eltype(spec.wave)), unit(eltype(spec.flux))
+Unitful.unit(spec::AbstractSpectrum) = unit(eltype(wave(spec))), unit(eltype(flux(spec)))
