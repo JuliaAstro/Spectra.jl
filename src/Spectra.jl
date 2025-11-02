@@ -6,7 +6,7 @@ export AbstractSpectrum, spectrum
 export blackbody
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
-# resampling: ../ext/DataInterpolationsExt.jl
+# resampling: ../ext/DataInterpolationsExt.jl ../ext/Interpolations.jl
 export resample
 
 using RecipesBase: @recipe
@@ -97,7 +97,10 @@ end
 """
     function resample(spec, wave_sampled, interp)
 
-Resample a spectrum onto the given wavelength grid `wave_sampled` using the supplied interpolator `interp`. Currently supports interpolators from the [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl) package.
+Resample a spectrum onto the given wavelength grid `wave_sampled` using the supplied interpolator `interp`. Currently supports interpolators from the following packages:
+
+    * [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl)
+    * [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl)
 
 # Examples
 
@@ -109,15 +112,17 @@ julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
 julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
 
  # BYO interpolator
-julia> interp = LinearInterpolation(flux(spec), wave(spec); extrapolation = ExtrapolationType.Constant);
+julia> interp = ...
 
-julia> spec_sampled = resample(spec, wave_sampled, interp);
+julia> spec_sampled = resample(spec, wave_sampled, interp)
+Spectrum(Int64, Float64)
 ```
 """
 function resample(spec, wave_sampled, interp)
     error("""No supported interpolation package loaded. To enable resampling, load one of the supported interpolation packages below:
 
-    - DataInterpolations.jl
+    * [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl)
+    * [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl)
 
     PRs to add additional interpolation packages are welcome!
     """)
