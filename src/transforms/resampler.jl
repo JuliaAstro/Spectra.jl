@@ -5,7 +5,8 @@ Type representing the spectrum `spec` with interpolator `interp`.
 
 Interpolation methods from many packages can be used without issue. Below we show example usage of [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl) and [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl).
 
-First, we set up a an arbitrary spectrum and a linear interpolator from DataInterpolations.jl
+First, we set up an arbitrary spectrum and a linear interpolator from DataInterpolations.jl:
+
 ```jldoctest resampling
 julia> using Spectra: spectrum, flux, wave, SpectrumResampler
 
@@ -13,11 +14,12 @@ julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
 
 julia> spec = spectrum([20, 40, 120, 160, 200], [1, 3, 7, 6, 20]);
 
-julia> interp = LinearInterpolation(flux(spec), wave(spec); 
-                    extrapolation = ExtrapolationType.Constant);
+julia> interp = LinearInterpolation(flux(spec), wave(spec);
+           extrapolation = ExtrapolationType.Constant
+       );
 ```
 
-Now, we construct the `SpectrumResampler` and define the new wavelength grid that we want to resample the original spectrum to.
+Now, we construct the `SpectrumResampler` and define the new wavelength grid that we want to resample the original spectrum to:
 
 ```jldoctest resampling
 julia> resampler = SpectrumResampler(spec, interp);
@@ -44,7 +46,7 @@ julia> flux(result) == interp(wave_sampled)
 true
 ```
 
-Use of [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl) follows the same general procedure but using a different `interp`.
+Use of [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl) follows the same general procedure, but using a different `interp`:
 
 ```jldoctest resampling
 julia> using Interpolations: linear_interpolation, Flat
