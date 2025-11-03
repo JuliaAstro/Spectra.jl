@@ -27,5 +27,7 @@ makedocs(sitename = "Spectra.jl",
 
 deploydocs(;
     repo = "github.com/JuliaAstro/Spectra.jl.git",
+    devbranch = "main",
+    push_preview = true,
     versions = ["stable" => "v^", "v#.#"] # Restrict to minor releases
 )
