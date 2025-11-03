@@ -1,4 +1,4 @@
-const SingleSpectrum = Spectrum{W, F, 1} where {W, F}
+const SingleSpectrum = Spectrum{W, F, 1, 1} where {W, F}
 
 #Base.size(spec::SingleSpectrum) = (length(wave(spec)), )
 #Base.IndexStyle(::Type{<:SingleSpectrum}) = IndexLinear()

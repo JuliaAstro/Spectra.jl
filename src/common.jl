@@ -14,9 +14,9 @@ abstract type AbstractSpectrum{W,F} end
 
 A spectrum or spectra stored as arrays of real numbers. The wavelengths are assumed to be in angstrom.
 """
-mutable struct Spectrum{W<:Number, F<:Number, N} <: AbstractSpectrum{W, F}
+mutable struct Spectrum{W<:Number, F<:Number, N, M} <: AbstractSpectrum{W, F}
     wave::AbstractArray{W, N}
-    flux::AbstractArray{F, N}
+    flux::AbstractArray{F, M}
     meta::Dict{Symbol,Any}
 end
 

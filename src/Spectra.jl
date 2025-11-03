@@ -1,7 +1,7 @@
 module Spectra
 
 # common.jl
-export AbstractSpectrum, SingleSpectrum, EchelleSpectrum, spectrum
+export AbstractSpectrum, SingleSpectrum, IFUSpectrum, EchelleSpectrum, spectrum
 # utils.jl
 export blackbody, line_flux, equivalent_width
 # fitting/fitting.jl
@@ -19,6 +19,7 @@ include("common.jl")
 
 # Spectrum types and basic arithmetic
 include("spectrum_single.jl")
+include("spectrum_ifu.jl")
 include("spectrum_echelle.jl")
 
 """
@@ -85,14 +86,19 @@ function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kw
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractVector{<:Quantity}, flux::AbstractVector{<:Quantity}; kwds...)
-    @assert size(wave) == size(flux) "wave and flux must have equal size"
-    @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
+function spectrum(wave::AbstractVector{<:Real}, flux::AbstractMatrix{<:Real}; kwds...)
+    @assert size(wave, 1) == size(flux, 2) "wave and flux in each order must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(wave::AbstractMatrix{<:Real}, flux::AbstractMatrix{<:Real}; kwds...)
     @assert size(wave) == size(flux) "wave and flux must have equal size"
+    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+end
+
+function spectrum(wave::AbstractVector{<:Quantity}, flux::AbstractVector{<:Quantity}; kwds...)
+    @assert size(wave) == size(flux) "wave and flux must have equal size"
+    @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 

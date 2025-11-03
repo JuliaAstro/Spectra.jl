@@ -1,4 +1,4 @@
-const EchelleSpectrum = Spectrum{W, F, 2} where {W, F}
+const EchelleSpectrum = Spectrum{W, F, 2, 2} where {W, F}
 
 function Base.getindex(spec::EchelleSpectrum, i::Int)
     w = wave(spec)[i, :]
