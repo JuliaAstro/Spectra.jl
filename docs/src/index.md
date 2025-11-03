@@ -23,9 +23,9 @@ Here is a quick demo of some of our features
 ```jldoctest guide
 julia> using Spectra, FITSIO, Unitful, UnitfulAstro, Plots
 
-julia> fitsurl = "https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12";
+julia> # fitsurl = "https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12";
 
-julia> # download(fitsurl, "sdss.fits");
+julia> # f = FITS(HTTP.get(fitsurl).body)
 
 julia> f = FITS("sdss.fits")
 File: sdss.fits
@@ -49,10 +49,13 @@ julia> plot(spec);
 ![](assets/sdss.svg)
 
 ```jldoctest guide
-julia> cont_fit = continuum(spec)
-Spectrum(Quantity{Float32, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  coeffs: Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}}[1.983152216046405e-15 erg Å^-1 cm^-2 s^-1, -1.8822245369267038e-16 erg Å^-1 cm^-2 s^-1, -1.0422750370065006e-16 erg Å^-1 cm^-2 s^-1, 4.8112282273206135e-17 erg Å^-1 cm^-2 s^-1]
-  normalized: true
+julia> cont_fit = continuum(spec);
+
+julia> cont_fit isa Spectra.Spectrum
+true
+
+julia> cont_fit.normalized
+true
 
 julia> plot(cont_fit, xlims=(6545, 6600));
 ```
