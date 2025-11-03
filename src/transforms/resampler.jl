@@ -77,7 +77,8 @@ spectrum(s::SpectrumResampler) = s.spectrum
 function (s::SpectrumResampler)(wave_sampled)
     interp = s.interp
     spec_resampled = interp(wave_sampled)
-    s_new = spectrum(wave_sampled, spec_resampled; meta = spectrum(s).meta)
+    s_new = Spectrum(wave_sampled, spec_resampled, spectrum(s).meta)
+    # s_new = spectrum(wave_sampled, spec_resampled; meta = spectrum(s).meta)
     return SpectrumResampler(s_new, interp)
 end
 
