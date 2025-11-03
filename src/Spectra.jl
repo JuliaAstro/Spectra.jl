@@ -6,8 +6,8 @@ export AbstractSpectrum, spectrum
 export blackbody
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
-# resampling: ../ext/DataInterpolationsExt.jl ../ext/Interpolations.jl
-export resample
+# transforms/resampler
+export SpectrumResampler
 
 using RecipesBase: @recipe
 using Measurements: Measurements, Measurement
@@ -20,6 +20,15 @@ include("common.jl")
 # Spectrum types and basic arithmetic
 include("spectrum.jl")
 include("EchelleSpectrum.jl")
+
+# Resampler type
+include("transforms/resampler.jl")
+
+# tools
+include("utils.jl")
+include("transforms/transforms.jl")
+include("plotting.jl")
+include("fitting/fitting.jl")
 
 """
     spectrum(wave, flux; kwds...)
@@ -92,88 +101,5 @@ function spectrum(wave::AbstractMatrix{<:Quantity}, flux::AbstractMatrix{<:Quant
     @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     EchelleSpectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
-
-# Stub
-"""
-    function resample(spec, wave_sampled, interp)
-
-Resample a spectrum onto the given wavelength grid `wave_sampled` using the supplied interpolator `interp`. Currently supports interpolators from the following packages:
-
-    * [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl)
-    * [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl)
-
-# Examples
-
-```julia-repl
-julia> using DataInterpolations
-
-julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
-
-julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
-
- # BYO interpolator
-julia> interp = ...
-
-julia> spec_sampled = resample(spec, wave_sampled, interp)
-Spectrum(Int64, Float64)
-```
-"""
-function resample(spec, wave_sampled, interp)
-    error("""No supported interpolation package loaded. To enable resampling, load one of the supported interpolation packages below:
-
-    * [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl)
-    * [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl)
-
-    PRs to add additional interpolation packages are welcome!
-    """)
-end
-
-"""
-    SpectrumResampler(spec::Spectrum, interp)
-Type representing the spectrum `spec` with interpolator `interp`.
-
-```jldoctest
-julia> using Spectra: spectrum, flux, wave, SpectrumResampler
-
-julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
-
-julia> spec = spectrum([2, 4, 12, 16, 20], [1, 3, 7, 6, 20]);
-
-julia> wave_sampled = [1, 5, 9, 13, 14, 17, 21, 22, 23];
-
-julia> interp = LinearInterpolation(flux(spec), wave(spec); extrapolation = ExtrapolationType.Constant);
-
-julia> resampler = SpectrumResampler(spec, interp);
-
-julia> result = resampler(wave_sampled);
-
-julia> result isa SpectrumResampler
-true
-
-julia> wave(result) == wave_sampled
-true
-
-julia> flux(result) == interp.(wave_sampled)
-true
-```
-"""
-struct SpectrumResampler{A <: Spectrum, B}
-    spectrum::A
-    interp::B
-end
-wave(s::SpectrumResampler) = wave(s.spectrum)
-flux(s::SpectrumResampler) = flux(s.spectrum)
-spectrum(s::SpectrumResampler) = s.spectrum
-function (spec::SpectrumResampler)(wave_sampled)
-    newspec = spectrum(wave_sampled, spec.interp.(wave_sampled); meta = spectrum(spec).meta)
-    return SpectrumResampler(newspec, spec.interp)
-end
-resample(spec::SpectrumResampler, wave_sampled) = spec(wave_sampled)
-
-# tools
-include("utils.jl")
-include("transforms/transforms.jl")
-include("plotting.jl")
-include("fitting/fitting.jl")
 
 end # module
