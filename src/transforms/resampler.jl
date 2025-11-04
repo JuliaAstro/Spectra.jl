@@ -87,5 +87,5 @@ end
 function Base.show(io::IO, s::SpectrumResampler)
     println(io, "SpectrumResampler($(eltype(wave(s))), $(eltype(flux(s))))")
     println(io, "  spec: ", spectrum(s))
-    print(io, "  interpolator: ", s.interp)
+    print(io, "  interpolator: ", typeof(s.interp))
 end
