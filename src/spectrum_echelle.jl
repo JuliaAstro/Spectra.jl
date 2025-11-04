@@ -18,7 +18,11 @@ Base.firstindex(spec::EchelleSpectrum) = firstindex(flux(spec), 1)
 Base.lastindex(spec::EchelleSpectrum) = lastindex(flux(spec), 1)
 
 function Base.show(io::IO, spec::EchelleSpectrum)
+    w = wave(spec)
+    f = flux(spec)
     println(io, "EchelleSpectrum($(eltype(wave(spec))), $(eltype(flux(spec))))")
     println(io, "  # orders: $(size(spec, 1))")
+    println(io, "  wave ($(size(w))): ", first(w), " .. ", last(w))
+    println(io, "  flux ($(size(f))): ", first(f), " .. ", last(f))
     print(io, "  meta: ", meta(spec))
 end

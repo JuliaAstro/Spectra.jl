@@ -225,8 +225,8 @@ function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kw
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractVector{<:Real}, flux::AbstractMatrix{<:Real}; kwds...)
-    @assert size(wave, 1) == size(flux, 2) "wave and flux in each order must have equal size"
+function spectrum(wave::AbstractVector{<:Real}, flux::AbstractArray{<:Real, 3}; kwds...)
+    @assert size(wave, 1) == size(flux, 1) "wave and flux in each order must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
