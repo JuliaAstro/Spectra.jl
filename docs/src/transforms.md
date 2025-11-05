@@ -1,18 +1,11 @@
-```@meta
-DocTestSetup = quote
-  using Spectra, Random
-  Random.seed!(11894)
-end
-```
-
 # Transformations
 
 ## Extinction
 
-By levaraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
+By leveraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
 
 ```jldoctest
-julia> using Unitful, Measurements, Random
+julia> using Spectra, Unitful, Measurements, Random
 
 julia> rng = Random.seed!(0);
 
@@ -71,8 +64,4 @@ External interpolators, e.g., from [DataInterpolations.jl](https://github.com/Sc
 
 ```@docs
 SpectrumResampler
-```
-
-```@meta
-DocTestSetup = nothing
 ```

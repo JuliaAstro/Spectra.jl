@@ -15,8 +15,7 @@ julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
 julia> spec = spectrum([20, 40, 120, 160, 200], [1, 3, 7, 6, 20]);
 
 julia> interp = LinearInterpolation(flux(spec), wave(spec);
-           extrapolation = ExtrapolationType.Constant
-       );
+           extrapolation = ExtrapolationType.Constant);
 ```
 
 Now, we construct the `SpectrumResampler` and define the new wavelength grid that we want to resample the original spectrum to:
