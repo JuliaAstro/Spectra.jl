@@ -122,14 +122,14 @@ julia> flux = wave .* 10 .+ randn(1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave: (10000.0 Å, 30000.0 Å)
-  flux: (99999.8952204731 W Å^-1 m^-2, 299999.8866277076 W Å^-1 m^-2)
+  wave ((1000,)): 10000.0 Å .. 30000.0 Å
+  flux ((1000,)): 99999.8952204731 W Å^-1 m^-2 .. 299999.8866277076 W Å^-1 m^-2
   meta: Dict{Symbol, Any}()
 
 julia> ustrip(spec)
 SingleSpectrum(Float64, Float64)
-  wave: (10000.0, 30000.0)
-  flux: (99999.8952204731, 299999.8866277076)
+  wave ((1000,)): 10000.0 .. 30000.0
+  flux ((1000,)): 99999.8952204731 .. 299999.8866277076
   meta: Dict{Symbol, Any}()
 ```
 """
@@ -174,14 +174,14 @@ julia> flux = 100 .* ones(size(wave));
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Float64, Float64)
-  wave: (10000.0, 40000.0)
-  flux: (100.0, 100.0)
+  wave ((1000,)): 10000.0 .. 40000.0
+  flux ((1000,)): 100.0 .. 100.0
   meta: Dict{Symbol, Any}()
 
 julia> spec = spectrum(wave, flux, name="Just Noise")
 SingleSpectrum(Float64, Float64)
-  wave: (10000.0, 40000.0)
-  flux: (100.0, 100.0)
+  wave ((1000,)): 10000.0 .. 40000.0
+  flux ((1000,)): 100.0 .. 100.0
   meta: Dict{Symbol, Any}(:name => "Just Noise")
 
 julia> spec.name
@@ -202,8 +202,8 @@ julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave: (1.0 μm, 4.0 μm)
-  flux: (100.0 ± 1.2 erg Å^-1 cm^-2 s^-1, 100.0 ± 1.1 erg Å^-1 cm^-2 s^-1)
+  wave ((1000,)): 1.0 μm .. 4.0 μm
+  flux ((1000,)): 100.0 ± 1.2 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 1.1 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}()
 ```
 
@@ -217,6 +217,8 @@ julia> flux = ones(10, 100) .* collect(1:10);
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
   # orders: 10
+  wave ((10, 100)): 100.0 .. 10000.0
+  flux ((10, 100)): 1.0 .. 10.0
   meta: Dict{Symbol, Any}()
 ```
 """
