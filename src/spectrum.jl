@@ -3,7 +3,7 @@
 
 A 1-dimensional spectrum stored as vectors of real numbers. The wavelengths are assumed to be in angstrom.
 """
-mutable struct Spectrum{W <: Number,F <: Number} <: AbstractSpectrum{W,F}
+struct Spectrum{W <: Number,F <: Number} <: AbstractSpectrum{W,F}
     wave::Vector{W}
     flux::Vector{F}
     meta::Dict{Symbol,Any}
