@@ -71,9 +71,9 @@ struct SpectrumResampler{A <: Spectrum, B}
     interp::B
 end
 
-wave(s::SpectrumResampler) = wave(s.spectrum)
-flux(s::SpectrumResampler) = flux(s.spectrum)
 spectrum(s::SpectrumResampler) = s.spectrum
+wave(s::SpectrumResampler) = wave(spectrum(s))
+flux(s::SpectrumResampler) = flux(spectrum(s))
 
 function (s::SpectrumResampler)(wave_sampled)
     interp = s.interp
