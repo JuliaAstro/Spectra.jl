@@ -42,8 +42,8 @@ julia> flux = (read(f[2], "flux") .* 1e-17)u"erg/s/cm^2/angstrom";
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Quantity{Float32, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave ((3827,)): 3815.0483f0 Å .. 9206.613f0 Å
-  flux ((3827,)): 2.182261505126953e-15 erg Å^-1 cm^-2 s^-1 .. 1.7559197998046877e-15 erg Å^-1 cm^-2 s^-1
+  wave (3827,): 3815.0483f0 Å .. 9206.613f0 Å
+  flux (3827,): 2.182261505126953e-15 erg Å^-1 cm^-2 s^-1 .. 1.7559197998046877e-15 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}()
 
 julia> plot(spec);
@@ -54,8 +54,8 @@ julia> plot(spec);
 ```jldoctest guide
 julia> cont_fit = continuum(spec)
 SingleSpectrum(Quantity{Float32, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave ((3827,)): 3815.0483f0 Å .. 9206.613f0 Å
-  flux ((3827,)): 1.0808438837160355 erg Å^-1 cm^-2 s^-1 .. 1.0098373106940344 erg Å^-1 cm^-2 s^-1
+  wave (3827,): 3815.0483f0 Å .. 9206.613f0 Å
+  flux (3827,): 1.0808438837160355 erg Å^-1 cm^-2 s^-1 .. 1.0098373106940344 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}(:coeffs => Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}}[1.983152216046405e-15 erg Å^-1 cm^-2 s^-1, -1.8822245369267038e-16 erg Å^-1 cm^-2 s^-1, -1.0422750370065006e-16 erg Å^-1 cm^-2 s^-1, 4.8112282273206135e-17 erg Å^-1 cm^-2 s^-1], :normalized => true)
 
 julia> plot(cont_fit, xlims=(6545, 6600));

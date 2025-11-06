@@ -34,8 +34,8 @@ Random.seed!(8675309)
     @test_throws AssertionError spectrum(wave, flux_trimmed)
     expected = """
     SingleSpectrum(Float64, Measurements.Measurement{Float64})
-      wave ((1000,)): 10000.0 .. 50000.0
-      flux ((1000,)): 100.0 ± -2.8 .. 100.0 ± 0.6
+      wave (1000,): 10000.0 .. 50000.0
+      flux (1000,): 100.0 ± -2.8 .. 100.0 ± 0.6
       meta: Dict{Symbol, Any}(:name => "test spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "test spectrum"
@@ -87,8 +87,8 @@ end
     expected = """
     EchelleSpectrum(Float64, Measurements.Measurement{Float64})
       # orders: 3
-      wave ((3, 1000)): 10000.0 .. 50000.0
-      flux ((3, 1000)): 100.0 ± -2.8 .. 100.0 ± 0.6
+      wave (3, 1000): 10000.0 .. 50000.0
+      flux (3, 1000): 100.0 ± -2.8 .. 100.0 ± 0.6
       meta: Dict{Symbol, Any}(:name => "Test Echelle Spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "Test Echelle Spectrum"
@@ -133,8 +133,8 @@ end
     @test strip_spec.meta == spec.meta
     expected = """
     SingleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-      wave ((1000,)): 10000.0 Å .. 50000.0 Å
-      flux ((1000,)): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
+      wave (1000,): 10000.0 Å .. 50000.0 Å
+      flux (1000,): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
       meta: Dict{Symbol, Any}(:name => "test")"""
     @test sprint(show, spec) == expected
 end
@@ -188,8 +188,8 @@ end
     expected = """
     EchelleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
       # orders: 3
-      wave ((3, 1000)): 10000.0 Å .. 50000.0 Å
-      flux ((3, 1000)): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
+      wave (3, 1000): 10000.0 Å .. 50000.0 Å
+      flux (3, 1000): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
       meta: Dict{Symbol, Any}(:name => "test echelle")"""
     @test sprint(show, spec) == expected
 end
