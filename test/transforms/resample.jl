@@ -49,7 +49,7 @@ end
     SpectrumResampler(Float64, Measurements.Measurement{Float64})
       spec: Spectrum(Float64, Measurements.Measurement{Float64})
       name: Test Spectrum
-      interpolator: LinearInterpolation{Vector{Measurements.Measurement{Float64}}, Vector{Float64}, Vector{Measurements.Measurement{Float64}}, Vector{Measurements.Measurement{Float64}}, Measurements.Measurement{Float64}}"""
+      interpolator: DataInterpolations.LinearInterpolation{Vector{Measurements.Measurement{Float64}}, Vector{Float64}, Vector{Measurements.Measurement{Float64}}, Vector{Measurements.Measurement{Float64}}, Measurements.Measurement{Float64}}"""
 
     @test sprint(show, resampler) == expected
     @test wave(resampler) == wave(spec)
