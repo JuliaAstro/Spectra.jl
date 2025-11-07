@@ -1,10 +1,3 @@
-```@meta
-DocTestSetup = quote
-  using Spectra, Random
-  Random.seed!(11894)
-end
-```
-
 # Spectrum
 
 Here we will go over the different spectral types and how we use them.
@@ -16,6 +9,9 @@ Spectra are defined as possible subtypes of `AbstractSpectrum`. You can use thes
 ```@docs
 Spectra.AbstractSpectrum
 Spectra.Spectrum
+Spectra.SingleSpectrum
+Spectra.EchelleSpectrum
+Spectra.IFUSpectrum
 ```
 
 ## Constructors
@@ -88,8 +84,4 @@ savefig("spec-plot.svg"); nothing # hide
 
 ```@index
 Pages = ["spectrum.md"]
-```
-
-```@meta
-DocTestSetup = nothing
 ```

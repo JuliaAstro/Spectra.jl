@@ -1,10 +1,3 @@
-```@meta
-DocTestSetup = quote
-  using Spectra, Random
-  Random.seed!(11894)
-end
-```
-
 # Transformations
 
 ## Extinction
@@ -12,20 +5,13 @@ end
 By levaraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
 
 ```jldoctest
-julia> using Unitful, Measurements, Random
+julia> using Spectra, Unitful, Measurements, Random
 
 julia> rng = Random.seed!(0);
 
-julia> wave = (1:0.5:3)u"μm"
-(1.0:0.5:3.0) μm
+julia> wave = (1:0.5:3)u"μm";
 
-julia> sigma = randn(rng, size(wave))
-5-element Vector{Float64}:
-  0.942970533446119
-  0.13392275765318448
-  1.5250689085124804
-  0.12390123120559722
- -1.205772284259936
+julia> sigma = randn(rng, size(wave));
 
 julia> flux = (100 .± sigma)u"W/m^2/μm"
 5-element Vector{Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}}}:
@@ -72,8 +58,4 @@ redden
 redden!
 deredden
 deredden!
-```
-
-```@meta
-DocTestSetup = nothing
 ```

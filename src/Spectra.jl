@@ -1,7 +1,7 @@
 module Spectra
 
 # Uniform API
-export AbstractSpectrum, spectrum
+export AbstractSpectrum, Spectrum, spectrum
 # spectra_single.jl, spectra_ifu.jl, spectra_echelle.jl
 export SingleSpectrum, IFUSpectrum, EchelleSpectrum
 # utils.jl
@@ -19,11 +19,13 @@ using PhysicalConstants.CODATA2018: h, c_0, k_B
 """
     AbstractSpectrum{W<:Number, F<:Number}
 
-An abstract holder for astronomical spectra. All types inheriting from this must have the following fields
+An abstract holder for astronomical spectra. All types inheriting from this must have the following fields:
 
-- wave::Array{W, N}
-- flux::Array{F, N}
-- meta::Dict{Symbol, Any}
+* `wave::Array{W, M}`
+* `flux::Array{F, N}`
+* `meta::Dict{Symbol, Any}`
+
+See [`SingleSpectrum`](@ref), [`EchelleSpectrum`](@ref), and [`IFUSpectrum`](@ref) for different subtypes.
 """
 abstract type AbstractSpectrum{W,F} end
 
@@ -143,22 +145,27 @@ Remove the units from a spectrum. Useful for processing spectra in tools that do
 
 # Examples
 ```jldoctest
+julia> using Random
+
+julia> rng = Random.seed!(0)
+TaskLocalRNG()
+
 julia> using Unitful, UnitfulAstro
 
 julia> wave = range(1e4, 3e4, length=1000);
 
-julia> flux = wave .* 10 .+ randn(1000);
+julia> flux = wave .* 10 .+ randn(rng, 1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
   wave (1000,): 10000.0 Å .. 30000.0 Å
-  flux (1000,): 99999.8952204731 W Å^-1 m^-2 .. 299999.8866277076 W Å^-1 m^-2
+  flux (1000,): 99999.76809093042 W Å^-1 m^-2 .. 300000.2474309158 W Å^-1 m^-2
   meta: Dict{Symbol, Any}()
 
 julia> ustrip(spec)
 SingleSpectrum(Float64, Float64)
   wave (1000,): 10000.0 .. 30000.0
-  flux (1000,): 99999.8952204731 .. 299999.8866277076
+  flux (1000,): 99999.76809093042 .. 300000.2474309158
   meta: Dict{Symbol, Any}()
 ```
 """
@@ -171,11 +178,16 @@ Get the units of a spectrum. Returns a tuple of the wavelength units and flux/si
 
 # Examples
 ```jldoctest
+julia> using Random
+
+julia> rng = Random.seed!(0)
+TaskLocalRNG()
+
 julia> using Unitful, UnitfulAstro
 
 julia> wave = range(1e4, 3e4, length=1000);
 
-julia> flux = wave .* 10 .+ randn(1000);
+julia> flux = wave .* 10 .+ randn(rng, 1000);
 
 julia> spec = spectrum(wave * u"angstrom", flux * u"W/m^2/angstrom");
 
@@ -221,33 +233,38 @@ There is easy integration with [Unitful.jl](https://github.com/JuliaPhysics/Unit
 and its sub-projects and [Measurements.jl](https://github.com/juliaphysics/measurements.jl)
 
 ```jldoctest
+julia> using Random
+
+julia> rng = Random.seed!(0)
+TaskLocalRNG()
+
 julia> using Unitful, UnitfulAstro, Measurements
 
 julia> wave = range(1, 4, length=1000)u"μm";
 
-julia> sigma = randn(size(wave));
+julia> sigma = randn(rng, size(wave));
 
 julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
   wave (1000,): 1.0 μm .. 4.0 μm
-  flux (1000,): 100.0 ± 1.2 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 1.1 erg Å^-1 cm^-2 s^-1
+  flux (1000,): 100.0 ± -0.23 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 0.25 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}()
 ```
 
-For a multi-order spectrum, all orders must have the same length, so be sure to pad any ragged orders with NaN.
+For an echelle spectrum, all orders must have the same length, so be sure to pad any ragged orders with NaN.
 
 ```jldoctest
-julia> wave = reshape(range(100, 1e4, length=1000), 100, 10)';
+julia> wave = reshape(range(100, 1e4, length=1000), 100, 10);
 
-julia> flux = ones(10, 100) .* collect(1:10);
+julia> flux = repeat(1:10.0, 1, 100)';
 
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
   # orders: 10
-  wave (10, 100): 100.0 .. 10000.0
-  flux (10, 100): 1.0 .. 10.0
+  wave (100, 10): 100.0 .. 10000.0
+  flux (100, 10): 1.0 .. 10.0
   meta: Dict{Symbol, Any}()
 ```
 """

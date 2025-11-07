@@ -1,3 +1,55 @@
+"""
+    EchelleSpectrum <: AbstractSpectrum
+
+An instance of [`Spectrum`](@ref) where the wavelength and flux are both 2D arrays, i.e., ``M = N = 2``.
+
+The wavelength and flux matrices are both ``m`` rows in wavelength by ``n`` columns in [echelle order](https://en.wikipedia.org/wiki/Echelle_grating).
+
+# Examples
+
+```jldoctest
+julia> wave = reshape(1:40, 10, 4)
+10×4 reshape(::UnitRange{Int64}, 10, 4) with eltype Int64:
+  1  11  21  31
+  2  12  22  32
+  3  13  23  33
+  4  14  24  34
+  5  15  25  35
+  6  16  26  36
+  7  17  27  37
+  8  18  28  38
+  9  19  29  39
+ 10  20  30  40
+
+julia> flux = repeat(1:4, 1, 10)'
+10×4 adjoint(::Matrix{Int64}) with eltype Int64:
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+ 1  2  3  4
+
+julia> spec = Spectrum(wave, flux, Dict())
+EchelleSpectrum(Int64, Int64)
+  # orders: 4
+  wave (10, 4): 1 .. 40
+  flux (10, 4): 1 .. 4
+  meta: Dict{Symbol, Any}()
+
+julia> spec[1] # Indexing returns a `SingleSpectrum`
+SingleSpectrum(Int64, Int64)
+  wave (10,): 1 .. 10
+  flux (10,): 1 .. 1
+  meta: Dict{Symbol, Any}(:Order => 1)
+```
+
+See [`SingleSpectrum`](@ref) for a 1D variant, and [`IFUSpectrum`](@ref) for a 3D variant.
+"""
 const EchelleSpectrum = Spectrum{W, F, 2, 2} where {W, F}
 
 function Base.getindex(spec::EchelleSpectrum, i::Int)
