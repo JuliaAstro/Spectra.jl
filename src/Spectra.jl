@@ -32,10 +32,38 @@ abstract type AbstractSpectrum{W,F} end
 
 A spectrum or spectra stored as arrays of real numbers. The wavelengths are assumed to be in angstrom.
 """
-mutable struct Spectrum{W<:Number, F<:Number, N, M} <: AbstractSpectrum{W, F}
-    wave::AbstractArray{W, N}
-    flux::AbstractArray{F, M}
+mutable struct Spectrum{W<:Number, F<:Number, M, N} <: AbstractSpectrum{W, F}
+    wave::AbstractArray{W, M}
+    flux::AbstractArray{F, N}
     meta::Dict{Symbol,Any}
+    function Spectrum{W, F, M, N}(wave, flux, meta) where {W<:Number, F<:Number, M, N}
+        # Dimension compatibility check
+        size(wave, 1) != size(flux, 1) && throw(ArgumentError(
+        """
+        Wavelength and flux sizes are incompatible. Currently supported sizes are:
+
+        * SingleSpectrum: wave (M-length vector), flux (M-length vector)
+        * EchelleSpectrum: wave (M x N matrix), flux (M x N matrix)
+        * IFUSpectrum: wave (M-length vector), flux (M x N x K matrix)
+
+        See the documentation for each spectrum type for more.
+        """))
+
+        # Wavelength monoticity check
+        w = eachcol(wave)
+        !(
+            all(issorted, w) ||
+            all(x -> issorted(x; rev=true), w)
+        ) && throw(ArgumentError(
+        "Wavelengths must be strictly increasing or decreasing."
+        ))
+
+        return new{W, F, M, N}(wave, flux, meta)
+    end
+end
+
+function Spectrum(wave, flux, meta)
+    Spectrum{eltype(wave), eltype(flux), ndims(wave), ndims(flux)}(wave, flux, meta)
 end
 
 # Doesn't seem to be used atp

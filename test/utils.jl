@@ -19,8 +19,8 @@ using Spectra: spectrum, blackbody, line_flux, equivalent_width
 end
 
 @testset "Line flux" begin
-    spec = spectrum([3, 5, 4], [6, 7, 8])
-    @test line_flux(spec) == 6
+    spec = spectrum([3, 4, 5], [6, 7, 8])
+    @test line_flux(spec) == 15
 end
 
 @testset "Equivalent width" begin
