@@ -1,5 +1,25 @@
 Random.seed!(8675309)
 
+@testset "Spectrum types" begin
+    wave, flux = collect(1:5), 1:5
+    @test spectrum(wave, flux) isa SingleSpectrum
+    wave[3] = 10
+    @test_throws ArgumentError spectrum(wave, flux)
+    @test_throws ArgumentError spectrum(wave[begin:end-1], flux)
+
+    wave, flux = repeat(1:5, 1, 3), rand(5, 3)
+    @test spectrum(wave, flux) isa EchelleSpectrum
+    wave[3, 3] = 10
+    @test_throws ArgumentError spectrum(wave, flux)
+    @test_throws ArgumentError spectrum(wave[begin:end-1, :], flux)
+
+    wave, flux = collect(1:5), rand(5, 4, 3)
+    @test spectrum(wave, flux) isa IFUSpectrum
+    wave[3] = 10
+    @test_throws ArgumentError spectrum(wave, flux)
+    @test_throws ArgumentError spectrum(wave[begin:end-1], flux)
+end
+
 @testset "Spectrum - Single" begin
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))
@@ -10,12 +30,15 @@ Random.seed!(8675309)
     flux[134] = 1 ± 0.1
 
     spec = spectrum(wave, flux, name = "test spectrum")
+    spec_indexed = spec[begin:end]
 
     @test propertynames(spec) == (:wave, :flux, :meta, :name)
     @test Spectra.wave(spec) == spec.wave
     @test Spectra.flux(spec) == spec.flux
+    @test [s for s in spec] isa Vector{SingleSpectrum{Float64, Measurements.Measurement{Float64}}}
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
+    @test spec_indexed.wave == wave
     @test size(spec) === (1000,)
     @test length(spec) == 1000
     @test maximum(spec) == 1000 ± 1
@@ -25,29 +48,32 @@ Random.seed!(8675309)
     @test findmax(spec) == (1000 ± 1, 7)
     @test findmin(spec) == (1 ± 0.1, 134)
     @test spec.flux == flux
+    @test spec_indexed.flux == flux
     @test Measurements.uncertainty.(spec.flux) ≈ sigma
 
     flux_trimmed = flux[200:800]
-    @test_throws AssertionError spectrum(wave, flux_trimmed)
+    @test_throws ArgumentError spectrum(wave, flux_trimmed)
     expected = """
-    Spectrum(Float64, Measurements.Measurement{Float64})
-      name: test spectrum"""
+    SingleSpectrum(Float64, Measurements.Measurement{Float64})
+      wave (1000,): 10000.0 .. 50000.0
+      flux (1000,): 100.0 ± -2.8 .. 100.0 ± 0.6
+      meta: Dict{Symbol, Any}(:name => "test spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "test spectrum"
 end
 
 @testset "Spectrum - Echelle" begin
-    n_orders = 3
     n_wavs = 1000
+    n_orders = 3
     wave_1 = range(1e4, 5e4, length=n_wavs)
-    wave = repeat(wave_1, 1, n_orders)'
+    wave = repeat(wave_1, 1, n_orders)
     sigma = randn(size(wave_1))
     sigma[7] = 1
     sigma[134] = 0.1
     flux_1 = 100 .± sigma
     flux_1[7] = 1000 ± 1
     flux_1[134] = 1 ± 0.1
-    flux = repeat(flux_1, 1, n_orders)'
+    flux = repeat(flux_1, 1, n_orders)
 
     spec = spectrum(wave, flux, name = "Test Echelle Spectrum")
 
@@ -67,24 +93,51 @@ end
     @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
-    @test size(spec) == (n_orders, n_wavs)
-    @test length(spec) == n_orders * n_wavs
+    @test size(spec) == (n_wavs, n_orders)
+    @test length(spec) == n_wavs * n_orders
     @test maximum(spec) == 1000 ± 1
     @test minimum(spec) == 1 ± 0.1
-    @test argmax(spec) == CartesianIndex(1, 7)
-    @test argmin(spec) == CartesianIndex(1, 134)
-    @test findmax(spec) == (1000 ± 1, CartesianIndex(1, 7))
-    @test findmin(spec) == (1 ± 0.1, CartesianIndex(1, 134))
-    @test eachrow(Measurements.uncertainty.(spec.flux)) ≈ fill(sigma, n_orders)
+    @test argmax(spec) == CartesianIndex(7, 1)
+    @test argmin(spec) == CartesianIndex(134, 1)
+    @test findmax(spec) == (1000 ± 1, CartesianIndex(7, 1))
+    @test findmin(spec) == (1 ± 0.1, CartesianIndex(134, 1))
+    @test eachcol(Measurements.uncertainty.(spec.flux)) ≈ fill(sigma, n_orders)
 
-    flux_trimmed = flux[:, 200:800]
-    @test_throws AssertionError spectrum(wave, flux_trimmed)
+    flux_trimmed = flux[200:800, :]
+    @test_throws ArgumentError spectrum(wave, flux_trimmed)
     expected = """
     EchelleSpectrum(Float64, Measurements.Measurement{Float64})
       # orders: 3
-      name: Test Echelle Spectrum"""
+      wave (1000, 3): 10000.0 .. 50000.0
+      flux (1000, 3): 100.0 ± -2.8 .. 100.0 ± 0.6
+      meta: Dict{Symbol, Any}(:name => "Test Echelle Spectrum")"""
     @test sprint(show, spec) == expected
     @test spec.name == "Test Echelle Spectrum"
+end
+
+@testset "Spectrum - IFU" begin
+    wave, flux = [20, 40, 120, 160, 200], rand(5, 10, 6)
+
+    spec = spectrum(wave, flux, name = "test spectrum")
+
+    expected = """
+    IFUSpectrum(Int64, Float64)
+      wave (5,): 20 .. 200
+      flux (5, 10, 6): 0.9210599764489846 .. 0.47778429984485815
+      meta: Dict{Symbol, Any}(:name => "test spectrum")"""
+
+    @test sprint(show, spec) == expected
+    @test spec.name == "test spectrum"
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
+    @test eltype(spec) == eltype(spec.flux)
+    @test spec.wave == wave
+    @test size(spec) === (5, 10, 6)
+    @test length(spec) == 300
+    @test spec.flux == flux
+    @test spec[:, 1, 1] isa SingleSpectrum
+    @test spec[:, begin:4, begin:3] isa IFUSpectrum
 end
 
 @testset "Unitful Spectrum - Single" begin
@@ -125,23 +178,25 @@ end
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
     expected = """
-    Spectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-      name: test"""
+    SingleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+      wave (1000,): 10000.0 Å .. 50000.0 Å
+      flux (1000,): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
+      meta: Dict{Symbol, Any}(:name => "test")"""
     @test sprint(show, spec) == expected
 end
 
 @testset "Unitful Spectrum - Echelle" begin
-    n_orders = 3
     n_wavs = 1000
+    n_orders = 3
     wave_1 = range(1e4, 5e4, length=n_wavs)
-    wave = repeat(wave_1, 1, n_orders)'
+    wave = repeat(wave_1, 1, n_orders)
     sigma = randn(size(wave_1))
     sigma[7] = 1
     sigma[134] = 0.1
     flux_1 = 100 .± sigma
     flux_1[7] = 1000 ± 1
     flux_1[134] = 1 ± 0.1
-    flux = repeat(flux_1, 1, n_orders)'
+    flux = repeat(flux_1, 1, n_orders)
 
     wunit = u"angstrom"
     funit = u"W/m^2/angstrom"
@@ -157,14 +212,14 @@ end
     @test Spectra.wave(spec) == spec.wave
     @test Spectra.flux(spec) == spec.flux
     @test eltype(spec) == eltype(spec.flux)
-    @test size(spec) === (n_orders, n_wavs)
+    @test size(spec) === (n_wavs, n_orders)
     @test length(spec) == n_wavs * n_orders
     @test maximum(spec) == (1000 ± 1) * funit
     @test minimum(spec) == (1 ± 0.1) * funit
-    @test argmax(spec) == CartesianIndex(1, 7)
-    @test argmin(spec) == CartesianIndex(1, 134)
-    @test findmax(spec) == ((1000 ± 1) * funit, CartesianIndex(1, 7))
-    @test findmin(spec) == ((1 ± 0.1) * funit, CartesianIndex(1, 134))
+    @test argmax(spec) == CartesianIndex(7, 1)
+    @test argmin(spec) == CartesianIndex(134, 1)
+    @test findmax(spec) == ((1000 ± 1) * funit, CartesianIndex(7, 1))
+    @test findmin(spec) == ((1 ± 0.1) * funit, CartesianIndex(134, 1))
     @test spec.name == "test echelle"
 
     # Test stripping
@@ -176,11 +231,12 @@ end
     @test strip_spec.wave == ustrip.(spec.wave)
     @test strip_spec.flux == ustrip.(spec.flux)
     @test strip_spec.meta == spec.meta
-    sprint(show, spec)
     expected = """
     EchelleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
       # orders: 3
-      name: test echelle"""
+      wave (1000, 3): 10000.0 Å .. 50000.0 Å
+      flux (1000, 3): 100.0 ± -2.8 W Å^-1 m^-2 .. 100.0 ± 0.6 W Å^-1 m^-2
+      meta: Dict{Symbol, Any}(:name => "test echelle")"""
     @test sprint(show, spec) == expected
 end
 

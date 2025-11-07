@@ -20,3 +20,33 @@ Currently this package can only be installed from github. To do so, either clone
     pkg> add https://github.com/JuliaAstro/Spectra.jl
 
 from the `pkg` command line (Press `]` from Julia REPL)
+
+## Developer documentation
+
+Below we show the commands to run from the package root level to develop the tests and documentation.
+
+### Tests
+
+```julia-repl
+julia --proj
+
+julia> import Pkg
+
+# List tests
+julia> Pkg.test("Spectra"; test_args = `--list`)
+
+# Run specific testsets by name. Will match with `startswith`
+julia> Pkg.test("Spectra"; test_args = `--verbose <testset name>`)
+```
+
+### Docs
+
+Assuming `LiveServer.jl` is in your global environment:
+
+```julia-repl
+julia --proj=docs/
+
+julia> using LiveServer
+
+julia> servedocs(; include_dirs = ["src/"])
+```
