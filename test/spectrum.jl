@@ -94,6 +94,31 @@ end
     @test spec.name == "Test Echelle Spectrum"
 end
 
+@testset "Spectrum - IFU" begin
+    wave, flux = [20, 40, 120, 160, 200], rand(5, 10, 6)
+
+    spec = spectrum(wave, flux, name = "test spectrum")
+
+    expected = """
+    IFUSpectrum(Int64, Float64)
+      wave (5,): 20 .. 200
+      flux (5, 10, 6): 0.9210599764489846 .. 0.47778429984485815
+      meta: Dict{Symbol, Any}(:name => "test spectrum")"""
+
+    @test sprint(show, spec) == expected
+    @test spec.name == "test spectrum"
+    @test propertynames(spec) == (:wave, :flux, :meta, :name)
+    @test Spectra.wave(spec) == spec.wave
+    @test Spectra.flux(spec) == spec.flux
+    @test eltype(spec) == eltype(spec.flux)
+    @test spec.wave == wave
+    @test size(spec) === (5, 10, 6)
+    @test length(spec) == 300
+    @test spec.flux == flux
+    @test spec[:, 1, 1] isa SingleSpectrum
+    @test spec[:, begin:4, begin:3] isa IFUSpectrum
+end
+
 @testset "Unitful Spectrum - Single" begin
     wave = range(1e4, 5e4, length = 1000)
     sigma = randn(size(wave))

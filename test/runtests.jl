@@ -2,7 +2,7 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import Spectra
 
 const init_code = quote
-    using Spectra: Spectra, spectrum
+    using Spectra: Spectra, SingleSpectrum, EchelleSpectrum, IFUSpectrum, spectrum
     using Measurements: Measurements, ±
     using Unitful: @u_str, unit, ustrip
     import Random
