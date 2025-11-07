@@ -15,6 +15,7 @@ Random.seed!(8675309)
     @test propertynames(spec) == (:wave, :flux, :meta, :name)
     @test Spectra.wave(spec) == spec.wave
     @test Spectra.flux(spec) == spec.flux
+    @test [s for s in spec] isa Vector{SingleSpectrum{Float64, Measurements.Measurement{Float64}}}
     @test eltype(spec) == eltype(spec.flux)
     @test spec.wave == wave
     @test spec_indexed.wave == wave

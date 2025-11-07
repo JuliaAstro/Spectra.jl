@@ -38,6 +38,9 @@ mutable struct Spectrum{W<:Number, F<:Number, N, M} <: AbstractSpectrum{W, F}
     meta::Dict{Symbol,Any}
 end
 
+# Doesn't seem to be used atp
+#Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
+
 """
     wave(::AbstractSpectrum)
 
@@ -58,8 +61,6 @@ flux(spec::AbstractSpectrum) = spec.flux
 Return the meta of the spectrum.
 """
 meta(spec::AbstractSpectrum) = spec.meta
-
-Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
 
 function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
     if nm in keys(getfield(spec, :meta))
