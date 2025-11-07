@@ -1,7 +1,7 @@
 module Spectra
 
 # common.jl
-export AbstractSpectrum, spectrum
+export AbstractSpectrum, Spectrum, spectrum
 # utils.jl
 export blackbody
 # transforms/redden.jl

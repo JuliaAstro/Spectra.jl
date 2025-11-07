@@ -35,7 +35,7 @@ julia> result = resampler(wave_sampled);
 The resampled wavelength and flux can be obtained with the `wave` and `flux` methods.
 
 ```jldoctest resampling
-julia> result isa SpectrumResampler
+julia> result isa Spectrum
 true
 
 julia> wave(result) == wave_sampled
@@ -56,7 +56,7 @@ julia> resampler = SpectrumResampler(spec, interp);
 
 julia> result = resampler(wave_sampled);
 
-julia> result isa SpectrumResampler
+julia> result isa Spectrum
 true
 
 julia> wave(result) == wave_sampled
