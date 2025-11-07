@@ -47,10 +47,8 @@ end
         new_wave = range(minimum(spec.wave), maximum(spec.wave); length = Integer(length(spec.wave) ÷ 2.4))
         res_spec = resample(spec, new_wave)
         expected = """
-        SpectrumResampler(Float64, Measurements.Measurement{Float64})
-          spec: Spectrum(Float64, Measurements.Measurement{Float64})
-          name: Test Spectrum
-          interpolator: DataInterpolations.LinearInterpolation{Vector{Measurements.Measurement{Float64}}, Vector{Float64}, Vector{Measurements.Measurement{Float64}}, Vector{Measurements.Measurement{Float64}}, Measurements.Measurement{Float64}}"""
+        Spectrum(Float64, Measurements.Measurement{Float64})
+          name: Test Spectrum"""
 
         @test sprint(show, res_spec) == expected
         @test Spectra.wave(res_spec) == new_wave

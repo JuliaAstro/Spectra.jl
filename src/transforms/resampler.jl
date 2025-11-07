@@ -76,11 +76,8 @@ wave(s::SpectrumResampler) = wave(spectrum(s))
 flux(s::SpectrumResampler) = flux(spectrum(s))
 
 function (s::SpectrumResampler)(wave_sampled)
-    interp = s.interp
-    spec_resampled = interp(wave_sampled)
-    s_new = Spectrum(wave_sampled, spec_resampled, spectrum(s).meta)
-    # s_new = spectrum(wave_sampled, spec_resampled; meta = spectrum(s).meta)
-    return SpectrumResampler(s_new, interp)
+    flux_resampled = (s.interp)(wave_sampled)
+    return Spectrum(wave_sampled, flux_resampled, spectrum(s).meta)
 end
 
 function Base.show(io::IO, s::SpectrumResampler)
