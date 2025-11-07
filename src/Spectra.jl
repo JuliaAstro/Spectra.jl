@@ -252,28 +252,23 @@ EchelleSpectrum(Float64, Float64)
 ```
 """
 function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...)
-    @assert size(wave) == size(flux) "wave and flux must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(wave::AbstractVector{<:Real}, flux::AbstractArray{<:Real, 3}; kwds...)
-    @assert size(wave, 1) == size(flux, 1) "wave and flux in each order must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(wave::AbstractMatrix{<:Real}, flux::AbstractMatrix{<:Real}; kwds...)
-    @assert size(wave) == size(flux) "wave and flux must have equal size"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(wave::AbstractVector{<:Quantity}, flux::AbstractVector{<:Quantity}; kwds...)
-    @assert size(wave) == size(flux) "wave and flux must have equal size"
     @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(wave::AbstractMatrix{<:Quantity}, flux::AbstractMatrix{<:Quantity}; kwds...)
-    @assert size(wave) == size(flux) "wave and flux must have equal size"
     @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
