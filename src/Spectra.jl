@@ -1,11 +1,13 @@
 module Spectra
 
 # common.jl
-export AbstractSpectrum, spectrum
+export AbstractSpectrum, Spectrum, spectrum
 # utils.jl
 export blackbody
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
+# transforms/resampler
+export SpectrumResampler
 
 using RecipesBase: @recipe
 using Measurements: Measurements, Measurement
@@ -18,6 +20,15 @@ include("common.jl")
 # Spectrum types and basic arithmetic
 include("spectrum.jl")
 include("EchelleSpectrum.jl")
+
+# Resampler type
+include("transforms/resampler.jl")
+
+# tools
+include("utils.jl")
+include("transforms/transforms.jl")
+include("plotting.jl")
+include("fitting/fitting.jl")
 
 """
     spectrum(wave, flux; kwds...)
@@ -90,11 +101,5 @@ function spectrum(wave::AbstractMatrix{<:Quantity}, flux::AbstractMatrix{<:Quant
     @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
     EchelleSpectrum(wave, flux, Dict{Symbol,Any}(kwds))
 end
-
-# tools
-include("utils.jl")
-include("transforms/transforms.jl")
-include("plotting.jl")
-include("fitting/fitting.jl")
 
 end # module
