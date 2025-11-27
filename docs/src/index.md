@@ -18,7 +18,9 @@ julia> using Spectra
 
 ## Quick Start
 
-Here is a quick demo of some of our features
+Here is a quick demo of some of our features.
+
+### Spectrum construction
 
 ```jldoctest guide
 julia> using Spectra, FITSIO, Unitful, UnitfulAstro, Plots
@@ -50,6 +52,10 @@ julia> plot(spec);
 ```
 
 ![](assets/sdss.svg)
+
+For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, see the docstrings for [EchelleSpectrum](@ref) and [IFUSpectrum](@ref), respectively.
+
+### Continuum fitting
 
 ```jldoctest guide
 julia> cont_fit = continuum(spec)
