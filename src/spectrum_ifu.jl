@@ -1,9 +1,9 @@
 """
     IFUSpectrum <: AbstractSpectrum
 
-An instance of [`Spectrum`](@ref) where the wavelength is a 1D array and flux is a 3D array, i.e., ``M = 1`` and ``N = 3``.
+An instance of [`Spectrum`](@ref) where the spectral axis is a 1D array and flux axis is a 3D array, i.e., ``M = 1`` and ``N = 3``.
 
-The wavelength vector is of length ``m`` and flux 3D array has shape ``(m \\times n \\times k)`` where each entry of the flux along the wavelength axis is an ``n \\times k`` matrix.
+The spectral vector is of length ``m`` and flux 3D array has shape ``(m \\times n \\times k)`` where each entry of the flux along the spectral axis is an ``n \\times k`` matrix.
 
 # Examples
 
@@ -17,8 +17,8 @@ julia> wave, flux = [20, 40, 120, 160, 200], rand(rng, 5, 10, 6);
 
 julia> spec = Spectrum(wave, flux, Dict())
 IFUSpectrum(Int64, Float64)
-  wave (5,): 20 .. 200
-  flux (5, 10, 6): 0.4552384158732863 .. 0.11698905483599475
+  spectral axis (5,): 20 .. 200
+  flux axis (5, 10, 6): 0.4552384158732863 .. 0.11698905483599475
   meta: Dict{Symbol, Any}()
 
 julia> spec[begin] # IFU image at first wavelength
@@ -36,14 +36,14 @@ julia> spec[begin] # IFU image at first wavelength
 
 julia> spec[begin:3] # IFU spectrum at first three wavelengths
 IFUSpectrum(Int64, Float64)
-  wave (3,): 20 .. 120
-  flux (3, 10, 6): 0.4552384158732863 .. 0.35149138733595564
+  spectral axis (3,): 20 .. 120
+  flux axis (3, 10, 6): 0.4552384158732863 .. 0.35149138733595564
   meta: Dict{Symbol, Any}()
 
 julia> spec[:, begin, begin] # 1D spectrum at spaxel (1, 1)
 SingleSpectrum(Int64, Float64)
-  wave (5,): 20 .. 200
-  flux (5,): 0.4552384158732863 .. 0.02964765308691042
+  spectral axis (5,): 20 .. 200
+  flux axis (5,): 0.4552384158732863 .. 0.02964765308691042
   meta: Dict{Symbol, Any}()
 ```
 
@@ -51,31 +51,31 @@ See [`SingleSpectrum`](@ref) for a 1D variant, and [`EchelleSpectrum`](@ref) for
 """
 const IFUSpectrum = Spectrum{W, F, 1, 3} where {W, F}
 
-Base.getindex(spec::IFUSpectrum, i) = flux(spec)[i, :, :]
+Base.getindex(spec::IFUSpectrum, i) = flux_axis(spec)[i, :, :]
 
 function Base.getindex(spec::IFUSpectrum, I::AbstractVector)
-    w = wave(spec)[I]
-    f = flux(spec)[I, :, :]
+    w = spectral_axis(spec)[I]
+    f = flux_axis(spec)[I, :, :]
     return Spectrum(w, f, meta(spec))
 end
 
-Base.getindex(spec::IFUSpectrum, i::Int, j, k) = flux(spec)[i, j, k]
+Base.getindex(spec::IFUSpectrum, i::Int, j, k) = flux_axis(spec)[i, j, k]
 
 function Base.getindex(spec::IFUSpectrum, i, j, k)
-    w = wave(spec)[i]
-    f = flux(spec)[i, j, k]
+    w = spectral_axis(spec)[i]
+    f = flux_axis(spec)[i, j, k]
     return Spectrum(w, f, meta(spec))
 end
 
-Base.firstindex(spec::IFUSpectrum) = firstindex(flux(spec))
-Base.firstindex(spec::IFUSpectrum, i) = firstindex(flux(spec), i)
-Base.lastindex(spec::IFUSpectrum, i) = lastindex(flux(spec), i)
+Base.firstindex(spec::IFUSpectrum) = firstindex(flux_axis(spec))
+Base.firstindex(spec::IFUSpectrum, i) = firstindex(flux_axis(spec), i)
+Base.lastindex(spec::IFUSpectrum, i) = lastindex(flux_axis(spec), i)
 
 function Base.show(io::IO, spec::IFUSpectrum)
-    w = wave(spec)
-    f = flux(spec)
+    w = spectral_axis(spec)
+    f = flux_axis(spec)
     println(io, "IFUSpectrum($(eltype(w)), $(eltype(f)))")
-    println(io, "  wave $(size(w)): ", first(w), " .. ", last(w))
-    println(io, "  flux $(size(f)): ", first(f), " .. ", last(f))
+    println(io, "  spectral axis $(size(w)): ", first(w), " .. ", last(w))
+    println(io, "  flux axis $(size(f)): ", first(f), " .. ", last(f))
     print(io, "  meta: ", meta(spec))
 end

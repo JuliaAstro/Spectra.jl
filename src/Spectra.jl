@@ -1,13 +1,13 @@
 module Spectra
 
 # Uniform API
-export AbstractSpectrum, Spectrum, spectrum
-# spectra_single.jl, spectra_ifu.jl, spectra_echelle.jl
-export SingleSpectrum, IFUSpectrum, EchelleSpectrum
+export AbstractSpectrum, Spectrum, spectrum, spectral_axis, flux_axis
+# spectra_single.jl, spectra_ifu.jl, spectra_echelle.jl, spectra_binned.jl
+export SingleSpectrum, IFUSpectrum, EchelleSpectrum, spectral_axis, flux_axis
 # utils.jl
-export blackbody, line_flux, equivalent_width
+#export blackbody, line_flux, equivalent_width
 # fitting/fitting.jl
-export continuum, continuum!
+#export continuum, continuum!
 # transforms/redden.jl
 export redden, redden!, deredden, deredden!
 
@@ -17,78 +17,81 @@ using Unitful: Unitful, Quantity, @u_str, ustrip, unit, dimension
 using PhysicalConstants.CODATA2018: h, c_0, k_B
 
 """
-    AbstractSpectrum{W<:Number, F<:Number}
+    AbstractSpectrum{S <: Number, F <: Number}
 
 An abstract holder for astronomical spectra. All types inheriting from this must have the following fields:
 
-* `wave::Array{W, M}`
-* `flux::Array{F, N}`
+* `spectral_axis::Array{S, M}`
+* `flux_axis::Array{F, N}`
 * `meta::Dict{Symbol, Any}`
 
 See [`SingleSpectrum`](@ref), [`EchelleSpectrum`](@ref), and [`IFUSpectrum`](@ref) for different subtypes.
 """
-abstract type AbstractSpectrum{W,F} end
+abstract type AbstractSpectrum{S, F} end
 
 """
     Spectrum <: AbstractSpectrum
 
-A spectrum or spectra stored as arrays of real numbers. The wavelengths are assumed to be in angstrom.
+A spectrum or spectra stored as arrays of real numbers. For UV/VIS/IR spectra, the `spectral_axis` is assumed to be wavelengths (in angstrom). For X-ray spectra, the `spectral_axis` is assumed to be energies (in keV).
 """
-mutable struct Spectrum{W<:Number, F<:Number, M, N} <: AbstractSpectrum{W, F}
-    wave::AbstractArray{W, M}
-    flux::AbstractArray{F, N}
-    meta::Dict{Symbol,Any}
-    function Spectrum{W, F, M, N}(wave, flux, meta) where {W<:Number, F<:Number, M, N}
+mutable struct Spectrum{S<:Number, F<:Number, M, N} <: AbstractSpectrum{S, F}
+    spectral_axis::AbstractArray{S, M}
+    flux_axis::AbstractArray{F, N}
+    meta::Dict{Symbol, Any}
+    function Spectrum{S, F, M, N}(s, f, meta) where {S<:Number, F<:Number, M, N}
+        # TODO: Investigate using Holy Traits to help with validation
         # Dimension compatibility check
-        size(wave, 1) != size(flux, 1) && throw(ArgumentError(
-        """
-        Wavelength and flux sizes are incompatible. Currently supported sizes are:
+        if size(s, 1) != size(f, 1)
+            throw(ArgumentError(
+            """
+            Spectral axis and flux axis are incompatible sizes. Currently supported sizes are:
 
-        * SingleSpectrum: wave (M-length vector), flux (M-length vector)
-        * EchelleSpectrum: wave (M x N matrix), flux (M x N matrix)
-        * IFUSpectrum: wave (M-length vector), flux (M x N x K matrix)
+            - SingleSpectrum: wave (M-length vector), flux (M-length vector)
+            - EchelleSpectrum: wave (M x N matrix), flux (M x N matrix)
+            - IFUSpectrum: wave (M-length vector), flux (M x N x K matrix)
+            - TODO: BinnedSpectrum (final name(s) tbd):
+                - energy (M × 2 matrix), flux (N-length vector)
+                - others?
 
-        See the documentation for each spectrum type for more.
-        """))
+            See the documentation for each spectrum type for more.
+            """))
+        end
 
-        # Wavelength monoticity check
-        w = eachcol(wave)
-        !(
-            all(issorted, w) ||
-            all(x -> issorted(x; rev=true), w)
-        ) && throw(ArgumentError(
-        "Wavelengths must be strictly increasing or decreasing."
-        ))
+        # Spectral axis monoticity check
+        spec_ax = eachcol(s)
+        if !(all(issorted, spec_ax) || all(x -> issorted(x; rev = true), spec_ax))
+            throw(ArgumentError("Spectral axis must be strictly increasing or decreasing."))
+        end
 
-        return new{W, F, M, N}(wave, flux, meta)
+        return new{S, F, M, N}(s, f, meta)
     end
 end
 
-function Spectrum(wave, flux, meta)
-    Spectrum{eltype(wave), eltype(flux), ndims(wave), ndims(flux)}(wave, flux, meta)
+function Spectrum(s, f, meta)
+    Spectrum{eltype(s), eltype(f), ndims(s), ndims(f)}(s, f, meta)
 end
 
 # Doesn't seem to be used atp
 #Spectrum(wave, flux, meta::Dict{Symbol, Any}) = Spectrum(collect(wave), collect(flux), meta)
 
 """
-    wave(::AbstractSpectrum)
+    spectral_axis(spec::AbstractSpectrum)
 
-Return the wavelengths of the spectrum.
+Return the spectral axis of `spec`.
 """
-wave(spec::AbstractSpectrum) = spec.wave
-
-"""
-    flux(::AbstractSpectrum)
-
-Return the flux of the spectrum.
-"""
-flux(spec::AbstractSpectrum) = spec.flux
+spectral_axis(spec::AbstractSpectrum) = spec.spectral_axis
 
 """
-    meta(::AbstractSpectrum)
+    flux(spec::AbstractSpectrum)
 
-Return the meta of the spectrum.
+Return the flux axis of `spec`.
+"""
+flux_axis(spec::AbstractSpectrum) = spec.flux_axis
+
+"""
+    meta(spec::AbstractSpectrum)
+
+Return the meta data associated with `spec`.
 """
 meta(spec::AbstractSpectrum) = spec.meta
 
@@ -101,42 +104,42 @@ function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
 end
 
 function Base.propertynames(spec::AbstractSpectrum)
-    natural = (:wave, :flux, :meta)
+    natural = (:spectral_axis, :flux_axis, :meta)
     m = keys(meta(spec))
     return (natural..., m...)
 end
 
 # Collection
-Base.argmax(spec::AbstractSpectrum) = argmax(flux(spec))
-Base.argmin(spec::AbstractSpectrum) = argmin(flux(spec))
-Base.eltype(spec::AbstractSpectrum) = eltype(flux(spec))
-Base.findmax(spec::AbstractSpectrum) = findmax(flux(spec))
-Base.findmin(spec::AbstractSpectrum) = findmin(flux(spec))
-Base.length(spec::AbstractSpectrum) = length(flux(spec))
-Base.maximum(spec::AbstractSpectrum) = maximum(flux(spec))
-Base.minimum(spec::AbstractSpectrum) = minimum(flux(spec))
-Base.size(spec::AbstractSpectrum) = size(flux(spec))
-Base.size(spec::AbstractSpectrum, i) = size(flux(spec), i)
+Base.argmax(spec::AbstractSpectrum) = argmax(flux_axis(spec))
+Base.argmin(spec::AbstractSpectrum) = argmin(flux_axis(spec))
+Base.eltype(spec::AbstractSpectrum) = eltype(flux_axis(spec))
+Base.findmax(spec::AbstractSpectrum) = findmax(flux_axis(spec))
+Base.findmin(spec::AbstractSpectrum) = findmin(flux_axis(spec))
+Base.length(spec::AbstractSpectrum) = length(flux_axis(spec))
+Base.maximum(spec::AbstractSpectrum) = maximum(flux_axis(spec))
+Base.minimum(spec::AbstractSpectrum) = minimum(flux_axis(spec))
+Base.size(spec::AbstractSpectrum) = size(flux_axis(spec))
+Base.size(spec::AbstractSpectrum, i) = size(flux_axis(spec), i)
 function Base.iterate(spec::AbstractSpectrum, state=0)
     state == length(spec) && return nothing
     return spec[begin + state], state + 1
 end
 
 # Arithmetic
-Base.:(==)(s::AbstractSpectrum, o::AbstractSpectrum) = wave(s) == wave(o) && flux(s) == flux(o) && meta(s) == meta(o)
-Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ A, meta(s))
-Base.:*(s::T, A::Union{Real, AbstractVector}) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* A, meta(s))
-Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ A, meta(s))
-Base.:-(s::T) where {T <: AbstractSpectrum} = T(wave(s), -flux(s), meta(s))
+Base.:(==)(s::AbstractSpectrum, o::AbstractSpectrum) = spectral_axis(s) == spectral_axis(o) && flux_axis(s) == flux_axis(o) && meta(s) == meta(o)
+Base.:+(s::T, A) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) .+ A, meta(s))
+Base.:*(s::T, A::Union{Real, AbstractVector}) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) .* A, meta(s))
+Base.:/(s::T, A) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) ./ A, meta(s))
+Base.:-(s::T) where {T <: AbstractSpectrum} = T(spectral_axis(s), -flux_axis(s), meta(s))
 Base.:-(s::AbstractSpectrum, A) = s + -A
 Base.:-(A, s::AbstractSpectrum) = s - A
 Base.:-(s::AbstractSpectrum, o::AbstractSpectrum) = s - o # Satisfy Aqua
 
 # Multi-Spectrum
-Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .+ flux(o), meta(s))
-Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .* flux(o), meta(s))
-Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) ./ flux(o) * unit(s)[2], meta(s))
-Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(wave(s), flux(s) .- flux(o), meta(s))
+Base.:+(s::T, o::T) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) .+ flux_axis(o), meta(s))
+Base.:*(s::T, o::T) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) .* flux_axis(o), meta(s))
+Base.:/(s::T, o::T) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) ./ flux_axis(o) * unit(s)[2], meta(s))
+Base.:-(s::T, o::T) where {T <: AbstractSpectrum} = T(spectral_axis(s), flux_axis(s) .- flux_axis(o), meta(s))
 
 """
     Unitful.ustrip(::AbstractSpectrum)
@@ -169,12 +172,12 @@ SingleSpectrum(Float64, Float64)
   meta: Dict{Symbol, Any}()
 ```
 """
-Unitful.ustrip(spec::AbstractSpectrum) = spectrum(ustrip.(wave(spec)), ustrip.(flux(spec)); meta(spec)...)
+Unitful.ustrip(spec::AbstractSpectrum) = spectrum(ustrip.(spectral_axis(spec)), ustrip.(flux_axis(spec)); meta(spec)...)
 
 """
     Unitful.unit(::AbstractSpectrum)
 
-Get the units of a spectrum. Returns a tuple of the wavelength units and flux/sigma units
+Get the units of a spectrum. Returns a tuple of the spectral axis units and flux/sigma units
 
 # Examples
 ```jldoctest
@@ -195,17 +198,18 @@ julia> w_unit, f_unit = unit(spec)
 (Å, W Å^-1 m^-2)
 ```
 """
-Unitful.unit(spec::AbstractSpectrum) = unit(eltype(wave(spec))), unit(eltype(flux(spec)))
+Unitful.unit(spec::AbstractSpectrum) = unit(eltype(spectral_axis(spec))), unit(eltype(flux_axis(spec)))
 
 # Spectrum types and basic arithmetic
 include("spectrum_single.jl")
-include("spectrum_ifu.jl")
 include("spectrum_echelle.jl")
+include("spectrum_ifu.jl")
+#include("spectrum_binned.jl")
 
 """
-    spectrum(wave, flux; kwds...)
+    spectrum(spectral_axis, flux_axis, [meta])
 
-Construct a spectrum given the spectral wavelengths and fluxes. This will automatically dispatch the correct spectrum type given the shape and element type of the given flux. Any keyword arguments will be accessible from the spectrum as properties.
+Construct a spectrum given the spectral axis and flux axis. This will automatically dispatch the correct spectrum type given the shape and element type of the given flux. Any keyword arguments will be accessible from the spectrum as properties.
 
 # Examples
 ```jldoctest
@@ -268,32 +272,32 @@ EchelleSpectrum(Float64, Float64)
   meta: Dict{Symbol, Any}()
 ```
 """
-function spectrum(wave::AbstractVector{<:Real}, flux::AbstractVector{<:Real}; kwds...)
-    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+function spectrum(spectral_axis::AbstractVector{<:Real}, flux_axis::AbstractVector{<:Real}; kwds...)
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractVector{<:Real}, flux::AbstractArray{<:Real, 3}; kwds...)
-    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+function spectrum(spectral_axis::AbstractVector{<:Real}, flux_axis::AbstractArray{<:Real, 3}; kwds...)
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractMatrix{<:Real}, flux::AbstractMatrix{<:Real}; kwds...)
-    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+function spectrum(spectral_axis::AbstractMatrix{<:Real}, flux_axis::AbstractMatrix{<:Real}; kwds...)
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractVector{<:Quantity}, flux::AbstractVector{<:Quantity}; kwds...)
-    @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
-    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+function spectrum(spectral_axis::AbstractVector{<:Quantity}, flux_axis::AbstractVector{<:Quantity}; kwds...)
+    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(wave::AbstractMatrix{<:Quantity}, flux::AbstractMatrix{<:Quantity}; kwds...)
-    @assert dimension(eltype(wave)) == u"𝐋" "wave not recognized as having dimensions of wavelengths"
-    Spectrum(wave, flux, Dict{Symbol,Any}(kwds))
+function spectrum(spectral_axis::AbstractMatrix{<:Quantity}, flux_axis::AbstractMatrix{<:Quantity}; kwds...)
+    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
 # tools
 include("utils.jl")
 include("transforms/transforms.jl")
 include("plotting.jl")
-include("fitting/fitting.jl")
+#include("fitting/fitting.jl")
 
 end # module

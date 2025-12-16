@@ -1,9 +1,9 @@
 """
     EchelleSpectrum <: AbstractSpectrum
 
-An instance of [`Spectrum`](@ref) where the wavelength and flux are both 2D arrays, i.e., ``M = N = 2``.
+An instance of [`Spectrum`](@ref) where the spectral and flux axes are both 2D arrays, i.e., ``M = N = 2``.
 
-The wavelength and flux matrices are both ``m`` rows in wavelength by ``n`` columns in [echelle order](https://en.wikipedia.org/wiki/Echelle_grating).
+The spectral and flux matrices are both ``m`` rows in wavelength by ``n`` columns in [echelle order](https://en.wikipedia.org/wiki/Echelle_grating).
 
 # Examples
 
@@ -37,14 +37,14 @@ julia> flux = repeat(1:4, 1, 10)'
 julia> spec = Spectrum(wave, flux, Dict())
 EchelleSpectrum(Int64, Int64)
   # orders: 4
-  wave (10, 4): 1 .. 40
-  flux (10, 4): 1 .. 4
+  spectral axis (10, 4): 1 .. 40
+  flux axis (10, 4): 1 .. 4
   meta: Dict{Symbol, Any}()
 
 julia> spec[1] # Indexing returns a `SingleSpectrum`
 SingleSpectrum(Int64, Int64)
-  wave (10,): 1 .. 10
-  flux (10,): 1 .. 1
+  spectral axis (10,): 1 .. 10
+  flux axis (10,): 1 .. 1
   meta: Dict{Symbol, Any}(:Order => 1)
 ```
 
@@ -53,28 +53,28 @@ See [`SingleSpectrum`](@ref) for a 1D variant, and [`IFUSpectrum`](@ref) for a 3
 const EchelleSpectrum = Spectrum{W, F, 2, 2} where {W, F}
 
 function Base.getindex(spec::EchelleSpectrum, i::Int)
-    w = wave(spec)[:, i]
-    f = flux(spec)[:, i]
+    w = spectral_axis(spec)[:, i]
+    f = flux_axis(spec)[:, i]
     m = merge(Dict(:Order => i), meta(spec))
     return Spectrum(w, f, m)
 end
 
 function Base.getindex(spec::EchelleSpectrum, I::AbstractVector)
-    w = wave(spec)[:, I]
-    f = flux(spec)[:, I]
+    w = spectral_axis(spec)[:, I]
+    f = flux_axis(spec)[:, I]
     m = merge(Dict(:Orders => (first(I), last(I))), meta(spec))
     return Spectrum(w, f, m)
 end
 
-Base.firstindex(spec::EchelleSpectrum) = firstindex(flux(spec), 1)
-Base.lastindex(spec::EchelleSpectrum) = lastindex(flux(spec), 1)
+Base.firstindex(spec::EchelleSpectrum) = firstindex(flux_axis(spec), 1)
+Base.lastindex(spec::EchelleSpectrum) = lastindex(flux_axis(spec), 1)
 
 function Base.show(io::IO, spec::EchelleSpectrum)
-    w = wave(spec)
-    f = flux(spec)
-    println(io, "EchelleSpectrum($(eltype(wave(spec))), $(eltype(flux(spec))))")
+    w = spectral_axis(spec)
+    f = flux_axis(spec)
+    println(io, "EchelleSpectrum($(eltype(spectral_axis(spec))), $(eltype(flux_axis(spec))))")
     println(io, "  # orders: $(size(spec, 2))")
-    println(io, "  wave $(size(w)): ", first(w), " .. ", last(w))
-    println(io, "  flux $(size(f)): ", first(f), " .. ", last(f))
+    println(io, "  spectral axis $(size(w)): ", first(w), " .. ", last(w))
+    println(io, "  flux axis $(size(f)): ", first(f), " .. ", last(f))
     print(io, "  meta: ", meta(spec))
 end

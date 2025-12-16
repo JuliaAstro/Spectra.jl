@@ -32,7 +32,7 @@ SingleSpectrum(Float64, Float64)
   flux (100,): 1190.9562575755397 .. 40.04325690910415
   meta: Dict{Symbol, Any}(:T => 6000, :name => "Blackbody")
 
-julia> bb.wave[argmax(bb)]
+julia> spectral_axis(bb)[argmax(bb)]
 1.4444444444444444 μm
 
 julia> 2898u"μm*K" / bb.T # See if it matches up with Wien's law
@@ -65,7 +65,7 @@ blackbody(T::Quantity) = w->2h * c_0^2 / w^5 / (exp(h * c_0 / (w * k_B * T)) - 1
 Calculate the equivalent width of the given continuum-normalized spectrum. Return value has units equal to wavelengths.
 """
 function equivalent_width(spec::AbstractSpectrum)
-    dx = spec.wave[end] - spec.wave[1]
+    dx = spectral_axis(spec)[end] - spectral_axis(spec)[1]
     flux = ustrip(line_flux(spec))
     return dx - flux * unit(dx)
 end
@@ -76,6 +76,6 @@ end
 Calculate the line flux of the given continuum-normalized spectrum. Return value has units equal to flux.
 """
 function line_flux(spec::AbstractSpectrum)
-    avg_dx = diff(spec.wave)
-    return sum(spec.flux[2:end] .* avg_dx)
+    avg_dx = diff(spectral_axis(spec))
+    return sum(flux_axis(spec)[2:end] .* avg_dx)
 end
