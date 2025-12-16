@@ -5,7 +5,7 @@ export AbstractSpectrum, Spectrum, spectrum, spectral_axis, flux_axis
 # spectra_single.jl, spectra_ifu.jl, spectra_echelle.jl, spectra_binned.jl
 export SingleSpectrum, IFUSpectrum, EchelleSpectrum, spectral_axis, flux_axis
 # utils.jl
-#export blackbody, line_flux, equivalent_width
+export blackbody #, line_flux, equivalent_width
 # fitting/fitting.jl
 #export continuum, continuum!
 # transforms/redden.jl
@@ -46,9 +46,9 @@ mutable struct Spectrum{S<:Number, F<:Number, M, N} <: AbstractSpectrum{S, F}
             """
             Spectral axis and flux axis are incompatible sizes. Currently supported sizes are:
 
-            - SingleSpectrum: wave (M-length vector), flux (M-length vector)
-            - EchelleSpectrum: wave (M x N matrix), flux (M x N matrix)
-            - IFUSpectrum: wave (M-length vector), flux (M x N x K matrix)
+            - SingleSpectrum: spectral axis (M-length vector), flux axis (M-length vector)
+            - EchelleSpectrum: spectral axis (M x N matrix), flux axis (M x N matrix)
+            - IFUSpectrum: spectral axis (M-length vector), flux axis (M x N x K matrix)
             - TODO: BinnedSpectrum (final name(s) tbd):
                 - energy (M × 2 matrix), flux (N-length vector)
                 - others?
@@ -161,14 +161,14 @@ julia> flux = wave .* 10 .+ randn(rng, 1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave (1000,): 10000.0 Å .. 30000.0 Å
-  flux (1000,): 99999.76809093042 W Å^-1 m^-2 .. 300000.2474309158 W Å^-1 m^-2
+  spectral axis (1000,): 10000.0 Å .. 30000.0 Å
+  flux axis (1000,): 99999.76809093042 W Å^-1 m^-2 .. 300000.2474309158 W Å^-1 m^-2
   meta: Dict{Symbol, Any}()
 
 julia> ustrip(spec)
 SingleSpectrum(Float64, Float64)
-  wave (1000,): 10000.0 .. 30000.0
-  flux (1000,): 99999.76809093042 .. 300000.2474309158
+  spectral axis (1000,): 10000.0 .. 30000.0
+  flux axis (1000,): 99999.76809093042 .. 300000.2474309158
   meta: Dict{Symbol, Any}()
 ```
 """
@@ -219,14 +219,14 @@ julia> flux = 100 .* ones(size(wave));
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Float64, Float64)
-  wave (1000,): 10000.0 .. 40000.0
-  flux (1000,): 100.0 .. 100.0
+  spectral axis (1000,): 10000.0 .. 40000.0
+  flux axis (1000,): 100.0 .. 100.0
   meta: Dict{Symbol, Any}()
 
 julia> spec = spectrum(wave, flux, name="Just Noise")
 SingleSpectrum(Float64, Float64)
-  wave (1000,): 10000.0 .. 40000.0
-  flux (1000,): 100.0 .. 100.0
+  spectral axis (1000,): 10000.0 .. 40000.0
+  flux axis (1000,): 100.0 .. 100.0
   meta: Dict{Symbol, Any}(:name => "Just Noise")
 
 julia> spec.name
@@ -252,8 +252,8 @@ julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
 SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
-  wave (1000,): 1.0 μm .. 4.0 μm
-  flux (1000,): 100.0 ± -0.23 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 0.25 erg Å^-1 cm^-2 s^-1
+  spectral axis (1000,): 1.0 μm .. 4.0 μm
+  flux axis (1000,): 100.0 ± -0.23 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 0.25 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}()
 ```
 
@@ -267,8 +267,8 @@ julia> flux = repeat(1:10.0, 1, 100)';
 julia> spec = spectrum(wave, flux)
 EchelleSpectrum(Float64, Float64)
   # orders: 10
-  wave (100, 10): 100.0 .. 10000.0
-  flux (100, 10): 1.0 .. 10.0
+  spectral axis (100, 10): 100.0 .. 10000.0
+  flux axis (100, 10): 1.0 .. 10.0
   meta: Dict{Symbol, Any}()
 ```
 """
@@ -295,7 +295,7 @@ function spectrum(spectral_axis::AbstractMatrix{<:Quantity}, flux_axis::Abstract
 end
 
 # tools
-#include("utils.jl")
+include("utils.jl")
 include("transforms/transforms.jl")
 include("plotting.jl")
 #include("fitting/fitting.jl")

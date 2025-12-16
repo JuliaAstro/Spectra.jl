@@ -27,8 +27,8 @@ For more advanced transformations, see [Transformations](@ref)
 
 ### Getters
 ```@docs
-Spectra.wave(::AbstractSpectrum)
-Spectra.flux(::AbstractSpectrum)
+Spectra.spectral_axis(::AbstractSpectrum)
+Spectra.flux_axis(::AbstractSpectrum)
 Spectra.meta(::AbstractSpectrum)
 ```
 
