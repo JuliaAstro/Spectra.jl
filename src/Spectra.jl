@@ -295,7 +295,7 @@ function spectrum(spectral_axis::AbstractMatrix{<:Quantity}, flux_axis::Abstract
 end
 
 # tools
-include("utils.jl")
+#include("utils.jl")
 include("transforms/transforms.jl")
 include("plotting.jl")
 #include("fitting/fitting.jl")
