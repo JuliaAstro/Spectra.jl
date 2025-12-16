@@ -3,7 +3,7 @@
 
 An instance of [`Spectrum`](@ref) where the spectral and flux axes are both 2D arrays, i.e., ``M = N = 2``.
 
-The spectral and flux matrices are both ``m`` rows in wavelength by ``n`` columns in [echelle order](https://en.wikipedia.org/wiki/Echelle_grating).
+The spectral and flux matrices are both ``m`` rows in spectral axis by ``n`` columns in [echelle order](https://en.wikipedia.org/wiki/Echelle_grating).
 
 # Examples
 
@@ -50,7 +50,7 @@ SingleSpectrum(Int64, Int64)
 
 See [`SingleSpectrum`](@ref) for a 1D variant, and [`IFUSpectrum`](@ref) for a 3D variant.
 """
-const EchelleSpectrum = Spectrum{W, F, 2, 2} where {W, F}
+const EchelleSpectrum = Spectrum{S, F, 2, 2} where {S, F}
 
 function Base.getindex(spec::EchelleSpectrum, i::Int)
     w = spectral_axis(spec)[:, i]

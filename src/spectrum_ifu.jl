@@ -49,7 +49,7 @@ SingleSpectrum(Int64, Float64)
 
 See [`SingleSpectrum`](@ref) for a 1D variant, and [`EchelleSpectrum`](@ref) for a 2D variant.
 """
-const IFUSpectrum = Spectrum{W, F, 1, 3} where {W, F}
+const IFUSpectrum = Spectrum{S, F, 1, 3} where {S, F}
 
 Base.getindex(spec::IFUSpectrum, i) = flux_axis(spec)[i, :, :]
 

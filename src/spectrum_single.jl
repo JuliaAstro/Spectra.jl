@@ -17,7 +17,7 @@ SingleSpectrum(Int64, Int64)
 
 See [`EchelleSpectrum`](@ref) and [`IFUSpectrum`](@ref) for working with instances of higher dimensional spectra.
 """
-const SingleSpectrum = Spectrum{W, F, 1, 1} where {W, F}
+const SingleSpectrum = Spectrum{S, F, 1, 1} where {S, F}
 
 #Base.size(spec::SingleSpectrum) = (length(spectral_axis(spec)), )
 #Base.IndexStyle(::Type{<:SingleSpectrum}) = IndexLinear()
