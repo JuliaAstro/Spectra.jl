@@ -38,7 +38,8 @@ end
         @test flux_axis(dereddened) ≈ flux_axis(spec)
 
         # Custom law
-        expected = @. $flux_axis(spec) * 10^(-0.4 * Av * CustomLaw(π)($spectral_axis(spec)))
+        s, f = spectral_axis(spec), flux_axis(spec)
+        expected = @. f * 10^(-0.4 * Av * CustomLaw(π)(s))
         #@test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π) |> flux_axis
 
         # Bad law
