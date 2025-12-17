@@ -2,12 +2,15 @@ using Documenter
 using Spectra
 using Unitful
 using Measurements
+using Revise
+
+Revise.revise()
 
 DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
 
 makedocs(sitename = "Spectra.jl",
     format = Documenter.HTML(;
-        prettyurls = get(ENV, "CI", nothing) == "true",
+        prettyurls = true,
         canonical = "https://juliaastro.org/Spectra/stable/",
     ),
     authors = "Miles Lucas and contributors.",
@@ -17,8 +20,8 @@ makedocs(sitename = "Spectra.jl",
         "Home" => "index.md",
         "spectrum.md",
         "transforms.md",
-        "fitting.md",
-        "analysis.md",
+        #"fitting.md",
+        #"utils.md",
         "contrib.md",
     ],
     warnonly = [:missing_docs],
@@ -27,5 +30,7 @@ makedocs(sitename = "Spectra.jl",
 
 deploydocs(;
     repo = "github.com/JuliaAstro/Spectra.jl.git",
-    versions = ["stable" => "v^", "v#.#"] # Restrict to minor releases
+    devbranch = "main",
+    push_preview = true,
+    versions = ["stable" => "v^", "v#.#"], # Restrict to minor releases
 )
