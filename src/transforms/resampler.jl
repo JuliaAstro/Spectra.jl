@@ -72,16 +72,17 @@ struct SpectrumResampler{A <: Spectrum, B}
 end
 
 spectrum(s::SpectrumResampler) = s.spectrum
-wave(s::SpectrumResampler) = wave(spectrum(s))
-flux(s::SpectrumResampler) = flux(spectrum(s))
+spectral_axis(s::SpectrumResampler) = (spectral_axis ∘ spectrum)(s)
+flux_axis(s::SpectrumResampler) = (flux_axis ∘ spectrum)(s)
+meta(s::SpectrumResampler) = (meta ∘ spectrum)(s)
 
 function (s::SpectrumResampler)(wave_sampled)
     flux_resampled = (s.interp)(wave_sampled)
-    return Spectrum(wave_sampled, flux_resampled, spectrum(s).meta)
+    return Spectrum(wave_sampled, flux_resampled, meta(s))
 end
 
 function Base.show(io::IO, s::SpectrumResampler)
-    println(io, "SpectrumResampler($(eltype(wave(s))), $(eltype(flux(s))))")
-    println(io, "  spec: ", spectrum(s))
+    println(io, "SpectrumResampler(", (eltype ∘ spectral_axis)(s), ", ", (eltype ∘ flux_axis)(s), ")")
+    println(io, "  spec: ", (typeof ∘ spectrum)(s))
     print(io, "  interpolator: ", typeof(s.interp))
 end
