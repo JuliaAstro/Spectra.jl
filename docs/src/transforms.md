@@ -9,16 +9,9 @@ julia> using Spectra, Unitful, Measurements, Random
 
 julia> rng = Random.seed!(0);
 
-julia> wave = (1:0.5:3)u"μm"
-(1.0:0.5:3.0) μm
+julia> wave = (1:0.5:3)u"μm";
 
-julia> sigma = randn(rng, size(wave))
-5-element Vector{Float64}:
-  0.942970533446119
-  0.13392275765318448
-  1.5250689085124804
-  0.12390123120559722
- -1.205772284259936
+julia> sigma = randn(rng, size(wave));
 
 julia> flux = (100 .± sigma)u"W/m^2/μm"
 5-element Vector{Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}}}:
@@ -29,12 +22,18 @@ julia> flux = (100 .± sigma)u"W/m^2/μm"
  100.0 ± -1.2 W μm^-1 m^-2
 
 julia> spec = spectrum(wave, flux)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  spectral axis (5,): 1.0 μm .. 3.0 μm
+  flux axis (5,): 100.0 ± 0.94 W μm^-1 m^-2 .. 100.0 ± -1.2 W μm^-1 m^-2
+  meta: Dict{Symbol, Any}()
 
 julia> red = redden(spec, 0.3)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  spectral axis (5,): 1.0 μm .. 3.0 μm
+  flux axis (5,): 89.44 ± 0.84 W μm^-1 m^-2 .. 98.1 ± 1.2 W μm^-1 m^-2
+  meta: Dict{Symbol, Any}()
 
-julia> red.flux
+julia> flux_axis(red)
 5-element Vector{Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}}}:
  89.44 ± 0.84 W μm^-1 m^-2
  94.35 ± 0.13 W μm^-1 m^-2
@@ -43,9 +42,12 @@ julia> red.flux
   98.1 ± 1.2 W μm^-1 m^-2
 
 julia> deredden!(red, 0.3)
-Spectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(μm^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+  spectral axis (5,): 1.0 μm .. 3.0 μm
+  flux axis (5,): 100.0 ± 0.94 W μm^-1 m^-2 .. 100.0 ± 1.2 W μm^-1 m^-2
+  meta: Dict{Symbol, Any}()
 
-julia> red.flux ≈ spec.flux
+julia> flux_axis(red) ≈ flux_axis(spec)
 true
 ```
 
