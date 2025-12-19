@@ -86,7 +86,7 @@ Return the spectral axis of `spec`.
 spectral_axis(spec::AbstractSpectrum) = spec.spectral_axis
 
 """
-    flux(spec::AbstractSpectrum)
+    flux_axis(spec::AbstractSpectrum)
 
 Return the flux axis of `spec`.
 """

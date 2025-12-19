@@ -8,13 +8,13 @@ Interpolation methods from many packages can be used without issue. Below we sho
 First, we set up an arbitrary spectrum and a linear interpolator from DataInterpolations.jl:
 
 ```jldoctest resampling
-julia> using Spectra: spectrum, flux, wave, SpectrumResampler
+julia> using Spectra: SpectrumResampler, spectrum, spectral_axis, flux_axis
 
 julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
 
 julia> spec = spectrum([20, 40, 120, 160, 200], [1, 3, 7, 6, 20]);
 
-julia> interp = LinearInterpolation(flux(spec), wave(spec);
+julia> interp = LinearInterpolation(flux_axis(spec), spectral_axis(spec);
            extrapolation = ExtrapolationType.Constant);
 ```
 
@@ -38,10 +38,10 @@ The resampled wavelength and flux can be obtained with the `wave` and `flux` met
 julia> result isa Spectrum
 true
 
-julia> wave(result) == wave_sampled
+julia> spectral_axis(result) == wave_sampled
 true
 
-julia> flux(result) == interp(wave_sampled)
+julia> flux_axis(result) == interp(wave_sampled)
 true
 ```
 
@@ -50,7 +50,7 @@ Use of [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl) follo
 ```jldoctest resampling
 julia> using Interpolations: linear_interpolation, Flat
 
-julia> interp = linear_interpolation(wave(spec), flux(spec); extrapolation_bc = Flat());
+julia> interp = linear_interpolation(spectral_axis(spec), flux_axis(spec); extrapolation_bc = Flat());
 
 julia> resampler = SpectrumResampler(spec, interp);
 
@@ -59,10 +59,10 @@ julia> result = resampler(wave_sampled);
 julia> result isa Spectrum
 true
 
-julia> wave(result) == wave_sampled
+julia> spectral_axis(result) == wave_sampled
 true
 
-julia> flux(result) == interp(wave_sampled)
+julia> flux_axis(result) == interp(wave_sampled)
 true
 ```
 """
