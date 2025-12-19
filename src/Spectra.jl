@@ -2,14 +2,18 @@ module Spectra
 
 # Uniform API
 export AbstractSpectrum, Spectrum, spectrum, spectral_axis, flux_axis
-# spectra_single.jl, spectra_ifu.jl, spectra_echelle.jl, spectra_binned.jl
-export SingleSpectrum, IFUSpectrum, EchelleSpectrum, spectral_axis, flux_axis
-# utils.jl
+
+# AbstractSpectrum types
+export SingleSpectrum, IFUSpectrum, EchelleSpectrum
+
+# Transforms
+export SpectrumResampler, redden, redden!, deredden, deredden!
+
+# Utilities
 export blackbody #, line_flux, equivalent_width
-# fitting/fitting.jl
+
+# Fitting
 #export continuum, continuum!
-# transforms/redden.jl
-export redden, redden!, deredden, deredden!
 
 using RecipesBase: @recipe
 using Measurements: Measurements, Measurement
@@ -82,7 +86,7 @@ Return the spectral axis of `spec`.
 spectral_axis(spec::AbstractSpectrum) = spec.spectral_axis
 
 """
-    flux(spec::AbstractSpectrum)
+    flux_axis(spec::AbstractSpectrum)
 
 Return the flux axis of `spec`.
 """
@@ -294,8 +298,8 @@ function spectrum(spectral_axis::AbstractMatrix{<:Quantity}, flux_axis::Abstract
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-# tools
 include("utils.jl")
+include("transforms/resampler.jl")
 include("transforms/transforms.jl")
 include("plotting.jl")
 #include("fitting/fitting.jl")

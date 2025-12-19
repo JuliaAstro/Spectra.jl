@@ -2,7 +2,7 @@
 
 ## Extinction
 
-By levaraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
+By leveraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
 
 ```jldoctest
 julia> using Spectra, Unitful, Measurements, Random
@@ -58,4 +58,12 @@ redden
 redden!
 deredden
 deredden!
+```
+
+## Resampling
+
+External interpolators, e.g., from [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl) or [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl), can be used to resample spectra onto a given wavelength grid. Starting with a sample spectrum `spec`, we first create a [`SpectrumResampler`](@ref) object `resampler` which stores the initial spectrum and interpolator `interp` together. We then apply this object to the wavelength grid of our choice to produce the resampled spectrum. We show example usage in the docstring below:
+
+```@docs
+SpectrumResampler
 ```
