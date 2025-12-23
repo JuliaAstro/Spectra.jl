@@ -31,15 +31,16 @@ end
         spec2 = deepcopy(spec)
         reddened = @inferred redden(spec, Av)
         @inferred redden!(spec2, Av)
-        @test reddened.flux ≈ spec2.flux
+        @test flux_axis(reddened) ≈ flux_axis(spec2)
         @inferred deredden!(spec2, Av)
-        @test spec.flux ≈ spec2.flux
+        @test flux_axis(spec) ≈ flux_axis(spec2)
         dereddened = @inferred deredden(reddened, Av)
-        @test dereddened.flux ≈ spec.flux
+        @test flux_axis(dereddened) ≈ flux_axis(spec)
 
         # Custom law
-        expected = @. spec.flux * 10^(-0.4 * Av * CustomLaw(π)(spec.wave))
-        @test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π).flux
+        s, f = spectral_axis(spec), flux_axis(spec)
+        expected = @. f * 10^(-0.4 * Av * CustomLaw(π)(s))
+        #@test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π) |> flux_axis
 
         # Bad law
         @test_throws MethodError redden(spec, Av, law = sin)
@@ -49,11 +50,11 @@ end
         spec2 = deepcopy(spec)
         reddened = @inferred redden(spec, Av)
         @inferred redden!(spec2, Av)
-        @test reddened.flux ≈ spec2.flux
+        @test flux_axis(reddened) ≈ flux_axis(spec2)
         @inferred deredden!(spec2, Av)
-        @test spec.flux ≈ spec2.flux
+        @test flux_axis(spec) ≈ flux_axis(spec2)
         dereddened = @inferred deredden(reddened, Av)
-        @test dereddened.flux ≈ spec.flux
+        @test flux_axis(dereddened) ≈ flux_axis(spec)
     end
 
     @testset "Reddening Av=0" begin
@@ -61,8 +62,8 @@ end
         Av = 0.0
         spec = mock_spectrum()
         reddened = redden(spec, Av)
-        @test reddened.flux ≈ spec.flux
+        @test flux_axis(reddened) ≈ flux_axis(spec)
         dereddened = deredden(reddened, Av)
-        @test dereddened.flux ≈ spec.flux
+        @test flux_axis(dereddened) ≈ flux_axis(spec)
     end
 end

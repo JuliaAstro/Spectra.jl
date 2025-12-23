@@ -1,10 +1,3 @@
-```@meta
-DocTestSetup = quote
-  using Spectra, Random
-  Random.seed!(11894)
-end
-```
-
 # Spectrum
 
 Here we will go over the different spectral types and how we use them.
@@ -14,7 +7,11 @@ Here we will go over the different spectral types and how we use them.
 Spectra are defined as possible subtypes of `AbstractSpectrum`. You can use these directly for construction, or use the catch-all [`spectrum`](@ref) function, which is preferred.
 
 ```@docs
+Spectra.AbstractSpectrum
 Spectra.Spectrum
+Spectra.SingleSpectrum
+Spectra.EchelleSpectrum
+Spectra.IFUSpectrum
 ```
 
 ## Constructors
@@ -28,25 +25,37 @@ Spectra.spectrum
 
 For more advanced transformations, see [Transformations](@ref)
 
+### Getters
+```@docs
+Spectra.spectral_axis(::AbstractSpectrum)
+Spectra.flux_axis(::AbstractSpectrum)
+Spectra.meta(::AbstractSpectrum)
+```
+
+### Array interface
+
 | Function                           |
 |:-----------------------------------|
-| `Base.length(::AbstractSpectrum)`  |
-| `Base.size(::AbstractSpectrum)`    |
-| `Base.maximum(::AbstractSpectrum)` |
-| `Base.minimum(::AbstractSpectrum)` |
 | `Base.argmax(::AbstractSpectrum)`  |
 | `Base.argmin(::AbstractSpectrum)`  |
-| `Base.findmax(::AbstractSpectrum)`  |
-| `Base.findmin(::AbstractSpectrum)`  |
+| `Base.eltype(::AbstractSpectrum)`  |
+| `Base.findmax(::AbstractSpectrum)` |
+| `Base.findmin(::AbstractSpectrum)` |
+| `Base.iterate(::AbstractSpectrum)` |
+| `Base.length(::AbstractSpectrum)`  |
+| `Base.maximum(::AbstractSpectrum)` |
+| `Base.minimum(::AbstractSpectrum)` |
+| `Base.size(::AbstractSpectrum)`    |
 
 ### Arithmetic
 
-| Function                           |
-|:-----------------------------------|
-| `+(::AbstractSpectrum, A)`         |
-| `-(::AbstractSpectrum, A)`         |
-| `*(::AbstractSpectrum, A)`         |
-| `/(::AbstractSpectrum, A)`         |
+| Function                                            |
+|:----------------------------------------------------|
+| `+(::AbstractSpectrum, A)`                          |
+| `-(::AbstractSpectrum, A)`                          |
+| `*(::AbstractSpectrum, A)`                          |
+| `/(::AbstractSpectrum, A)`                          |
+| `Base.(==)(::AbstractSpectrum, ::AbstractSpectrum)` |
 
 ## Unitful helpers
 
@@ -75,8 +84,4 @@ savefig("spec-plot.svg"); nothing # hide
 
 ```@index
 Pages = ["spectrum.md"]
-```
-
-```@meta
-DocTestSetup = nothing
 ```

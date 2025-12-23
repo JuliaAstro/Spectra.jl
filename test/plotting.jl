@@ -14,7 +14,7 @@ using RecipesBase
         :xlabel => "wave",
         :ylabel => "flux density",
         :seriestype => :step)
-    @test rec[1].args == (ustrip.(spec.wave), Measurements.value.(ustrip.(spec.flux)))
+    @test rec[1].args == (ustrip.(spectral_axis(spec)), Measurements.value.(ustrip.(flux_axis(spec))))
 
 
     strip_spec = ustrip(spec)
@@ -24,7 +24,7 @@ using RecipesBase
         :xlabel => "wave",
         :ylabel => "flux density",
         :seriestype => :step)
-    @test rec[1].args == (strip_spec.wave, Measurements.value.(strip_spec.flux))
+    @test rec[1].args == (spectral_axis(strip_spec), Measurements.value.(flux_axis(strip_spec)))
 end
 
 @testset "Plotting - Echelle" begin
@@ -39,5 +39,5 @@ end
           :ylabel => "flux density",
           :seriestype => :step,
     )
-    @test rec[1].args == (spec.wave', spec.flux')
+    @test rec[1].args == (spectral_axis(spec)', flux_axis(spec)')
 end
