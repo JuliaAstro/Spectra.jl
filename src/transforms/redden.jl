@@ -7,7 +7,8 @@ In-place version of [`redden`](@ref)
 """
 function redden!(spec::T, Av; Rv = 3.1, law = DustExtinction.CCM89) where {T <: AbstractSpectrum}
     s, f = spectral_axis(spec), flux_axis(spec)
-    @. f = DustExtinction.redden(law, s, f; Rv, Av)
+    law_instance = law isa DustExtinction.ExtinctionLaw ? law : law(Rv=Rv)
+    @. f = DustExtinction.redden(law_instance, s, f; Av)
     return spec
 end
 
@@ -32,7 +33,8 @@ In-place version of [`deredden`](@ref)
 """
 function deredden!(spec::AbstractSpectrum, Av; Rv = 3.1, law = DustExtinction.CCM89)
     s, f = spectral_axis(spec), flux_axis(spec)
-    @. f = DustExtinction.deredden(law, s, f; Rv, Av)
+    law_instance = law isa DustExtinction.ExtinctionLaw ? law : law(Rv=Rv)
+    @. f = DustExtinction.deredden(law_instance, s, f; Av)
     return spec
 end
 
