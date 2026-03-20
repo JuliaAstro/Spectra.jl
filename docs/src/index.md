@@ -59,13 +59,8 @@ For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, s
 
 If you found this software or any derivative work useful in your academic work, I ask that you please cite the code.
 
-The preferred citation metadata is available in [CITATION.cff](https://github.com/JuliaAstro/Spectra.jl/blob/main/CITATION.cff).
-
-```yaml
-cff-version: 1.2.0
-type: software
-title: Spectra.jl
-repository-code: https://github.com/JuliaAstro/Spectra.jl
+```
+TODO
 ```
 
 ## Contributing
