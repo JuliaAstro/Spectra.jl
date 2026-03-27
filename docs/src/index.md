@@ -57,10 +57,16 @@ For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, s
 
 ## Citation
 
+
 If you found this software or any derivative work useful in your academic work, I ask that you please cite the code.
 
 ```
-TODO
+@misc{Spectra.jl,
+  author = {Miles Lucas and contributors},
+  title  = {Spectra.jl: Utilities for interfacing with astronomical spectra},
+  url    = {https://github.com/JuliaAstro/Spectra.jl},
+  year   = {2024}
+}
 ```
 
 ## Contributing
