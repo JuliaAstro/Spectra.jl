@@ -1,6 +1,6 @@
 # Spectra.jl
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.org/Spectra/stable)
+[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.org/Spectra.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/Spectra.jl/dev)
 
 [![CI](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml)
