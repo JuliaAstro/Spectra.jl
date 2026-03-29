@@ -57,7 +57,6 @@ For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, s
 
 ## Citation
 
-
 If you found this software or any derivative work useful in your academic work, I ask that you please cite the code.
 
 ```
