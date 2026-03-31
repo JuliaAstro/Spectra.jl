@@ -1,6 +1,7 @@
 [deps]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DustExtinction = "fb44c06c-c62f-5397-83f5-69249e0a3c8e"
 Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
