@@ -1,4 +1,4 @@
-name = "Spectra"
+name = "SpectrumBase"
 uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
 version = "0.1.0"
 authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
