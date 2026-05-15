@@ -4,8 +4,8 @@
 [![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/SpectrumBase.jl/dev)
 
 [![CI](https://github.com/JuliaAstro/SpectrumBase.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/SpectrumBase.jl/actions/workflows/CI.yml)
-[![codecov](https://codecov.io/gh/juliaastro/SpectrumBase.jl/graph/badge.svg?token=EjMJcszaoQ)](https://codecov.io/gh/juliaastro/SpectrumBase.jl)
-![GitHub](https://img.shields.io/github/license/juliaastro/SpectrumBase.jl.svg)
+[![codecov](https://codecov.io/gh/juliaastro/SpectrumBase.jl/graph/badge.svg)](https://codecov.io/gh/juliaastro/SpectrumBase.jl)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
