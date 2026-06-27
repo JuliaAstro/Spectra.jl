@@ -5,7 +5,7 @@
 By leveraging [DustExtinction.jl](https://github.com/juliaastro/dustextinction.jl) we can apply common reddening laws to our spectra.
 
 ```jldoctest
-julia> using Spectra, Unitful, Measurements, Random
+julia> using SpectrumBase, Unitful, Measurements, Random
 
 julia> rng = Random.seed!(0);
 

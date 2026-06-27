@@ -1,4 +1,4 @@
-module Spectra
+module SpectrumBase
 
 # Uniform API
 export AbstractSpectrum, Spectrum, spectrum, spectral_axis, flux_axis

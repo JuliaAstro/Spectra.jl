@@ -1,11 +1,11 @@
-# Spectra.jl
+# SpectrumBase.jl
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.org/Spectra/stable)
-[![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/Spectra.jl/dev)
+[![](https://img.shields.io/badge/docs-stable-blue.svg?label=docs)](https://juliaastro.org/SpectrumBase.jl/stable)
+[![](https://img.shields.io/badge/docs-dev-blue.svg?label=docs)](https://juliaastro.org/SpectrumBase.jl/dev)
 
-[![CI](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/Spectra.jl/actions/workflows/CI.yml)
-[![codecov](https://codecov.io/gh/juliaastro/Spectra.jl/graph/badge.svg?token=EjMJcszaoQ)](https://codecov.io/gh/juliaastro/Spectra.jl)
-![GitHub](https://img.shields.io/github/license/juliaastro/Spectra.jl.svg)
+[![CI](https://github.com/JuliaAstro/SpectrumBase.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/SpectrumBase.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/juliaastro/SpectrumBase.jl/graph/badge.svg)](https://codecov.io/gh/juliaastro/SpectrumBase.jl)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
@@ -17,7 +17,7 @@ Utilities for interfacing with astronomical spectra and synthetic spectra librar
 
 Currently this package can only be installed from github. To do so, either clone this repository and install it or
 
-    pkg> add https://github.com/JuliaAstro/Spectra.jl
+    pkg> add https://github.com/JuliaAstro/SpectrumBase.jl
 
 from the `pkg` command line (Press `]` from Julia REPL)
 
@@ -33,10 +33,10 @@ julia --proj
 julia> import Pkg
 
 # List tests
-julia> Pkg.test("Spectra"; test_args = `--list`)
+julia> Pkg.test("SpectrumBase"; test_args = `--list`)
 
 # Run specific testsets by name. Will match with `startswith`
-julia> Pkg.test("Spectra"; test_args = `--verbose <testset name>`)
+julia> Pkg.test("SpectrumBase"; test_args = `--verbose <testset name>`)
 ```
 
 ### Docs
