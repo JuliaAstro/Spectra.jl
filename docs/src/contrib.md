@@ -19,4 +19,4 @@ In general, for contributing, use the following guidelines:
 - Each new feature should bump the package one minor version
 - Make sure to cite relevant papers and code where appropriate
 
-If you are interested in contributing, head over to [GitHub](https://github.com/juliaastro/spectra.jl) and take a look at some of the issues for ideas!
+If you are interested in contributing, head over to [GitHub](https://github.com/JuliaAstro/SpectrumBase.jl/) and take a look at some of the issues for ideas!
