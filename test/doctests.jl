@@ -1,6 +1,7 @@
 # Need to load Spectra into Main to work with ParallelTestRunner
-@eval Main using Spectra
+#@eval Main using Spectra
+using SpectrumBase
 using Documenter: DocMeta, doctest
 
-DocMeta.setdocmeta!(Main.Spectra, :DocTestSetup, :(using Spectra); recursive=true)
-doctest(Main.Spectra)
+DocMeta.setdocmeta!(SpectrumBase, :DocTestSetup, :(using SpectrumBase); recursive = true)
+doctest(SpectrumBase)
