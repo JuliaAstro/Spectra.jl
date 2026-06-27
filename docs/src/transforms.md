@@ -67,7 +67,7 @@ Spectra can be shifted in wavelength via cosmological redshift or Doppler veloci
 **Cosmological redshift** shifts by a dimensionless parameter `z`:
 
 ```jldoctest
-julia> using Spectra
+julia> using SpectrumBase
 
 julia> spec = spectrum(collect(4000.0:1000.0:8000.0), ones(5));
 
@@ -80,7 +80,7 @@ true
 **Doppler shift** shifts by a radial velocity `v`. Pass a `Unitful` velocity or a plain number (interpreted as m/s). Set `relativistic=true` for the full relativistic formula:
 
 ```jldoctest
-julia> using Spectra, Unitful
+julia> using SpectrumBase, Unitful
 
 julia> spec = spectrum(collect(4000.0:1000.0:8000.0), ones(5));
 
