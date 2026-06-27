@@ -22,6 +22,17 @@ Here is a quick demo of some of our features.
 
 ### Spectrum construction
 
+```@meta
+# The doctest below reads `sdss.fits` via a relative path. When doctests are run
+# from the test suite (rather than the doc build) the working directory is a
+# temporary build root, so move into `docs/` where the data file lives. This is a
+# no-op during the regular doc build.
+DocTestSetup = quote
+    using SpectrumBase
+    cd(joinpath(pkgdir(SpectrumBase), "docs"))
+end
+```
+
 ```jldoctest guide
 julia> using SpectrumBase, FITSIO, Unitful, UnitfulAstro, Plots
 
