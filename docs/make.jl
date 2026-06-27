@@ -1,21 +1,21 @@
 using Documenter
-using Spectra
+using SpectrumBase
 using Unitful
 using Measurements
 using Revise
 
 Revise.revise()
 
-DocMeta.setdocmeta!(Spectra, :DocTestSetup, :(using Spectra); recursive = true)
+DocMeta.setdocmeta!(SpectrumBase, :DocTestSetup, :(using SpectrumBase); recursive = true)
 
-makedocs(sitename = "Spectra.jl",
+makedocs(sitename = "SpectrumBase.jl",
     format = Documenter.HTML(;
         prettyurls = true,
-        canonical = "https://juliaastro.org/Spectra/stable/",
+        canonical = "https://juliaastro.org/SpectrumBase/stable/",
     ),
     authors = "Miles Lucas and contributors.",
     linkcheck = !("skiplinks" in ARGS),
-    modules = [Spectra],
+    modules = [SpectrumBase],
     pages = [
         "Home" => "index.md",
         "spectrum.md",
@@ -29,7 +29,7 @@ makedocs(sitename = "Spectra.jl",
 )
 
 deploydocs(;
-    repo = "github.com/JuliaAstro/Spectra.jl.git",
+    repo = "github.com/JuliaAstro/SpectrumBase.jl.git",
     devbranch = "main",
     push_preview = true,
     versions = ["stable" => "v^", "v#.#"], # Restrict to minor releases

@@ -1,4 +1,4 @@
-using Spectra:
+using SpectrumBase:
     redden,
     redden!,
     deredden,

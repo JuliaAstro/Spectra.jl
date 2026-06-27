@@ -8,7 +8,7 @@ Interpolation methods from many packages can be used without issue. Below we sho
 First, we set up an arbitrary spectrum and a linear interpolator from DataInterpolations.jl:
 
 ```jldoctest resampling
-julia> using Spectra: SpectrumResampler, spectrum, spectral_axis, flux_axis
+julia> using SpectrumBase: SpectrumResampler, spectrum, spectral_axis, flux_axis
 
 julia> using DataInterpolations: LinearInterpolation, ExtrapolationType
 

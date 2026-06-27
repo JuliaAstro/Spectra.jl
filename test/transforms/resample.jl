@@ -1,4 +1,4 @@
-using Spectra: Spectra, AbstractSpectrum, SpectrumResampler, spectrum, spectral_axis, flux_axis
+using SpectrumBase: SpectrumBase, AbstractSpectrum, SpectrumResampler, spectrum, spectral_axis, flux_axis
 using DataInterpolations: LinearInterpolation, ExtrapolationType
 using Unitful: @u_str, uconvert
 using UnitfulAstro
@@ -36,7 +36,7 @@ end
     resampler = SpectrumResampler(spec, interp)
     expected = """
     SpectrumResampler(Float64, Measurements.Measurement{Float64})
-      spec: Spectra.SingleSpectrum{Float64, Measurements.Measurement{Float64}}
+      spec: SpectrumBase.SingleSpectrum{Float64, Measurements.Measurement{Float64}}
       interpolator: DataInterpolations.LinearInterpolation{Vector{Measurements.Measurement{Float64}}, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}, Vector{Measurements.Measurement{Float64}}, Vector{Measurements.Measurement{Float64}}, Measurements.Measurement{Float64}}"""
 
     @test sprint(show, resampler) == expected

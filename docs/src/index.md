@@ -1,4 +1,4 @@
-# Spectra.jl
+# SpectrumBase.jl
 
 Utilities for interfacing with astronomical spectra and synthetic spectra libraries.
 
@@ -11,9 +11,9 @@ Pages = ["index.md", "spectrum.md", "transforms.md"]
 From the REPL, press `]` to enter Pkg mode
 
 ```julia-repl
-pkg> add https://github.com/JuliaAstro/Spectra.jl
+pkg> add https://github.com/JuliaAstro/SpectrumBase.jl
 
-julia> using Spectra
+julia> using SpectrumBase
 ```
 
 ## Quick Start
@@ -23,7 +23,7 @@ Here is a quick demo of some of our features.
 ### Spectrum construction
 
 ```jldoctest guide
-julia> using Spectra, FITSIO, Unitful, UnitfulAstro, Plots
+julia> using SpectrumBase, FITSIO, Unitful, UnitfulAstro, Plots
 
 julia> # fitsurl = "https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12";
 
@@ -60,9 +60,14 @@ For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, s
 If you found this software or any derivative work useful in your academic work, I ask that you please cite the code.
 
 ```
-TODO
+@misc{SpectrumBase.jl,
+  author = {Miles Lucas and contributors},
+  title  = {SpectrumBase.jl: Utilities for interfacing with astronomical spectra},
+  url    = {https://github.com/JuliaAstro/SpectrumBase.jl},
+  year   = {2024}
+}
 ```
 
 ## Contributing
 
-Please see [Contributing](@ref contrib) for information on contributing and extending Spectra.jl.
+Please see [Contributing](@ref contrib) for information on contributing and extending SpectrumBase.jl.
