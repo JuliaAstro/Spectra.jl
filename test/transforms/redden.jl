@@ -40,7 +40,7 @@ end
         # Custom law
         s, f = spectral_axis(spec), flux_axis(spec)
         expected = @. f * 10^(-0.4 * Av * CustomLaw(π)(s))
-        #@test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π) |> flux_axis
+        @test expected ≈ redden(spec, Av; law=CustomLaw, Rv=π) |> flux_axis
 
         # Bad law
         @test_throws MethodError redden(spec, Av, law = sin)
