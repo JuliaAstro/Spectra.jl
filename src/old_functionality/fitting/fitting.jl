@@ -16,7 +16,7 @@
 #    # gotta be a simpler way to convert to -1 to 1 domain
 #    x = (wave .- minimum(wave)) .* 2 ./ (maximum(wave) - minimum(wave)) .- 1
 #    vand = chebvander(x, deg)
-#    if T <: Measurement
+#    if T <: Measurements.Measurement
 #        W = diagm(0 => Measurements.uncertainty.(flux))
 #        coeffs = (vand' * W * vand) \ (vand' * W * flux)
 #    else
