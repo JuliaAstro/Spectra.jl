@@ -1,6 +1,6 @@
 # Dimensionless velocity β ≡ v / c against the speed of light in vacuum.
 # A plain number is taken as km/s, the usual unit for radial velocities.
-_velocity_ratio(v::Quantity) = ustrip(Unitful.NoUnits, v / c_0)
+_velocity_ratio(v::Unitful.Quantity) = ustrip(Unitful.NoUnits, v / c_0)
 _velocity_ratio(v::Real) = _velocity_ratio(v * u"km/s")
 
 # Doppler shift
@@ -15,7 +15,7 @@ end
 _axis_factor(::Type{<:Real}, factor) = factor # Unitless: assume wavelength
 _axis_factor(::Type{<:Unitful.Length}, factor) = factor # Wavelength: stretches
 _axis_factor(::Type{<:Unitful.Energy}, factor) = inv(factor) # Energy: compresses
-_axis_factor(::Type{S}, factor) where {S <: Quantity} =
+_axis_factor(::Type{S}, factor) where {S <: Unitful.Quantity} =
     throw(ArgumentError("cannot shift a spectral axis with dimension $(dimension(S)); expected a wavelength or energy"))
 _axis_factor(spec::AbstractSpectrum, factor) = _axis_factor(eltype(spectral_axis(spec)), factor)
 
