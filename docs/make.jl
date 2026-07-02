@@ -2,11 +2,6 @@ using Documenter
 using SpectrumBase
 using Unitful
 using Measurements
-using Revise
-
-Revise.revise()
-
-DocMeta.setdocmeta!(SpectrumBase, :DocTestSetup, :(using SpectrumBase); recursive = true)
 
 makedocs(sitename = "SpectrumBase.jl",
     format = Documenter.HTML(;
@@ -25,12 +20,12 @@ makedocs(sitename = "SpectrumBase.jl",
         "contrib.md",
     ],
     warnonly = [:missing_docs],
+    doctest = false,
     # strict = true,
 )
 
 deploydocs(;
     repo = "github.com/JuliaAstro/SpectrumBase.jl.git",
-    devbranch = "main",
-    push_preview = true,
     versions = ["stable" => "v^", "v#.#"], # Restrict to minor releases
+    push_preview = true,
 )

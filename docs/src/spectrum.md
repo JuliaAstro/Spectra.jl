@@ -64,6 +64,12 @@ Unitful.unit
 Unitful.ustrip
 ```
 
+## Utilities
+
+```@docs
+SpectrumBase.blackbody
+```
+
 ## Plotting
 
 We provide simple plotting recipes for spectra using [Plots.jl](https://github.com/juliaplots/plots.jl)
@@ -75,10 +81,7 @@ wave = range(1e3, 5e4, length=100)
 spec = blackbody(wave, 2000)
 
 plot(spec)
-savefig("spec-plot.svg"); nothing # hide
 ```
-
-![](spec-plot.svg)
 
 ## Index
 
