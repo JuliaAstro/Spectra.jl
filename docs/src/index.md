@@ -22,29 +22,18 @@ Here is a quick demo of some of our features.
 
 ### Spectrum construction
 
-```@meta
-# The doctest below reads `sdss.fits` via a relative path. When doctests are run
-# from the test suite (rather than the doc build) the working directory is a
-# temporary build root, so move into `docs/` where the data file lives. This is a
-# no-op during the regular doc build.
-DocTestSetup = quote
-    using SpectrumBase
-    cd(joinpath(pkgdir(SpectrumBase), "docs"))
-end
+```@example quickstart
+using SpectrumBase, FITSIO, Unitful, UnitfulAstro, Plots, Downloads
+#fname = Downloads.download("https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12", "sdss.fits")
+f = FITS(joinpath(pkgdir(SpectrumBase), "docs", "sdss.fits"))
 ```
 
-```@repl
-using SpectrumBase, FITSIO, Unitful, UnitfulAstro, Plots
-# fitsurl = "https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12";
-# f = FITS(HTTP.get(fitsurl).body)
-f = FITS("sdss.fits")
+```@example quickstart
 wave = (10 .^ read(f[2], "loglam"))u"angstrom";
 flux = (read(f[2], "flux") .* 1e-17)u"erg/s/cm^2/angstrom";
 spec = spectrum(wave, flux)
-plot(spec);
+plot(spec)
 ```
-
-![](assets/sdss.svg)
 
 For constructing higher dimensional spectra, e.g., for echelle or IFU spectra, see the docstrings for [EchelleSpectrum](@ref) and [IFUSpectrum](@ref), respectively.
 

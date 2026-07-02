@@ -1,19 +1,23 @@
-"""
+@doc raw"""
     blackbody(wave::Vector{<:Unitful.Quantity}, T::Unitful.Quantity)
     blackbody(wave::Vector{<:Real}, T::Real)
 
-Create a blackbody spectrum using Planck's law. The curve follows the mathematical form
+Create a blackbody spectrum using Planck's law. The curve follows the mathematical form:
 
-``B_λ(T) = \\frac{2hc^2}{λ^5} \\frac{1}{e^{hc/λ k_B T} - 1}``
+```math
+    B_\lambda(T) = \frac{2hc^2}{\lambda^5} \frac{1}{e^{hc/\lambda k_B T} - 1}\, .
+```
 
 If `wave` and `T` are not `Unitful.Quantity`, they are assumed to be in angstrom and Kelvin, and the returned flux will be in units `W m^-2 Å^-1`.
 
 The physical constants are calculated using [PhysicalConstants.jl](https://github.com/juliaphysics/physicalconstants.jl), specifically the CODATA2018 measurement set.
 
 # References
+
 [Planck's Law](https://en.wikipedia.org/wiki/Planck%27s_law)
 
 # Examples
+
 ```jldoctest
 julia> using SpectrumBase, Unitful, UnitfulAstro
 
