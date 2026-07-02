@@ -16,8 +16,8 @@ export blackbody #, line_flux, equivalent_width
 #export continuum, continuum!
 
 using RecipesBase: @recipe
-using Measurements: Measurements, Measurement
-using Unitful: Unitful, Quantity, @u_str, ustrip, unit, dimension
+using Measurements: Measurements
+using Unitful: Unitful, @u_str, ustrip, unit, dimension
 using PhysicalConstants.CODATA2018: h, c_0, k_B
 
 """
@@ -164,7 +164,7 @@ julia> wave = range(1e4, 3e4, length=1000);
 julia> flux = wave .* 10 .+ randn(rng, 1000);
 
 julia> spec = spectrum(wave*u"angstrom", flux*u"W/m^2/angstrom")
-SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(Å,), 𝐋, nothing}}, Unitful.Quantity{Float64, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, m^-2, W), 𝐌 𝐋^-1 𝐓^-3, nothing}})
   spectral axis (1000,): 10000.0 Å .. 30000.0 Å
   flux axis (1000,): 99999.76809093042 W Å^-1 m^-2 .. 300000.2474309158 W Å^-1 m^-2
   meta: Dict{Symbol, Any}()
@@ -255,7 +255,7 @@ julia> sigma = randn(rng, size(wave));
 julia> flux = (100 .± sigma)u"erg/cm^2/s/angstrom";
 
 julia> spec = spectrum(wave, flux)
-SingleSpectrum(Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Quantity{Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
+SingleSpectrum(Unitful.Quantity{Float64, 𝐋, Unitful.FreeUnits{(μm,), 𝐋, nothing}}, Unitful.Quantity{Measurements.Measurement{Float64}, 𝐌 𝐋^-1 𝐓^-3, Unitful.FreeUnits{(Å^-1, erg, cm^-2, s^-1), 𝐌 𝐋^-1 𝐓^-3, nothing}})
   spectral axis (1000,): 1.0 μm .. 4.0 μm
   flux axis (1000,): 100.0 ± -0.23 erg Å^-1 cm^-2 s^-1 .. 100.0 ± 0.25 erg Å^-1 cm^-2 s^-1
   meta: Dict{Symbol, Any}()
@@ -288,12 +288,12 @@ function spectrum(spectral_axis::AbstractMatrix{<:Real}, flux_axis::AbstractMatr
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(spectral_axis::AbstractVector{<:Quantity}, flux_axis::AbstractVector{<:Quantity}; kwds...)
+function spectrum(spectral_axis::AbstractVector{<:Unitful.Quantity}, flux_axis::AbstractVector{<:Unitful.Quantity}; kwds...)
     @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
-function spectrum(spectral_axis::AbstractMatrix{<:Quantity}, flux_axis::AbstractMatrix{<:Quantity}; kwds...)
+function spectrum(spectral_axis::AbstractMatrix{<:Unitful.Quantity}, flux_axis::AbstractMatrix{<:Unitful.Quantity}; kwds...)
     @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
