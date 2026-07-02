@@ -24,14 +24,16 @@ Here is a quick demo of some of our features.
 
 ```@example quickstart
 using SpectrumBase, FITSIO, Unitful, UnitfulAstro, Plots, Downloads
+
 #fname = Downloads.download("https://dr14.sdss.org/optical/spectrum/view/data/format=fits/spec=lite?plateid=1323&mjd=52797&fiberid=12", "sdss.fits")
 f = FITS(joinpath(pkgdir(SpectrumBase), "docs", "sdss.fits"))
-```
 
-```@example quickstart
-wave = (10 .^ read(f[2], "loglam"))u"angstrom";
-flux = (read(f[2], "flux") .* 1e-17)u"erg/s/cm^2/angstrom";
+wave = (10 .^ read(f[2], "loglam"))u"angstrom"
+
+flux = (read(f[2], "flux") .* 1e-17)u"erg/s/cm^2/angstrom"
+
 spec = spectrum(wave, flux)
+
 plot(spec)
 ```
 
