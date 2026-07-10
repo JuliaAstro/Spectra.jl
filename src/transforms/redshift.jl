@@ -1,7 +1,9 @@
 # Dimensionless velocity β ≡ v / c against the speed of light in vacuum.
-# A plain number is taken as km/s, the usual unit for radial velocities.
-_velocity_ratio(v::Unitful.Quantity) = ustrip(Unitful.NoUnits, v / c_0)
-_velocity_ratio(v::Real) = _velocity_ratio(v * u"km/s")
+# A plain number is taken as km/s, the usual unit for radial velocities; the
+# `Quantity` methods (which honor the velocity's own units) live in the units
+# extensions.
+const _SPEED_OF_LIGHT_KMPS = SPEED_OF_LIGHT / 1000
+_velocity_ratio(v::Real) = v / _SPEED_OF_LIGHT_KMPS
 
 # Doppler shift
 function _doppler_factor(v; relativistic)
@@ -11,22 +13,31 @@ function _doppler_factor(v; relativistic)
     return sqrt((1 + β) / (1 - β))
 end
 
-# Resolve the (1 + z) stretch factor to the scalar actually multiplied onto a spectral axis of element type `S`.
-_axis_factor(::Type{<:Real}, factor) = factor # Unitless: assume wavelength
-_axis_factor(::Type{<:Unitful.Length}, factor) = factor # Wavelength: stretches
-_axis_factor(::Type{<:Unitful.Energy}, factor) = inv(factor) # Energy: compresses
-_axis_factor(::Type{S}, factor) where {S <: Unitful.Quantity} =
-    throw(ArgumentError("cannot shift a spectral axis with dimension $(dimension(S)); expected a wavelength or energy"))
-_axis_factor(spec::AbstractSpectrum, factor) = _axis_factor(eltype(spectral_axis(spec)), factor)
+# Resolve the (1 + z) stretch factor to the scalar actually multiplied onto a
+# spectrum's spectral axis. A unitless axis is assumed to be a wavelength
+# (stretches). The dimension-aware behavior for `Quantity` axes (wavelength
+# stretches, energy compresses) lives in the units extensions: the Unitful
+# backend dispatches on the axis element type, while the DynamicQuantities
+# backend inspects the axis value (its dimension is not encoded in the type), so
+# both hook in through the `spec`-based method below.
+_axis_factor(::Type{<:Real}, factor) = factor
+# Dispatch on the spectral-axis element type parameter `S` (known at compile time)
+# rather than the runtime axis value, so the factor's type stays inferable. The
+# DynamicQuantities extension, whose element type does not carry its dimension,
+# instead specializes the more-specific `AbstractSpectrum{<:AbstractQuantity}`
+# method and resolves the factor from the value.
+_axis_factor(spec::AbstractSpectrum{S}, factor) where {S} = _axis_factor(S, factor)
 
 # Return a copy of `spec` whose spectral axis is scaled by `factor`. Rebuilding
 # through the constructor (rather than reassigning the field) lets the element
 # type promote, e.g., an integer axis becomes floating point, and re-runs the
 # `Spectrum` invariant checks. `R` and the type assertions recover the inference
-# that is otherwise lost through the `getproperty` overload.
+# that is otherwise lost through the `getproperty` overload. `R` is derived with
+# `promote_op` rather than `oneunit(S)`, since a DynamicQuantities element type
+# does not carry its dimension in the type and so has no `oneunit(::Type)`.
 function _scale_spectral_axis(spec::Spectrum{S, F, M, N}, factor) where {S, F, M, N}
-    f = _axis_factor(S, factor)
-    R = typeof(oneunit(S) * f)
+    f = _axis_factor(spec, factor)
+    R = Base.promote_op(*, S, typeof(f))
     axis = (spectral_axis(spec) .* f)::AbstractArray{R, M}
     flux = copy(flux_axis(spec))::AbstractArray{F, N}
     return Spectrum(axis, flux, deepcopy(meta(spec)))
