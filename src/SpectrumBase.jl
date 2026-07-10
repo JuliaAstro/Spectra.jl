@@ -8,6 +8,7 @@ export SingleSpectrum, IFUSpectrum, EchelleSpectrum
 
 # Transforms
 export SpectrumResampler, redden, redden!, deredden, deredden!
+export redshift, redshift!, doppler_shift, doppler_shift!
 
 # Utilities
 export blackbody #, line_flux, equivalent_width
