@@ -4,11 +4,12 @@ module SpectrumBase
 export AbstractSpectrum, Spectrum, spectrum, spectral_axis, flux_axis
 
 # AbstractSpectrum types
-export SingleSpectrum, IFUSpectrum, EchelleSpectrum
+export SingleSpectrum, IFUSpectrum, EchelleSpectrum, BinnedSpectrum
 
 # Transforms
 export SpectrumResampler, redden, redden!, deredden, deredden!
 export redshift, redshift!, doppler_shift, doppler_shift!
+export to_frequency, to_wavelength
 
 # Utilities
 export blackbody #, line_flux, equivalent_width
@@ -207,9 +208,9 @@ Unitful.unit(spec::AbstractSpectrum) = unit(eltype(spectral_axis(spec))), unit(e
 
 # Spectrum types and basic arithmetic
 include("spectrum_single.jl")
+include("spectrum_binned.jl")
 include("spectrum_echelle.jl")
 include("spectrum_ifu.jl")
-#include("spectrum_binned.jl")
 
 """
     spectrum(spectral_axis, flux_axis, [meta])
@@ -289,13 +290,17 @@ function spectrum(spectral_axis::AbstractMatrix{<:Real}, flux_axis::AbstractMatr
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
+function spectrum(spectral_axis::AbstractMatrix{<:Real}, flux_axis::AbstractVector{<:Real}; kwds...)
+    Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
+end
+
 function spectrum(spectral_axis::AbstractVector{<:Unitful.Quantity}, flux_axis::AbstractVector{<:Unitful.Quantity}; kwds...)
-    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
+    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐓^-1", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(spectral_axis::AbstractMatrix{<:Unitful.Quantity}, flux_axis::AbstractMatrix{<:Unitful.Quantity}; kwds...)
-    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength or energy."
+    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐓^-1", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
