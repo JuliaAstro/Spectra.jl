@@ -1,7 +1,4 @@
 using SpectrumBase: to_frequency, to_wavelength, redshift
-using PhysicalConstants.CODATA2018: c_0
-using Unitful: uconvert
-using UnitfulAstro
 
 @testset "Wavelength and frequency conversion" begin
     wavelength = [1.0, 1.5, 2.0]u"μm"
@@ -9,7 +6,7 @@ using UnitfulAstro
     spec = spectrum(wavelength, flux, name = "example")
 
     frequency_spec = to_frequency(spec; unit = u"THz")
-    expected_frequency = uconvert.(u"THz", c_0 ./ wavelength)
+    expected_frequency = uconvert.(u"THz", C_MPS * u"m/s" ./ wavelength)
 
     @test spectral_axis(frequency_spec) ≈ expected_frequency
     @test flux_axis(frequency_spec) == flux
