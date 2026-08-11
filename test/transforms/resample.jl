@@ -1,8 +1,5 @@
-using SpectrumBase: SpectrumBase, AbstractSpectrum, SpectrumResampler, spectrum, spectral_axis, flux_axis
+using SpectrumBase: SpectrumResampler
 using DataInterpolations: LinearInterpolation, ExtrapolationType
-using Unitful: @u_str, uconvert
-using UnitfulAstro
-using Measurements: ±
 
 # TODO: See if it makes sense to have an exported API for resample/resample! even though we are using external interpolators.
 

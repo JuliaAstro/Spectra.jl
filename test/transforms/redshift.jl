@@ -4,9 +4,6 @@ using SpectrumBase:
     doppler_shift,
     doppler_shift!
 
-const C_MPS = 299792458.0
-const C_KMPS = C_MPS / 1000  # speed of light in km/s, the bare-Real velocity unit
-
 function mock_spectrum_redshift(; use_units::Bool = false)
     wave = collect(range(4000.0, 8000.0, length = 100))
     flux = @. 1e14 / (wave^5 * (exp(1 / (wave * 6700)) - 1))
