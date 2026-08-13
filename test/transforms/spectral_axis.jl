@@ -23,4 +23,5 @@ using SpectrumBase: to_frequency, to_wavelength, redshift
     @test_throws ArgumentError to_frequency(spec; unit = u"μm")
     @test_throws ArgumentError to_wavelength(frequency_spec; unit = u"GHz")
     @test_throws ArgumentError to_frequency(spectrum([1.0, 2.0], [3.0, 4.0]))
+    @test_throws ArgumentError to_wavelength(spectrum([1.0, 2.0], [3.0, 4.0]))
 end
