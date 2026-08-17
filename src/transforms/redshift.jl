@@ -12,24 +12,18 @@ function _doppler_factor(v; relativistic)
 end
 
 # Resolve the (1 + z) stretch factor to the scalar actually multiplied onto a spectral axis of element type `S`.
-_axis_factor(::Type{<:Real}, factor) = factor # Unitless: assume wavelength
-_axis_factor(::Type{<:Unitful.Length}, factor) = factor # Wavelength: stretches
-_axis_factor(::Type{<:Unitful.Energy}, factor) = inv(factor) # Energy: compresses
-_axis_factor(::Type{S}, factor) where {S <: Unitful.Quantity} =
+_spectral_axis_factor(::Type{<:Real}, factor) = factor # Unitless: assume wavelength
+_spectral_axis_factor(::Type{<:Unitful.Length}, factor) = factor # Wavelength: stretches
+_spectral_axis_factor(::Type{<:Unitful.Energy}, factor) = inv(factor) # Energy: compresses
+_spectral_axis_factor(::Type{S}, factor) where {S <: Unitful.Quantity} =
     throw(ArgumentError("cannot shift a spectral axis with dimension $(dimension(S)); expected a wavelength or energy"))
-_axis_factor(spec::AbstractSpectrum, factor) = _axis_factor(eltype(spectral_axis(spec)), factor)
+_spectral_axis_factor(spec::AbstractSpectrum, factor) = _spectral_axis_factor(eltype(spectral_axis(spec)), factor)
 
-# Return a copy of `spec` whose spectral axis is scaled by `factor`. Rebuilding
-# through the constructor (rather than reassigning the field) lets the element
-# type promote, e.g., an integer axis becomes floating point, and re-runs the
-# `Spectrum` invariant checks. `R` and the type assertions recover the inference
-# that is otherwise lost through the `getproperty` overload.
-function _scale_spectral_axis(spec::Spectrum{S, F, M, N}, factor) where {S, F, M, N}
-    f = _axis_factor(S, factor)
-    R = typeof(oneunit(S) * f)
-    axis = (spectral_axis(spec) .* f)::AbstractArray{R, M}
-    flux = copy(flux_axis(spec))::AbstractArray{F, N}
-    return Spectrum(axis, flux, deepcopy(meta(spec)))
+# Rebuilding through the constructor lets the element type promote and re-runs the invariant checks.
+function _scale_spectral_axis(spec::Spectrum{S}, factor) where {S}
+    spectral_ax = spectral_axis(spec) .* _spectral_axis_factor(S, factor)
+    flux_ax = copy(flux_axis(spec))
+    return Spectrum(spectral_ax, flux_ax, deepcopy(meta(spec)))
 end
 
 """
@@ -41,7 +35,7 @@ Reassigns the spectral axis, so its element and array type cannot change.
 Use [`redshift`](@ref) for spectra with an integer spectral axis.
 """
 function redshift!(spec::AbstractSpectrum, z::Real)
-    spec.spectral_axis = spectral_axis(spec) .* _axis_factor(spec, 1 + z)
+    spec.spectral_axis = spectral_axis(spec) .* _spectral_axis_factor(spec, 1 + z)
     return spec
 end
 
@@ -92,7 +86,7 @@ Reassigns the spectral axis, so its element and array type cannot change. Use [`
 for spectra with an integer spectral axis.
 """
 function doppler_shift!(spec::AbstractSpectrum, v; relativistic = false)
-    spec.spectral_axis = spectral_axis(spec) .* _axis_factor(spec, _doppler_factor(v; relativistic))
+    spec.spectral_axis = spectral_axis(spec) .* _spectral_axis_factor(spec, _doppler_factor(v; relativistic))
     return spec
 end
 
