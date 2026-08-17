@@ -39,7 +39,6 @@ abstract type AbstractSpectrum{S, F} end
 
 A spectrum or spectra stored as arrays of real numbers. For UV/VIS/IR spectra, the `spectral_axis` is assumed to be wavelengths (in angstrom). For X-ray spectra, the `spectral_axis` is assumed to be energies (in keV).
 """
-# Concrete array-type parameters `A`/`B` keep field access fully inferable.
 mutable struct Spectrum{S<:Number, F<:Number, M, N, A<:AbstractArray{S, M}, B<:AbstractArray{F, N}} <: AbstractSpectrum{S, F}
     spectral_axis::A
     flux_axis::B
