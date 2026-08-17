@@ -1,7 +1,7 @@
 """
     BinnedSpectrum <: AbstractSpectrum
 
-An instance of [`Spectrum`](@ref) where the spectral axis is an ``m x 2`` matrix of bin edges and the flux axis is a 1D array.
+An instance of [`Spectrum`](@ref) where the spectral axis is an ``m \\times 2`` matrix of bin edges, and the flux axis is a 1D array.
 """
 const BinnedSpectrum = Spectrum{S, F, 2, 1} where {S, F}
 

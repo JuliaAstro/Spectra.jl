@@ -68,7 +68,7 @@ doppler_shift!
 
 ## Spectral axis conversion
 
-`uconvert` from [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) is extended to convert the spectral axis between wavelength, frequency, and photon energy via the photon equivalence ``E = hν = hc/λ``, powered by [UnitfulEquivalences.jl](https://github.com/sostock/UnitfulEquivalences.jl). Passing an `(axis_unit, flux_unit)` tuple, i.e., the shape returned by `unit(spec)`, also converts flux density values:
+`uconvert` from [Unitful.jl](https://github.com/JuliaPhysics/Unitful.jl) is extended to convert the spectral axis between wavelength, frequency, and photon energy via the photon equivalence ``E = hν = hc/λ``, powered by [UnitfulEquivalences.jl](https://github.com/sostock/UnitfulEquivalences.jl). Passing an `(axis_unit, flux_unit)` tuple, i.e., the shape returned by `unit(spec)`, also converts flux density values:
 
 ```jldoctest
 julia> using SpectrumBase, Unitful, UnitfulAstro
@@ -90,7 +90,6 @@ true
 
 ```@docs
 Unitful.uconvert
-SpectralDensity
 ```
 
 ## Resampling
