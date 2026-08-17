@@ -66,6 +66,33 @@ doppler_shift
 doppler_shift!
 ```
 
+## Spectral axis conversion
+
+`uconvert` from [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) is extended to convert the spectral axis between wavelength, frequency, and photon energy via the photon equivalence ``E = hν = hc/λ``, powered by [UnitfulEquivalences.jl](https://github.com/sostock/UnitfulEquivalences.jl). Passing an `(axis_unit, flux_unit)` tuple, i.e., the shape returned by `unit(spec)`, also converts flux density values:
+
+```jldoctest
+julia> using SpectrumBase, Unitful, UnitfulAstro
+
+julia> spec = spectrum([1.0, 1.5, 2.0]u"μm", [1.0, 2.0, 3.0]u"W/m^2/μm");
+
+julia> uconvert(u"THz", spec);
+
+julia> νspec = uconvert((u"THz", u"Jy"), spec);
+
+julia> issorted(spectral_axis(νspec); rev = true)
+true
+
+julia> flux_axis(νspec)[1] ≈ uconvert(u"Jy", 1.0u"W/m^2/μm" * (1.0u"μm")^2 / Unitful.c0)
+true
+```
+
+### API/Reference
+
+```@docs
+Unitful.uconvert
+SpectralDensity
+```
+
 ## Resampling
 
 External interpolators, e.g., from [DataInterpolations.jl](https://github.com/SciML/DataInterpolations.jl) or [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl), can be used to resample spectra onto a given wavelength grid. Starting with a sample spectrum `spec`, we first create a [`SpectrumResampler`](@ref) object `resampler` which stores the initial spectrum and interpolator `interp` together. We then apply this object to the wavelength grid of our choice to produce the resampled spectrum. We show example usage in the docstring below:

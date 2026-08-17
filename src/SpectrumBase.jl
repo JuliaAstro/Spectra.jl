@@ -9,7 +9,9 @@ export SingleSpectrum, IFUSpectrum, EchelleSpectrum, BinnedSpectrum
 # Transforms
 export SpectrumResampler, redden, redden!, deredden, deredden!
 export redshift, redshift!, doppler_shift, doppler_shift!
-export to_frequency, to_wavelength
+
+# Unit equivalences (re-exported from UnitfulEquivalences.jl)
+export SpectralDensity
 
 # Utilities
 export blackbody #, line_flux, equivalent_width
@@ -295,13 +297,16 @@ function spectrum(spectral_axis::AbstractMatrix{<:Real}, flux_axis::AbstractVect
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
+# Recognized spectral-axis dimensions: wavelength, frequency, photon energy.
+const SPECTRAL_DIMENSIONS = (u"𝐋", u"𝐓^-1", u"𝐋^2 * 𝐌 * 𝐓^-2")
+
 function spectrum(spectral_axis::AbstractVector{<:Unitful.Quantity}, flux_axis::AbstractVector{<:Unitful.Quantity}; kwds...)
-    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐓^-1", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
+    @assert dimension(eltype(spectral_axis)) ∈ SPECTRAL_DIMENSIONS "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
 function spectrum(spectral_axis::AbstractMatrix{<:Unitful.Quantity}, flux_axis::AbstractMatrix{<:Unitful.Quantity}; kwds...)
-    @assert dimension(eltype(spectral_axis)) ∈ (u"𝐋", u"𝐓^-1", u"𝐋^2 * 𝐌 * 𝐓^-2") "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
+    @assert dimension(eltype(spectral_axis)) ∈ SPECTRAL_DIMENSIONS "spectral_axis not recognized as having dimensions of wavelength, frequency, or energy."
     Spectrum(spectral_axis, flux_axis, Dict{Symbol,Any}(kwds))
 end
 
