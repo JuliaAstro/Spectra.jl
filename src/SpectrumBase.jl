@@ -100,11 +100,12 @@ Return the meta data associated with `spec`.
 """
 meta(spec::AbstractSpectrum) = spec.meta
 
+# Fields first: `hasfield` is decidable at compile time, keeping field access inferable.
 function Base.getproperty(spec::AbstractSpectrum, nm::Symbol)
-    if nm in keys(getfield(spec, :meta))
-        return getfield(spec, :meta)[nm]
-    else
+    if hasfield(typeof(spec), nm)
         return getfield(spec, nm)
+    else
+        return getfield(spec, :meta)[nm]
     end
 end
 
