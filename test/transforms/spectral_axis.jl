@@ -96,7 +96,7 @@ end
 @testset "Binned spectrum axis conversion" begin
     edges = [1.0 2.0; 2.0 3.0; 3.0 4.0]u"μm"
     flux = [10.0, 20.0, 30.0]u"Jy"
-    binned = SpectrumBase.Spectrum(edges, flux, Dict{Symbol, Any}())
+    binned = spectrum(edges, flux)
     c = C_MPS * u"m/s"
 
     converted = uconvert(u"THz", binned)

@@ -5,9 +5,7 @@ An instance of [`Spectrum`](@ref) where the spectral axis is an ``m \\times 2`` 
 """
 const BinnedSpectrum = Spectrum{S, F, 2, 1} where {S, F}
 
-function Base.getindex(spec::BinnedSpectrum, i::Int)
-    return Spectrum(spectral_axis(spec)[i:i, :], flux_axis(spec)[i:i], meta(spec))
-end
+Base.getindex(spec::BinnedSpectrum, i::Integer) = spec[i:i]
 
 function Base.getindex(spec::BinnedSpectrum, inds)
     return Spectrum(spectral_axis(spec)[inds, :], flux_axis(spec)[inds], meta(spec))
@@ -20,8 +18,13 @@ function Base.show(io::IO, spec::BinnedSpectrum)
     w = spectral_axis(spec)
     f = flux_axis(spec)
     println(io, "BinnedSpectrum($(eltype(w)), $(eltype(f)))")
-    println(io, "  spectral axis $(size(w)): ", w[1, 1], " .. ", w[end, 2])
-    println(io, "  flux axis $(size(f)): ", first(f), " .. ", last(f))
+    if isempty(f)
+        println(io, "  spectral axis $(size(w)): empty")
+        println(io, "  flux axis $(size(f)): empty")
+    else
+        println(io, "  spectral axis $(size(w)): ", first(w), " .. ", last(w))
+        println(io, "  flux axis $(size(f)): ", first(f), " .. ", last(f))
+    end
     print(io, "  meta: ", meta(spec))
 end
 

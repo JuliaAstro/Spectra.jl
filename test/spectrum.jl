@@ -85,6 +85,22 @@ end
     @test spec[firstindex(spec)] == spec[1]
     @test spec[lastindex(spec)] == spec[4]
 
+    # Any integer index selects a single bin
+    @test spec[Int32(2)] == spec[2] == spec[2:2]
+
+    # m × 2 shape and row-order invariants
+    @test_throws ArgumentError spectrum([1.0 2.0 3.0; 2.0 3.0 4.0], [1.0, 2.0]) # not two columns
+    @test_throws ArgumentError spectrum(reshape([1.0, 2.0], 2, 1), [1.0, 2.0]) # not two columns
+    @test_throws ArgumentError spectrum([2.0 1.0; 3.0 2.0], [1.0, 2.0]) # edges swapped within rows
+    @test_throws ArgumentError spectrum([1.0 2.0; 3.0 2.5], [1.0, 2.0]) # inconsistent row order
+    @test_throws ArgumentError spectrum([1.0 1.0; 2.0 2.0], [1.0, 2.0]) # zero-width bins
+    @test spectrum([4.0 3.0; 3.0 2.0], [1.0, 2.0]) isa BinnedSpectrum # descending edges are valid
+
+    # Empty selections construct and display
+    empty_spec = spec[falses(4)]
+    @test length(empty_spec) == 0
+    @test occursin("empty", sprint(show, empty_spec))
+
     expected = """
     BinnedSpectrum(Float64, Float64)
       spectral axis (4, 2): 1.0 .. 5.0
@@ -352,4 +368,19 @@ end
         @test spectral_axis(s) == spectral_axis(spec)
         @test flux_axis(s) ≈ flux_axis(spec) ./ 10
     end
+end
+
+@testset "Unitful Spectrum - Binned" begin
+    edges = [1.0 2.0; 2.0 3.0; 3.0 4.0]u"keV"
+    flux = [1.0, 2.0, 3.0]u"Jy"
+
+    spec = spectrum(edges, flux, name = "test xray spectrum")
+
+    @test spec isa BinnedSpectrum
+    @test unit(spec) == (u"keV", u"Jy")
+    @test spectral_axis(spec) == edges
+    @test flux_axis(spec) == flux
+    @test spec.name == "test xray spectrum"
+
+    @test_throws AssertionError spectrum([1.0 2.0; 2.0 3.0]u"kg", flux)
 end
