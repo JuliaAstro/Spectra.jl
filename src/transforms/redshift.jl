@@ -38,7 +38,7 @@ end
 
 In-place version of [`redshift`](@ref).
 
-Reassigns the spectral axis, so the element type cannot change.
+Reassigns the spectral axis, so its element and array type cannot change.
 Use [`redshift`](@ref) for spectra with an integer spectral axis.
 """
 function redshift!(spec::AbstractSpectrum, z::Real)
@@ -89,7 +89,7 @@ redshift(spec::AbstractSpectrum, z::Real) = _scale_spectral_axis(spec, 1 + z)
 
 In-place version of [`doppler_shift`](@ref).
 
-Reassigns the spectral axis, so the element type cannot change. Use [`doppler_shift`](@ref)
+Reassigns the spectral axis, so its element and array type cannot change. Use [`doppler_shift`](@ref)
 for spectra with an integer spectral axis.
 """
 function doppler_shift!(spec::AbstractSpectrum, v; relativistic = false)

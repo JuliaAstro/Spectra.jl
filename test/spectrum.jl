@@ -38,7 +38,7 @@ end
     spec_indexed = spec[begin:end]
 
     @test propertynames(spec) == (:spectral_axis, :flux_axis, :meta, :name)
-    @test [s for s in spec] isa Vector{SingleSpectrum{Float64, Measurements.Measurement{Float64}}}
+    @test [s for s in spec] isa Vector{<:SingleSpectrum{Float64, Measurements.Measurement{Float64}}}
     @test eltype(spec) == eltype(flux_axis(spec))
     @test spectral_axis(spec) == wave
     @test spectral_axis(spec_indexed) == wave
