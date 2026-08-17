@@ -39,11 +39,12 @@ abstract type AbstractSpectrum{S, F} end
 
 A spectrum or spectra stored as arrays of real numbers. For UV/VIS/IR spectra, the `spectral_axis` is assumed to be wavelengths (in angstrom). For X-ray spectra, the `spectral_axis` is assumed to be energies (in keV).
 """
-mutable struct Spectrum{S<:Number, F<:Number, M, N} <: AbstractSpectrum{S, F}
-    spectral_axis::AbstractArray{S, M}
-    flux_axis::AbstractArray{F, N}
+# Concrete array-type parameters `A`/`B` keep field access fully inferable.
+mutable struct Spectrum{S<:Number, F<:Number, M, N, A<:AbstractArray{S, M}, B<:AbstractArray{F, N}} <: AbstractSpectrum{S, F}
+    spectral_axis::A
+    flux_axis::B
     meta::Dict{Symbol, Any}
-    function Spectrum{S, F, M, N}(s, f, meta) where {S<:Number, F<:Number, M, N}
+    function Spectrum{S, F, M, N, A, B}(s, f, meta) where {S<:Number, F<:Number, M, N, A<:AbstractArray{S, M}, B<:AbstractArray{F, N}}
         # TODO: Investigate using Holy Traits to help with validation
         # Dimension compatibility check
         if size(s, 1) != size(f, 1)
@@ -68,12 +69,12 @@ mutable struct Spectrum{S<:Number, F<:Number, M, N} <: AbstractSpectrum{S, F}
             throw(ArgumentError("Spectral axis must be strictly increasing or decreasing."))
         end
 
-        return new{S, F, M, N}(s, f, meta)
+        return new{S, F, M, N, A, B}(s, f, meta)
     end
 end
 
 function Spectrum(s, f, meta)
-    Spectrum{eltype(s), eltype(f), ndims(s), ndims(f)}(s, f, meta)
+    Spectrum{eltype(s), eltype(f), ndims(s), ndims(f), typeof(s), typeof(f)}(s, f, meta)
 end
 
 # Doesn't seem to be used atp

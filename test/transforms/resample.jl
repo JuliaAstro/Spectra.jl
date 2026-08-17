@@ -33,8 +33,8 @@ end
     resampler = SpectrumResampler(spec, interp)
     expected = """
     SpectrumResampler(Float64, Measurements.Measurement{Float64})
-      spec: SpectrumBase.SingleSpectrum{Float64, Measurements.Measurement{Float64}}
-      interpolator: DataInterpolations.LinearInterpolation{Vector{Measurements.Measurement{Float64}}, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}, Vector{Measurements.Measurement{Float64}}, Vector{Measurements.Measurement{Float64}}, Measurements.Measurement{Float64}, FindFirstFunctions.SearchProperties{Float64}}"""
+      spec: $(typeof(spec))
+      interpolator: $(typeof(interp))"""
 
     @test sprint(show, resampler) == expected
     @test spectral_axis(resampler) == s
