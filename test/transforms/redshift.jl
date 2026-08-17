@@ -74,6 +74,13 @@ end
         spec = spectrum(axis, ones(10) * u"erg/s/cm^2/angstrom")
         @test spectral_axis(redshift(spec, 0.5)) ≈ axis .* 1.5
     end
+
+    @testset "Unsupported axis dimension rejected" begin
+        # Constructed directly, bypassing the dimension guard in `spectrum`
+        axis = collect(range(1.0, 5.0, length = 10)) * u"s"
+        spec = SpectrumBase.Spectrum(axis, ones(10) * u"erg/s/cm^2/angstrom", Dict{Symbol, Any}())
+        @test_throws ArgumentError redshift(spec, 0.5)
+    end
 end
 
 @testset "doppler_shift" begin
