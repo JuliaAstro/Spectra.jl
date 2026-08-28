@@ -43,7 +43,7 @@ julia> spectral_axis(shifted) ≈ spectral_axis(spec) .* 1.5
 true
 ```
 
-**Doppler shift** shifts by a radial velocity `v`. Pass a `Unitful` velocity or a plain number (interpreted as m/s). Set `relativistic=true` for the full relativistic formula:
+**Doppler shift** shifts by a radial velocity `v`. Pass a `Unitful` velocity or a plain number (interpreted as km/s). Set `relativistic=true` for the full relativistic formula:
 
 ```jldoctest
 julia> using SpectrumBase, Unitful
@@ -56,6 +56,22 @@ julia> shifted_rel = doppler_shift(spec, 100u"km/s"; relativistic=true);
 ```
 
 Both `redshift` and `doppler_shift` return a new spectrum. In-place variants `redshift!` and `doppler_shift!` are also available.
+
+Binned spectra are supported as well: both bin edges are shifted and the bin values are carried unchanged. An energy axis is compressed rather than stretched:
+
+```jldoctest
+julia> using SpectrumBase, Unitful
+
+julia> spec = spectrum([1.0 2.0; 2.0 3.0; 3.0 4.0]u"keV", [10.0, 20.0, 30.0]u"erg/s/cm^2");
+
+julia> shifted = redshift(spec, 0.5);
+
+julia> spectral_axis(shifted) ≈ spectral_axis(spec) ./ 1.5
+true
+
+julia> flux_axis(shifted) == flux_axis(spec)
+true
+```
 
 ### API/Reference
 
